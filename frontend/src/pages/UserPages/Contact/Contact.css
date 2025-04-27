@@ -100,6 +100,12 @@
   padding: 2.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
+.social-media-section {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
 
 .video-section {
   background: white;
@@ -273,7 +279,7 @@
   content: "";
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 50%;
   width: 60px;
   height: 3px;
   background: linear-gradient(90deg, #e74c3c, #c0392b);

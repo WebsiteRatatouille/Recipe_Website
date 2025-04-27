@@ -34,7 +34,7 @@ const SocialMedia = () => {
       <h2>Kết Nối Với Chúng Tôi</h2>
       <div className="social-grid">
         <a
-          href="https://facebook.com/your-page"
+          href="https://www.facebook.com/profile.php?id=61574059620067"
           target="_blank"
           rel="noopener noreferrer"
           className="social-card facebook"
@@ -43,7 +43,7 @@ const SocialMedia = () => {
           <span>Facebook</span>
         </a>
         <a
-          href="https://youtube.com/your-channel"
+          href="https://www.youtube.com/@tastyrecipes"
           target="_blank"
           rel="noopener noreferrer"
           className="social-card youtube"
@@ -52,7 +52,7 @@ const SocialMedia = () => {
           <span>YouTube</span>
         </a>
         <a
-          href="https://tiktok.com/@your-account"
+          href="https://www.tiktok.com/@tastyrecipes"
           target="_blank"
           rel="noopener noreferrer"
           className="social-card tiktok"
@@ -60,6 +60,22 @@ const SocialMedia = () => {
           <TiktokIcon />
           <span>TikTok</span>
         </a>
+      </div>
+      <div className="youtube-video-box">
+        <iframe
+          width="560"
+          height="283"
+          src="https://www.youtube.com/embed/QjIRpeuH8gI?autoplay=1&mute=1&controls=0&loop=1&playlist=QjIRpeuH8gI&showinfo=0&modestbranding=1&rel=0&fs=0&iv_load_policy=3&disablekb=1"
+          title="YouTube video player"
+          frameBorder="0"
+          allow="autoplay; encrypted-media"
+          style={{
+            pointerEvents: "none",
+            borderRadius: "15px",
+            margin: "2rem auto",
+            display: "block",
+          }}
+        ></iframe>
       </div>
     </div>
   );
