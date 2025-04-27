@@ -1,0 +1,9 @@
+.admin-recipes-wrapper {
+    background-color: #f7f7f9;
+    height: 100vh;
+}
+
+.admin-recipes-wrapper .content {
+    display: flex;
+    justify-content: center;
+}

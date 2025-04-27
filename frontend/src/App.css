@@ -1,0 +1,18 @@
+@import url("./variables.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+}
