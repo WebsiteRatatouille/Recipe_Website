@@ -1,5 +1,5 @@
-const express = require("express");
 const dotenv = require("dotenv");
+const express = require("express");
 const connectDB = require("./config/db"); // <-- import file db.js
 const cors = require("cors");
 
@@ -13,11 +13,14 @@ app.use(express.json()); // Cho phép xử lý JSON từ body request
 connectDB();
 
 const userRoutes = require("./routes/userRoutes");
+const recipeRoutes = require("./routes/recipeRoutes");
+
 app.use("/api/users", userRoutes);
+app.use("/api/recipes", recipeRoutes);
 
 // Test route
 app.get("/", (req, res) => {
-    res.send("API is running...");
+  res.send("API is running...");
 });
 
 // Start server

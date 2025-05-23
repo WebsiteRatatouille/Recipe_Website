@@ -18,37 +18,44 @@ import AdminUsers from "./pages/AdminPages/AdminUsers/AdminUsers";
 
 import LoginPopup from "./components/LoginPopup/LoginPopup";
 import ProgressBar from "./components/ProgressBar/ProgressBar";
+import RecipeList from "./pages/UserPages/Recipes_Interface/RecipeList";
+import RecipeDetail from "./pages/UserPages/Recipes_Interface/RecipeDetail";
 
 function App() {
-    const [showLogin, setShowLogin] = useState(false);
-    const user = JSON.parse(localStorage.getItem("user"));
-    // console.log("app render");
-    return (
-        <>
-            <ProgressBar />
-            {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
+  const [showLogin, setShowLogin] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+  // console.log("app render");
+  return (
+    <>
+      <ProgressBar />
+      {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
 
-            <div className="App">
-                <Routes>
-                    <Route element={<UserLayout setShowLogin={setShowLogin} />}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/recipes" element={<Recipes />} />
-                        <Route path="/blog" element={<Blog />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/aboutUs" element={<AboutUs />} />
-                    </Route>
+      <div className="App">
+        <Routes>
+          <Route element={<UserLayout setShowLogin={setShowLogin} />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/recipes" element={<Recipes />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/aboutUs" element={<AboutUs />} />
+            <Route path="/recipe/:id" element={<RecipeDetail />} />
+          </Route>
 
-                    <Route element={user?.role === "admin" ? <AdminLayout /> : <Navigate to="/" />}>
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/adminRecipes" element={<AdminRecipes />} />
-                        <Route path="/adminCategories" element={<AdminCategories />} />
-                        <Route path="/adminCollections" element={<AdminCollections />} />
-                        <Route path="/adminUsers" element={<AdminUsers />} />
-                    </Route>
-                </Routes>
-            </div>
-        </>
-    );
+          <Route
+            element={
+              user?.role === "admin" ? <AdminLayout /> : <Navigate to="/" />
+            }
+          >
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/adminRecipes" element={<AdminRecipes />} />
+            <Route path="/adminCategories" element={<AdminCategories />} />
+            <Route path="/adminCollections" element={<AdminCollections />} />
+            <Route path="/adminUsers" element={<AdminUsers />} />
+          </Route>
+        </Routes>
+      </div>
+    </>
+  );
 }
 
 export default App;
