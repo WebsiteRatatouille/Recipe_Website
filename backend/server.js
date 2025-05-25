@@ -6,7 +6,15 @@ const cors = require("cors");
 dotenv.config(); // load .env
 
 const app = express();
-app.use(cors()); // Cho phép frontend (React) truy cập backend
+
+// CORS configuration
+app.use(
+  cors({
+    origin: "http://localhost:3000", // URL của frontend
+    credentials: true,
+  })
+);
+
 app.use(express.json()); // Cho phép xử lý JSON từ body request
 
 // Connect database
@@ -17,7 +25,7 @@ app.use("/api/users", userRoutes);
 
 // Test route
 app.get("/", (req, res) => {
-    res.send("API is running...");
+  res.send("API is running...");
 });
 
 // Start server

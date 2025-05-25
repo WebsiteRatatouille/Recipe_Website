@@ -120,3 +120,52 @@ header {
   color: white;
   transition: 0.3s;
 }
+.UserMenuPortal {
+  position: fixed;
+  right: 30px;
+  top: 70px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0002;
+  z-index: 2147483647 !important;
+}
+
+.menu-items {
+  padding: 5px 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-item i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.logout-btn {
+  color: #d00;
+  border-top: 1px solid #eee;
+  margin-top: 5px;
+}
+
+.logout-btn:hover {
+  background-color: #fff0f0;
+}

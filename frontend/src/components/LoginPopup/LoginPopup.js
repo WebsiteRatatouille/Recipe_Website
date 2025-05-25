@@ -3,153 +3,213 @@ import "./LoginPopup.css";
 import { useNavigate } from "react-router-dom";
 
 function LoginPopup({ setShowLogin }) {
-    const adminEmail = "admin@gmail.com";
-    const adminPassword = "remy";
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [currState, setCurrState] = useState("Đăng nhập");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
-    const [currState, setCurrState] = useState("Đăng nhập");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
-    useEffect(() => {
-        // Disable scrolling
-        document.body.style.overflow = "hidden";
-
-        return () => {
-            // Re-enable scrolling
-            document.body.style.overflow = "auto";
-        };
-    }, []);
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     if (!email || !password) return;
-
-    //     let role = "user";
-    //     if (email === adminEmail && password === adminPassword) {
-    //         role = "admin";
-    //     }
-
-    //     const user = { email, role };
-    //     localStorage.setItem("user", JSON.stringify(user));
-    //     setShowLogin(false);
-
-    //     navigate(role === "admin" ? "/admin" : "/");
-    // };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log("Đã nhấn nút đăng nhập");
-
-        if (!email || !password) return;
-
-        try {
-            const response = await fetch("http://localhost:5000/api/users/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.msg || "Đăng nhập thất bại");
-                return;
-            }
-
-            // Lưu token và thông tin user vào localStorage
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("token", data.token);
-
-            setShowLogin(false);
-
-            // Điều hướng theo role
-            navigate(data.user.role === "admin" ? "/admin" : "/");
-        } catch (error) {
-            console.error("Lỗi đăng nhập:", error);
-            alert("Lỗi hệ thống, vui lòng thử lại.");
-        }
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
     };
+  }, []);
 
-    return (
-        <div className="login-popup">
-            <form className="login-popup-container" onSubmit={handleSubmit}>
-                <div>
-                    <span></span>
-                    <i onClick={() => setShowLogin(false)} className="close-icon bx bx-x"></i>
-                </div>
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-                <div className="login-popup-title">
-                    <h2>{currState}</h2>
+  const resetForm = () => {
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+    });
+  };
 
-                    {currState === "Đăng nhập" ? (
-                        <p>
-                            Khám phá hàng ngàn công thức, lưu lại món ăn yêu thích và chia sẻ trải
-                            nghiệm của bạn!
-                        </p>
-                    ) : (
-                        <p>
-                            Tham gia ngay để lưu công thức, viết đánh giá và kết nối với những người
-                            yêu ẩm thực!
-                        </p>
-                    )}
-                </div>
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    console.log("Đã nhấn nút đăng ký");
 
-                <div className="login-popup-inputs">
-                    {currState === "Đăng nhập" ? (
-                        <></>
-                    ) : (
-                        <input type="text" placeholder="Tên của bạn" required />
-                    )}
+    if (!formData.username || !formData.email || !formData.password) {
+      alert("Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
 
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+    try {
+      const response = await fetch("http://localhost:5000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-                    <input
-                        type="password"
-                        placeholder="Mật khẩu"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">
-                    {currState === "Đăng kí" ? "Tạo tài khoản" : "Đăng nhập"}
-                </button>
+      const data = await response.json();
 
-                {currState === "Đăng nhập" ? (
-                    <></>
-                ) : (
-                    <div className="login-popup-condition">
-                        <input type="checkbox" required />
-                        <p>Tôi đồng ý với Điều khoản sử dụng & Chính sách quyền riêng tư</p>
-                    </div>
-                )}
+      if (!response.ok) {
+        alert(data.msg || "Đăng ký thất bại");
+        return;
+      }
 
-                <div className="auth-switch">
-                    {currState === "Đăng nhập" ? (
-                        <p>
-                            Tạo tài khoản?
-                            <span onClick={() => setCurrState("Đăng kí")}>Đăng kí</span>
-                        </p>
-                    ) : (
-                        <p>
-                            Đã có tài khoản?
-                            <span onClick={() => setCurrState("Đăng nhập")}>Đăng nhập</span>
-                        </p>
-                    )}
-                </div>
-            </form>
+      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      setCurrState("Đăng nhập");
+      resetForm();
+    } catch (error) {
+      console.error("Lỗi đăng ký:", error);
+      alert("Lỗi hệ thống, vui lòng thử lại.");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Đã nhấn nút đăng nhập");
+
+    if (!formData.email || !formData.password) {
+      alert("Vui lòng nhập đầy đủ email và mật khẩu");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Response từ server:", data);
+
+      if (!response.ok) {
+        alert(data.msg || "Đăng nhập thất bại");
+        return;
+      }
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+
+      setShowLogin(false);
+
+      console.log("User role:", data.user.role);
+
+      if (data.user.role === "admin") {
+        console.log("Chuyển hướng đến trang admin");
+        navigate("/admin");
+      } else {
+        console.log("Chuyển hướng đến trang chủ");
+        navigate("/");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Lỗi đăng nhập:", error);
+      alert("Lỗi kết nối server, vui lòng thử lại sau.");
+    }
+  };
+
+  const handleStateChange = (newState) => {
+    setCurrState(newState);
+    resetForm();
+  };
+
+  const renderFormInputs = () => (
+    <div className="login-popup-inputs">
+      {currState === "Đăng kí" && (
+        <input
+          type="text"
+          name="username"
+          placeholder="Tên của bạn"
+          value={formData.username}
+          onChange={handleInputChange}
+          required
+        />
+      )}
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleInputChange}
+        required
+      />
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Mật khẩu"
+        value={formData.password}
+        onChange={handleInputChange}
+        required
+      />
+    </div>
+  );
+
+  return (
+    <div className="login-popup">
+      <form
+        className="login-popup-container"
+        onSubmit={currState === "Đăng nhập" ? handleSubmit : handleRegister}
+      >
+        <div>
+          <span></span>
+          <i
+            onClick={() => setShowLogin(false)}
+            className="close-icon bx bx-x"
+          ></i>
         </div>
-    );
+
+        <div className="login-popup-title">
+          <h2>{currState}</h2>
+          <p>
+            {currState === "Đăng nhập"
+              ? "Khám phá hàng ngàn công thức, lưu lại món ăn yêu thích và chia sẻ trải nghiệm của bạn!"
+              : "Tham gia ngay để lưu công thức, viết đánh giá và kết nối với những người yêu ẩm thực!"}
+          </p>
+        </div>
+
+        {renderFormInputs()}
+
+        <button type="submit">
+          {currState === "Đăng kí" ? "Tạo tài khoản" : "Đăng nhập"}
+        </button>
+
+        {currState === "Đăng kí" && (
+          <div className="login-popup-condition">
+            <input type="checkbox" required />
+            <p>Tôi đồng ý với Điều khoản sử dụng & Chính sách quyền riêng tư</p>
+          </div>
+        )}
+
+        <div className="auth-switch">
+          {currState === "Đăng nhập" ? (
+            <p>
+              Tạo tài khoản?
+              <span onClick={() => handleStateChange("Đăng kí")}>Đăng kí</span>
+            </p>
+          ) : (
+            <p>
+              Đã có tài khoản?
+              <span onClick={() => handleStateChange("Đăng nhập")}>
+                Đăng nhập
+              </span>
+            </p>
+          )}
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default LoginPopup;
