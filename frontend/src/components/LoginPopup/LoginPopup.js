@@ -192,6 +192,16 @@ function LoginPopup({ setShowLogin }) {
           </div>
         )}
 
+        {/* Social Login Buttons */}
+        <div className="social-login-buttons">
+          <a href="http://localhost:5000/auth/facebook">
+            <button type="button">Đăng nhập bằng Facebook</button>
+          </a>
+          <a href="http://localhost:5000/auth/google">
+            <button type="button">Đăng nhập bằng Google</button>
+          </a>
+        </div>
+
         <div className="auth-switch">
           {currState === "Đăng nhập" ? (
             <p>

@@ -14,10 +14,11 @@
 .user-list-actions {
   display: flex;
   align-items: center;
+  gap: 16px; /* Thêm khoảng cách 16px giữa các item */
 }
 
 .search-field {
-  margin-right: 8px; /* mr: 1 */
+  /* margin-right: 8px; */ /* Bỏ margin-right */
 }
 
 .search-button {
@@ -32,7 +33,7 @@
 .create-button {
   background-color: #24708e; /* Màu chữ chính */
   color: white;
-  margin-left: 250px; /* ml: 2 */
+  /* margin-left: 250px; */ /* Bỏ margin-left */
 }
 
 .create-button:hover {
@@ -61,4 +62,17 @@
 .styled-table-row:last-child td,
 .styled-table-row:last-child th {
   border: 0;
+}
+
+.social-icon {
+  font-size: 25px;
+  margin: 0px 7.5px;
+}
+
+.social-icon.facebook {
+  color: #3b5998;
+}
+
+.social-icon.google {
+  color: #dd4b39;
 }

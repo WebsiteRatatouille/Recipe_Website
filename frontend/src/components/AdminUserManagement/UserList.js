@@ -220,16 +220,39 @@ const UserList = () => {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user._id} className="styled-table-row">
-                <TableCell>{user.username}</TableCell>
+                <TableCell
+                  style={{
+                    color:
+                      user.provider === "facebook"
+                        ? "#3b5998"
+                        : user.provider === "google"
+                        ? "#dd4b39"
+                        : "inherit",
+                  }}
+                >
+                  {/* Hiển thị tên và icon social nếu có */}
+                  {user.username || user.name}{" "}
+                  {/* Hiển thị username hoặc name */}
+                </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEdit(user)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleResetPassword(user._id)}>
-                    <ResetPasswordIcon />
-                  </IconButton>
+                  {/* Hiển thị icon social giữa nút chỉnh sửa và xóa */}
+                  {user.provider === "facebook" && (
+                    <i className="bx bxl-facebook-square social-icon facebook"></i>
+                  )}
+                  {user.provider === "google" && (
+                    <i className="bx bxl-google-plus social-icon google"></i>
+                  )}
+                  {/* Chỉ hiển thị nút reset mật khẩu cho người dùng local */}
+                  {(!user.provider || user.provider === "local") && (
+                    <IconButton onClick={() => handleResetPassword(user._id)}>
+                      <ResetPasswordIcon />
+                    </IconButton>
+                  )}
                   <IconButton onClick={() => handleDelete(user._id)}>
                     <DeleteIcon />
                   </IconButton>
