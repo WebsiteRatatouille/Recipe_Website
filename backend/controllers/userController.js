@@ -17,6 +17,7 @@ const register = async (req, res) => {
       username,
       email: emailNormalized,
       password: hashedPassword,
+      role: "user",
     });
     await newUser.save();
 
@@ -62,7 +63,7 @@ const login = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
+        role: user.role || "user",
       },
       token,
     });
@@ -127,4 +128,196 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { register, login, updateProfile };
+// Lấy danh sách người dùng (Admin)
+const getAllUsers = async (req, res) => {
+  try {
+    // Kiểm tra quyền admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const { email } = req.query;
+    let query = {};
+
+    if (email) {
+      // Tìm kiếm không phân biệt hoa thường và chứa chuỗi email
+      query.email = { $regex: email, $options: "i" };
+    }
+
+    const users = await User.find(query, "-password");
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách người dùng:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+// Lấy thông tin chi tiết người dùng (Admin)
+const getUserById = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const user = await User.findById(req.params.id, "-password");
+    if (!user) {
+      return res.status(404).json({ msg: "Không tìm thấy người dùng" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("Lỗi khi lấy thông tin người dùng:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+// Cập nhật thông tin người dùng (Admin)
+const updateUserByAdmin = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const { username, email, role } = req.body;
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: "Không tìm thấy người dùng" });
+    }
+
+    if (username) user.username = username.trim();
+    if (email) user.email = email.trim().toLowerCase();
+    if (role) user.role = role;
+
+    await user.save();
+    res.status(200).json({ msg: "Cập nhật thành công" });
+  } catch (err) {
+    console.error("Lỗi khi cập nhật người dùng:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+// Xóa người dùng (Admin)
+const deleteUser = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const userId = req.params.id;
+
+    // Sử dụng findByIdAndDelete để tìm và xóa người dùng
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ msg: "Không tìm thấy người dùng" });
+    }
+
+    res.status(200).json({ msg: "Xóa người dùng thành công" });
+  } catch (err) {
+    console.error("Lỗi khi xóa người dùng:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+// Tạo tài khoản mới (Admin)
+const createUserByAdmin = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const { username, email, password, role } = req.body;
+    const emailNormalized = email.trim().toLowerCase();
+
+    // Kiểm tra email đã tồn tại
+    const existingUser = await User.findOne({ email: emailNormalized });
+    if (existingUser) {
+      return res.status(400).json({ msg: "Email đã tồn tại" });
+    }
+
+    // Mã hóa mật khẩu
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Tạo user mới
+    const newUser = new User({
+      username,
+      email: emailNormalized,
+      password: hashedPassword,
+      role: role || "user",
+    });
+
+    await newUser.save();
+    res.status(201).json({
+      msg: "Tạo tài khoản thành công",
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        role: newUser.role,
+      },
+    });
+  } catch (err) {
+    console.error("Lỗi khi tạo tài khoản:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+// Lấy thông tin chi tiết người dùng bao gồm mật khẩu (Admin)
+const getUserDetailsWithPassword = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: "Không tìm thấy người dùng" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("Lỗi khi lấy thông tin người dùng:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+// Đặt lại mật khẩu người dùng về mặc định (Admin)
+const resetUserPasswordByAdmin = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Không có quyền truy cập" });
+    }
+
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ msg: "Không tìm thấy người dùng" });
+    }
+
+    const defaultPassword = "remy"; // Mật khẩu mặc định
+    const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ msg: 'Đặt lại mật khẩu thành công về "remy"' });
+  } catch (err) {
+    console.error("Lỗi khi đặt lại mật khẩu:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  updateProfile,
+  getAllUsers,
+  getUserById,
+  updateUserByAdmin,
+  deleteUser,
+  createUserByAdmin,
+  getUserDetailsWithPassword,
+  resetUserPasswordByAdmin,
+};

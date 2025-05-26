@@ -56,7 +56,11 @@ function App() {
 
           <Route
             element={
-              user?.role === "admin" ? <AdminLayout /> : <Navigate to="/" />
+              user && user.role === "admin" ? (
+                <AdminLayout />
+              ) : (
+                <Navigate to="/" />
+              )
             }
           >
             <Route path="/admin" element={<AdminDashboard />} />
