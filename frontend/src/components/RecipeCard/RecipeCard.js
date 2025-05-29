@@ -8,7 +8,7 @@ function RecipeCard({ image, name, link }) {
             <div className="col">
                 <Link className="card-link" to={link}>
                     <div className="card">
-                        <img src={image} alt="Food" />
+                        <img loading="lazy" src={image} alt="Food" />
                         <div className="card-body">
                             <h5 className="card-title">{name}</h5>
                         </div>
@@ -19,4 +19,4 @@ function RecipeCard({ image, name, link }) {
     );
 }
 
-export default RecipeCard;
+export default React.memo(RecipeCard);

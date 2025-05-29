@@ -1,6 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db"); // <-- import file db.js
+const connectDB = require("./config/db");
 const cors = require("cors");
 
 dotenv.config(); // load .env
@@ -14,6 +14,12 @@ connectDB();
 
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
+
+const recipeRoutes = require("./routes/recipesRoutes");
+app.use("/api/recipes", recipeRoutes);
+
+const categoryRoutes = require("./routes/categoryRoutes");
+app.use("/api/categories", categoryRoutes);
 
 // Test route
 app.get("/", (req, res) => {

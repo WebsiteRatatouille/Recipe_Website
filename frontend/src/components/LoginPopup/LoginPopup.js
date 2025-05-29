@@ -12,66 +12,27 @@ function LoginPopup({ setShowLogin }) {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
-        // Disable scrolling
         document.body.style.overflow = "hidden";
-
         return () => {
-            // Re-enable scrolling
             document.body.style.overflow = "auto";
         };
     }, []);
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     if (!email || !password) return;
-
-    //     let role = "user";
-    //     if (email === adminEmail && password === adminPassword) {
-    //         role = "admin";
-    //     }
-
-    //     const user = { email, role };
-    //     localStorage.setItem("user", JSON.stringify(user));
-    //     setShowLogin(false);
-
-    //     navigate(role === "admin" ? "/admin" : "/");
-    // };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Đã nhấn nút đăng nhập");
 
         if (!email || !password) return;
 
-        try {
-            const response = await fetch("http://localhost:5000/api/users/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.msg || "Đăng nhập thất bại");
-                return;
-            }
-
-            // Lưu token và thông tin user vào localStorage
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("token", data.token);
-
-            setShowLogin(false);
-
-            // Điều hướng theo role
-            navigate(data.user.role === "admin" ? "/admin" : "/");
-        } catch (error) {
-            console.error("Lỗi đăng nhập:", error);
-            alert("Lỗi hệ thống, vui lòng thử lại.");
+        let role = "user";
+        if (email === adminEmail && password === adminPassword) {
+            role = "admin";
         }
+
+        const user = { email, role };
+        localStorage.setItem("user", JSON.stringify(user));
+        setShowLogin(false);
+
+        navigate(role === "admin" ? "/admin" : "/");
     };
 
     return (

@@ -17,7 +17,6 @@ import AdminCollections from "./pages/AdminPages/AdminCollections/AdminCollectio
 import AdminUsers from "./pages/AdminPages/AdminUsers/AdminUsers";
 
 import LoginPopup from "./components/LoginPopup/LoginPopup";
-import ProgressBar from "./components/ProgressBar/ProgressBar";
 
 function App() {
     const [showLogin, setShowLogin] = useState(false);
@@ -25,7 +24,6 @@ function App() {
     // console.log("app render");
     return (
         <>
-            <ProgressBar />
             {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
 
             <div className="App">

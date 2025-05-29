@@ -1,1 +1,15 @@
-/*  */
+.action-button-recipe-table {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 8px;
+    height: 100%;
+    width: 100%;
+}
+
+.action-button-recipe-table i {
+    font-size: 25px;
+    color: black;
+    cursor: pointer;
+    transition: color 0.2s;
+}

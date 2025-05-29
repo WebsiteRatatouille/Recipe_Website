@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./RecipeGrid.css";
 
 import RecipeCard from "../RecipeCard/RecipeCard";
-import { RecipeMenuContext } from "../../context/RecipeMenuContext";
 
 function RecipeGrid({ recipeList }) {
     // console.log("recipeList", recipeList);
@@ -15,11 +14,11 @@ function RecipeGrid({ recipeList }) {
         <div className="recipe-grid-wrapper">
             <div className="card-container">
                 <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-                    {recipeList.map((recipe, index) => (
+                    {recipeList.map((recipe) => (
                         <RecipeCard
-                            key={index}
-                            name={recipe.name}
-                            image={recipe.image}
+                            key={recipe._id}
+                            name={recipe.title}
+                            image={recipe.imageThumb}
                             link={recipe.link}
                         />
                     ))}

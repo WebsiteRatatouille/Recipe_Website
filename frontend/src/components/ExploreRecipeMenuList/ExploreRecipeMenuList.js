@@ -4,32 +4,23 @@ import "./ExploreRecipeMenuList.css";
 function ExploreRecipeMenuList({ list, category, setCategory }) {
     return (
         <div className="explore-recipe-menu-list">
-            {list.map((item, index) => (
+            {list.map((item) => (
                 <div
-                    onClick={() =>
-                        setCategory((prev) =>
-                            prev === item.menu_name
-                                ? "All"
-                                : item.menu_name
-                        )
-                    }
-                    key={index}
+                    onClick={() => setCategory((prev) => (prev === item.name ? "All" : item.name))}
+                    key={item._id}
                     className="explore-menu-item"
                 >
                     <img
-                        className={
-                            category === item.menu_name
-                                ? "active"
-                                : ""
-                        }
-                        src={item.menu_image}
+                        loading="lazy"
+                        className={category === item.name ? "active" : ""}
+                        src={item.image}
                         alt="Food image"
                     />
-                    <p>{item.menu_name}</p>
+                    <p>{item.displayName}</p>
                 </div>
             ))}
         </div>
     );
 }
 
-export default ExploreRecipeMenuList;
+export default React.memo(ExploreRecipeMenuList);

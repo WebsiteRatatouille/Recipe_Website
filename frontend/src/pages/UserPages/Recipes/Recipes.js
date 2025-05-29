@@ -1,29 +1,91 @@
 import React, { useEffect, useState } from "react";
-import { useContext } from "react";
-import { RecipeMenuContext } from "../../../context/RecipeMenuContext";
 import "./Recipes.css";
-import { menu_list } from "../../../assets/frontend_assets/assets";
+
+import axios from "axios";
+import { startProgress, stopProgress } from "../../../utils/NProgress/NProgress";
 
 import RecipesPageBgImage from "../../../assets/img/recipes-background.webp";
 import SearchBar from "../../../components/SearchBar/SearchBar";
 import ExploreRecipeMenu from "../../../components/ExploreRecipeMenu/ExploreRecipeMenu";
-import RecipeDisplay from "../../../components/RecipeDisplay/RecipeDisplay";
 import RecipeTagList from "../../../components/RecipeTagList/RecipeTagList";
 import PagePagination from "../../../components/PagePagination/PagePagination";
+import RecipeGrid from "../../../components/RecipeGrid/RecipeGrid";
+import RecipeSkeletonGrid from "../../../components/RecipeSkeletonGrid/RecipeSkeletonGrid";
+import SmallLineSeparator from "../../../components/SmallLineSeparator/SmallLineSeparator";
 
 function Recipes() {
-    const { food_list } = useContext(RecipeMenuContext);
+    const [recipeList, setRecipeList] = useState([]);
+    const [categoryList, setCategoryList] = useState([]);
     // console.log("food_list", food_list);
+    const [categoryLoading, setCategoryLoading] = useState(true);
+    const [categoryError, setCategoryError] = useState(null);
+    const [recipeLoading, setRecipeLoading] = useState(true);
+    const [recipeError, setRecipeError] = useState(null);
+    const [recipeFilterLoading, setRecipeFilterLoading] = useState(false);
 
     const [category, setCategory] = useState("All");
-
     const [currPage, setCurrPage] = useState(1);
     const [limit, setLimit] = useState(16);
+
+    // Get All Categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            startProgress();
+            setRecipeLoading(true);
+
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/categories`);
+                setCategoryList(res.data);
+            } catch (err) {
+                console.error("Lỗi khi fetch danh mục:", err);
+                setCategoryError("Không thể tải danh sách danh mục");
+            } finally {
+                setRecipeLoading(false);
+                stopProgress();
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    // Get ALL Recipes
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            startProgress();
+
+            setCategoryLoading(true);
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/recipes`);
+                setRecipeList(res.data);
+            } catch (err) {
+                console.error("Lỗi khi fetch danh sách công thức:", err);
+                setRecipeError("Không thể tải danh sách công thức");
+            } finally {
+                setCategoryLoading(false);
+                stopProgress();
+            }
+        };
+
+        fetchRecipes();
+    }, []);
+
+    // Display skeleton card when changing Category filter
+    useEffect(() => {
+        setRecipeFilterLoading(true);
+
+        const timeout = setTimeout(() => {
+            setRecipeFilterLoading(false);
+        }, 500);
+
+        return () => clearTimeout(timeout);
+    }, [category]);
 
     // Filter the recipe list by category
     let filteredRecipes = [];
     filteredRecipes =
-        category === "All" ? food_list : food_list.filter((recipe) => recipe.category === category);
+        category === "All"
+            ? recipeList
+            : recipeList.filter((recipe) => recipe.category === category);
 
     // Reset currPage to 1 whenever the selected category changes
     useEffect(() => {
@@ -76,15 +138,36 @@ function Recipes() {
                         chuẩn bị những bữa ăn ngon cho gia đình.
                     </p>
                 </div>
-
                 <SearchBar />
                 <RecipeTagList />
-                <ExploreRecipeMenu
-                    category={category}
-                    setCategory={setCategory}
-                    menu_list={menu_list}
-                />
-                <RecipeDisplay paginatedRecipes={paginatedRecipes} />
+
+                {categoryLoading ? (
+                    <>
+                        <p className="category-loading">Đang tải danh mục...</p>
+                    </>
+                ) : categoryError ? (
+                    <p>{categoryError}</p>
+                ) : (
+                    <ExploreRecipeMenu
+                        category={category}
+                        setCategory={setCategory}
+                        categoryList={categoryList}
+                    />
+                )}
+
+                <SmallLineSeparator />
+
+                {recipeLoading || recipeFilterLoading ? (
+                    <>
+                        <p className="recipe-loading">Đang tải công thức...</p>
+                        <RecipeSkeletonGrid number={8} />
+                    </>
+                ) : recipeError ? (
+                    <p>{recipeError}</p>
+                ) : (
+                    <RecipeGrid recipeList={paginatedRecipes} />
+                )}
+
                 <PagePagination
                     totalPage={totalPage}
                     currPage={currPage}
