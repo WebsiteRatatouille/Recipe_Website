@@ -1,0 +1,72 @@
+.my-recipes-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.recipes-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.recipes-header h1 {
+  color: #333;
+  font-size: 24px;
+}
+
+.recipes-content {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.recipes-actions {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.add-recipe-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.add-recipe-btn i {
+  margin-right: 8px;
+}
+
+.add-recipe-btn:hover {
+  background-color: #45a049;
+}
+
+.recipes-list {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-recipes-message {
+  color: #666;
+  font-size: 16px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .my-recipes-container {
+    margin: 20px auto;
+    padding: 10px;
+  }
+
+  .recipes-content {
+    padding: 15px;
+  }
+}
