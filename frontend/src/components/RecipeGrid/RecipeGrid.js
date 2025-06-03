@@ -14,15 +14,17 @@ function RecipeGrid({ recipeList }) {
     <div className="recipe-grid-wrapper">
       <div className="card-container">
         <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-          {recipeList.map((recipe) => (
-            <RecipeCard
-              key={recipe._id}
-              id={recipe._id}
-              name={recipe.title}
-              image={recipe.imageThumb}
-              link={`/recipes/${recipe._id}`}
-            />
-          ))}
+          {recipeList.map((recipe) =>
+            recipe && recipe._id ? (
+              <RecipeCard
+                key={recipe._id}
+                id={recipe._id}
+                name={recipe.title}
+                image={recipe.imageThumb}
+                link={`/recipes/${recipe._id}`}
+              />
+            ) : null
+          )}
         </div>
       </div>
     </div>

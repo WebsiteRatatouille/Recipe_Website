@@ -4,9 +4,13 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
+const configurePassport = require("./config/passport"); // Import hàm cấu hình
 
 // Load env vars
 dotenv.config();
+
+// Configure Passport
+configurePassport(passport);
 
 // Connect to database
 connectDB();
