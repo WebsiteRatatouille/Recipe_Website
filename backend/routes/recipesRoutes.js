@@ -6,6 +6,9 @@ const {
     getTopViewedRecipes,
     getRandomRecipes,
     getAllRecipes,
+    createRecipe,
+    updateRecipe,
+    deleteRecipe,
     getRandomTags,
     getRecipesByTag,
 } = require("../controllers/recipeController");
@@ -24,5 +27,13 @@ router.get("/search", getRecipesByTag);
 
 // GET /api/recipes/:id
 router.get("/:id", getRecipeById);
+
+// POST /api/recipes (requires authentication)
+// router.route('/').post(protect, createRecipe); // Example with authentication middleware
+router.route("/").post(createRecipe); // Temporarily without auth middleware for easier testing
+
+// PUT /api/recipes/:id and DELETE /api/recipes/:id (requires authentication)
+// router.route('/:id').put(protect, updateRecipe).delete(protect, deleteRecipe); // Example with authentication middleware
+router.route("/:id").put(updateRecipe).delete(deleteRecipe); // Temporarily without auth middleware for easier testing
 
 module.exports = router;

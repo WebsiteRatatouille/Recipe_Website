@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./ContactForm.css";
+import axios from "axios";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -17,16 +18,27 @@ const ContactForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
-    alert("Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ phản hồi sớm nhất có thể!");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/contact",
+        formData
+      );
+      console.log("Message sent successfully:", response.data);
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      alert(
+        "Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ phản hồi sớm nhất có thể!"
+      );
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau.");
+    }
   };
 
   return (

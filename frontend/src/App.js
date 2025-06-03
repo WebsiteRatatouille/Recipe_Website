@@ -10,6 +10,7 @@ import AboutUs from "./pages/UserPages/AboutUs/AboutUs";
 import Blog from "./pages/UserPages/Blog/Blog";
 import UserProfile from "./pages/UserMenu/UserProfile/UserProfile";
 import MyRecipes from "./pages/UserMenu/MyRecipes/MyRecipes";
+import AddRecipe from "./pages/UserMenu/AddRecipe/AddRecipe";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard/AdminDashboard";
@@ -82,6 +83,8 @@ function App() {
                     >
                         <Route path="/profile" element={<UserProfile />} />
                         <Route path="/my-recipes" element={<MyRecipes />} />
+                        <Route path="/add-recipe" element={<AddRecipe />} />
+                        <Route path="/edit-recipe/:id" element={<AddRecipe />} />
                     </Route>
 
                     <Route
