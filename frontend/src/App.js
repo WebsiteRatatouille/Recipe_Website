@@ -11,6 +11,7 @@ import Blog from "./pages/UserPages/Blog/Blog";
 import UserProfile from "./pages/UserMenu/UserProfile/UserProfile";
 import MyRecipes from "./pages/UserMenu/MyRecipes/MyRecipes";
 import AddRecipe from "./pages/UserMenu/AddRecipe/AddRecipe";
+import FavoriteRecipes from "./pages/UserMenu/FavoriteRecipes/FavoriteRecipes";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard/AdminDashboard";
@@ -103,6 +104,7 @@ function App() {
             <Route path="/my-recipes" element={<MyRecipes />} />
             <Route path="/add-recipe" element={<AddRecipe />} />
             <Route path="/edit-recipe/:id" element={<AddRecipe />} />
+            <Route path="/favorite-recipes" element={<FavoriteRecipes />} />
           </Route>
 
           <Route

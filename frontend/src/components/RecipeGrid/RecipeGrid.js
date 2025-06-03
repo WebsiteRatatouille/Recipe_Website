@@ -17,6 +17,7 @@ function RecipeGrid({ recipeList }) {
           {recipeList.map((recipe) => (
             <RecipeCard
               key={recipe._id}
+              id={recipe._id}
               name={recipe.title}
               image={recipe.imageThumb}
               link={`/recipes/${recipe._id}`}

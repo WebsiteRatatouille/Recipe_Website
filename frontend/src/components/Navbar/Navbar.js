@@ -147,6 +147,15 @@ function Navbar({ setShowLogin }) {
                         </Link>
 
                         <Link
+                          to="/favorite-recipes"
+                          className="menu-item"
+                          onClick={() => setShowMenu(false)}
+                        >
+                          <i className="fas fa-heart"></i>
+                          Công thức yêu thích
+                        </Link>
+
+                        <Link
                           to="/contact"
                           className="menu-item"
                           onClick={() => setShowMenu(false)}

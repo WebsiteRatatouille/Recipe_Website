@@ -5,60 +5,70 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 
-dotenv.config(); // load .env
+// Load env vars
+dotenv.config();
 
-require("./config/passport");
+// Connect to database
+connectDB();
 
 const app = express();
 
-// CORS configuration
+// Body parser
+app.use(express.json());
+
+// Enable CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // URL của frontend
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
 
-app.use(express.json()); // Cho phép xử lý JSON từ body request
-
-// Session configuration
+// Session middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
   })
 );
 
-// Initialize Passport
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect database
-connectDB();
-
+// Routes
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/auth");
-
-app.use("/api/users", userRoutes);
-app.use("/auth", authRoutes);
-
+const favoriteRoutes = require("./routes/favoriteRoutes");
 const recipeRoutes = require("./routes/recipesRoutes");
-app.use("/api/recipes", recipeRoutes);
-
 const categoryRoutes = require("./routes/categoryRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 
+app.use("/api/users", userRoutes);
+app.use("/auth", authRoutes);
+app.use("/api/recipes", favoriteRoutes);
+app.use("/api/recipes", recipeRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/upload", uploadRoutes);
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("API is running...");
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    error: err.message || "Server Error",
+  });
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
