@@ -17,6 +17,16 @@ import RecipeSkeletonGrid from "../../../components/RecipeSkeletonGrid/RecipeSke
 import SmallLineSeparator from "../../../components/SmallLineSeparator/SmallLineSeparator";
 
 function Recipes() {
+    const [recipeList, setRecipeList] = useState([]);
+    const [categoryList, setCategoryList] = useState([]);
+    const [randomTags, setRandomTags] = useState([]);
+
+    // console.log("food_list", food_list);
+    const [categoryLoading, setCategoryLoading] = useState(true);
+    const [categoryError, setCategoryError] = useState(null);
+    const [recipeLoading, setRecipeLoading] = useState(true);
+    const [recipeError, setRecipeError] = useState(null);
+    const [recipeFilterLoading, setRecipeFilterLoading] = useState(false);
   const [recipeList, setRecipeList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   // console.log("food_list", food_list);
@@ -26,6 +36,11 @@ function Recipes() {
   const [recipeError, setRecipeError] = useState(null);
   const [recipeFilterLoading, setRecipeFilterLoading] = useState(false);
 
+    const [category, setCategory] = useState("All");
+    const [currPage, setCurrPage] = useState(1);
+    const [limit, setLimit] = useState(16);
+
+    const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [currPage, setCurrPage] = useState(1);
   const [limit, setLimit] = useState(16);
@@ -80,6 +95,24 @@ function Recipes() {
       }
     };
 
+        fetchRecipes();
+    }, []);
+
+    useEffect(() => {
+        const fetchRandomTags = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/api/recipes/random-tags`
+                );
+                console.log("Dữ liệu tag ngẫu nhiên:", res.data);
+                setRandomTags(res.data);
+            } catch (err) {
+                console.error("Lỗi khi fetch tag ngẫu nhiên:", err);
+            }
+        };
+
+        fetchRandomTags();
+    }, []);
     fetchRecipes();
   }, []);
 
@@ -94,6 +127,18 @@ function Recipes() {
     return () => clearTimeout(timeout);
   }, [category]);
 
+    // Filter the recipe list by category
+    const searchLower = searchQuery.toLowerCase();
+    let filteredRecipes = [];
+    filteredRecipes = recipeList.filter((recipe) => {
+        const matchCategory = category === "All" || recipe.category === category;
+        const matchSearch =
+            recipe.title?.toLowerCase().includes(searchLower) ||
+            recipe.ingredients?.some((ing) => ing.toLowerCase().includes(searchLower)) ||
+            recipe.tags?.some((tag) => tag.toLowerCase().includes(searchLower)) ||
+            recipe.origin?.toLowerCase().includes(searchLower);
+        return matchCategory && matchSearch;
+    });
   // Filter the recipe list by category
   let filteredRecipes = [];
   filteredRecipes =
@@ -146,6 +191,17 @@ function Recipes() {
         <img src={RecipesPageBgImage} alt="Recipes page background" />
       </div>
 
+            <div className="recipes-body-wrapper">
+                <div className="title">
+                    <h1>Công thức & Ý tưởng nấu ăn</h1>
+                    <p>
+                        Chúng tôi hiểu những băn khoăn của bạn. Chúng tôi đồng hành cùng bạn. Đây là
+                        những công thức nấu ăn tuyệt vời, được thử nghiệm và tinh chỉnh để giúp bạn
+                        chuẩn bị những bữa ăn ngon cho gia đình.
+                    </p>
+                </div>
+                <SearchBar onSearch={(query) => setSearchQuery(query)} />
+                <RecipeTagList tags={randomTags} />
       <div className="recipes-body-wrapper">
         <div className="title">
           <h1>Công thức & Ý tưởng nấu ăn</h1>

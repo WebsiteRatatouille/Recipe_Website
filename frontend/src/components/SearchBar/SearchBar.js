@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SearchBar.css";
 
-function SearchBar() {
+function SearchBar({ onSearch }) {
+    const [query, setQuery] = useState("");
+
+    const handleInputChange = (e) => {
+        setQuery(e.target.value);
+    };
+
+    const handleSearch = () => {
+        onSearch(query);
+    };
+
     return (
         <div className="search-bar-wrapper">
             <div className="input-group">
@@ -9,15 +19,10 @@ function SearchBar() {
                     type="text"
                     className="form-control"
                     placeholder="Tìm kiếm công thức"
-                    aria-label="Recipient's username"
-                    aria-describedby="button-addon2"
+                    value={query}
+                    onChange={handleInputChange}
                 />
-
-                <button
-                    className="btn btn-outline-secondary"
-                    type="button"
-                    id="button-addon2"
-                >
+                <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
                     Tìm kiếm
                 </button>
             </div>

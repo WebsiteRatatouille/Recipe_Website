@@ -1,6 +1,6 @@
 import React from "react";
-import "./RecipeTag.css";
 import { Link } from "react-router-dom";
+import "./RecipeTag.css";
 
 function RecipeTag({ name, link }) {
     return (

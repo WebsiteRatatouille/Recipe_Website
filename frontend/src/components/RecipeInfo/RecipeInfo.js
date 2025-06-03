@@ -2,7 +2,10 @@ import React from "react";
 import "./RecipeInfo.css";
 import Profile from "../../assets/img/ratatouille-icon.png";
 import RecipeSwiper from "../RecipeSwiper/RecipeSwiper";
+
 import SmallLineSeparator from "../SmallLineSeparator/SmallLineSeparator";
+import RecipeIngredient from "../RecipeIngredient/RecipeIngredient";
+import RecipeDirection from "../RecipeDirection/RecipeDirection";
 
 function RecipeInfo({ recipe, recipeImageList }) {
   const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -63,6 +66,17 @@ function RecipeInfo({ recipe, recipeImageList }) {
       </div>
     </div>
   );
+                    <span>
+                        <i class="bx  bx-globe"></i> Nguồn gốc:{" "}
+                        <span style={{ fontWeight: "bold" }}>{recipe.origin} </span>
+                    </span>
+                </div>
+                <SmallLineSeparator />
+                <RecipeIngredient ingredients={recipe.ingredients} />
+                <RecipeDirection steps={recipe.steps} />
+            </div>
+        </div>
+    );
 }
 
 export default RecipeInfo;

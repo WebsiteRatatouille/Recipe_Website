@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getRecipeById,
-  getTopLikedRecipes,
-  getTopViewedRecipes,
-  getRandomRecipes,
-  getAllRecipes,
-  createRecipe,
-  updateRecipe,
-  deleteRecipe,
+    getRecipeById,
+    getTopLikedRecipes,
+    getTopViewedRecipes,
+    getRandomRecipes,
+    getAllRecipes,
+    createRecipe,
+    updateRecipe,
+    deleteRecipe,
+    getRandomTags,
+    getRecipesByTag,
 } = require("../controllers/recipeController");
 
 // GET /api/recipes
@@ -19,6 +21,10 @@ router.get("/top-liked", getTopLikedRecipes);
 router.get("/top-viewed", getTopViewedRecipes);
 // GET /api/recipes/random-recipes
 router.get("/random-recipes", getRandomRecipes);
+
+router.get("/random-tags", getRandomTags);
+router.get("/search", getRecipesByTag);
+
 // GET /api/recipes/:id
 router.get("/:id", getRecipeById);
 

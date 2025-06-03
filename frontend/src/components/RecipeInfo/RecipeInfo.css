@@ -24,3 +24,10 @@
   gap: 5px;
   margin-top: 10px;
 }
+
+.recipe-info-wrapper .swiper-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
