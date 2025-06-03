@@ -47,7 +47,10 @@ const recipeRoutes = require("./routes/recipesRoutes");
 app.use("/api/recipes", recipeRoutes);
 
 const categoryRoutes = require("./routes/categoryRoutes");
+const contactRoutes = require("./routes/contactRoutes");
+
 app.use("/api/categories", categoryRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Test route
 app.get("/", (req, res) => {
