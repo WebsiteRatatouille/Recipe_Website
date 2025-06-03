@@ -1,7 +1,90 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./MyRecipes.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios
+
+// Define backend API base URL
+const API_BASE_URL = "http://localhost:5000";
 
 function MyRecipes() {
+  const navigate = useNavigate();
+
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [keyword, setKeyword] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchKeyword, setSearchKeyword] = useState(""); // State for the search input
+
+  const fetchRecipes = async (search = "", page = 1) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Construct the API URL with query parameters
+      const response = await axios.get(
+        `${API_BASE_URL}/api/recipes?keyword=${search}&page=${page}&limit=10` // Use absolute URL with backend port
+      );
+      setRecipes(response.data.recipes);
+      setTotalPages(response.data.pages);
+      setCurrentPage(response.data.page);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching recipes:", err);
+      setError("Không thể tải danh sách công thức.");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecipes(keyword, currentPage);
+  }, [keyword, currentPage]); // Refetch when keyword or page changes
+
+  const handleCreateNewRecipe = () => {
+    navigate("/add-recipe"); // Navigate to the new add recipe page
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const handleSearchButtonClick = () => {
+    setKeyword(searchKeyword); // Update keyword state to trigger effect
+    setCurrentPage(1); // Reset to first page on new search
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page); // Update page state to trigger effect
+  };
+
+  const handleViewRecipe = (recipeId) => {
+    navigate(`/recipes/${recipeId}`); // Navigate to recipe detail page
+  };
+
+  const handleEditRecipe = (recipeId) => {
+    navigate(`/edit-recipe/${recipeId}`); // Navigate to edit recipe page (need to create this route and page)
+  };
+
+  const handleDeleteRecipe = async (recipeId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa công thức này không?")) {
+      try {
+        // Call backend API to delete the recipe
+        await axios.delete(`${API_BASE_URL}/api/recipes/${recipeId}`);
+        // Refetch recipes to update the list after deletion
+        fetchRecipes(keyword, currentPage);
+        console.log(`Công thức với ID ${recipeId} đã được xóa.`);
+      } catch (error) {
+        console.error("Error deleting recipe:", error);
+        setError("Không thể xóa công thức.");
+      }
+    }
+  };
+
+  // Placeholder data for the table (no longer needed, replaced by API data)
+  // const dummyRecipes = [
+  //   // ... dummy data ...
+  // ];
+
   return (
     <div className="my-recipes-container">
       <div className="recipes-header">
@@ -10,17 +93,107 @@ function MyRecipes() {
 
       <div className="recipes-content">
         <div className="recipes-actions">
-          <button className="add-recipe-btn">
-            <i className="fas fa-plus"></i>
-            Thêm công thức mới
+          <div className="search-section">
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              className="search-input"
+              value={searchKeyword}
+              onChange={handleSearchInputChange}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchButtonClick();
+                }
+              }} // Allow search on Enter key press
+            />
+            <button className="search-button" onClick={handleSearchButtonClick}>
+              Search
+            </button>
+          </div>
+          <button
+            className="create-new-recipe-btn"
+            onClick={handleCreateNewRecipe}
+          >
+            <i className="fas fa-plus"></i> Tạo mới Công thức
           </button>
         </div>
 
         <div className="recipes-list">
-          {/* TODO: Implement recipes list */}
-          <p className="no-recipes-message">
-            Bạn chưa có công thức nào. Hãy thêm công thức mới!
-          </p>
+          {loading ? (
+            <p>Đang tải công thức...</p>
+          ) : error ? (
+            <p className="error-message">{error}</p>
+          ) : recipes.length === 0 ? (
+            <p>Không tìm thấy công thức nào.</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  {/* <th>ID</th> */} {/* Remove ID header */}
+                  <th>Ảnh</th>
+                  <th>Tên</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recipes.map((recipe) => (
+                  <tr key={recipe._id}>
+                    {" "}
+                    {/* <td>{recipe._id}</td> */} {/* Remove ID data cell */}
+                    <td>
+                      <img
+                        src={
+                          recipe.imageThumb || "https://via.placeholder.com/50"
+                        } // Use imageThumb from API or placeholder
+                        alt={recipe.title}
+                        className="recipe-thumbnail"
+                      />
+                    </td>
+                    <td>{recipe.title}</td> {/* Display actual title */}
+                    <td>
+                      <button
+                        className="action-button"
+                        onClick={() => handleViewRecipe(recipe._id)}
+                      >
+                        Chi tiết
+                      </button>
+                      <button
+                        className="action-button"
+                        onClick={() => handleEditRecipe(recipe._id)}
+                      >
+                        Chỉnh sửa
+                      </button>
+                      <button
+                        className="action-button"
+                        onClick={() => handleDeleteRecipe(recipe._id)}
+                      >
+                        Xóa
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* Pagination */}
+          {!loading && !error && recipes.length > 0 && totalPages > 1 && (
+            <div className="pagination">
+              {[...Array(totalPages).keys()].map((page) => (
+                <button
+                  key={page + 1}
+                  onClick={() => handlePageChange(page + 1)}
+                  className={currentPage === page + 1 ? "active" : ""}
+                >
+                  {page + 1}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* <p className="placeholder-message"> */}
+          {/* Bảng danh sách công thức và phân trang sẽ hiển thị ở đây. */}
+          {/* </p> */}
         </div>
       </div>
     </div>
