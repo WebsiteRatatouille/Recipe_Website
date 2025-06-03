@@ -19,7 +19,7 @@ function RecipeGrid({ recipeList }) {
                             key={recipe._id}
                             name={recipe.title}
                             image={recipe.imageThumb}
-                            link={recipe.link}
+                            link={`/recipes/${recipe._id}`}
                         />
                     ))}
                 </div>

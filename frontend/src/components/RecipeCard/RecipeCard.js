@@ -12,6 +12,7 @@ function RecipeCard({ image, name, link }) {
                         <div className="card-body">
                             <h5 className="card-title">{name}</h5>
                         </div>
+                        <i className="bx bxs-bookmark"></i>
                     </div>
                 </Link>
             </div>

@@ -3,6 +3,7 @@ import "./RecipeTable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { viVN } from "@mui/x-data-grid/locales";
 import Paper from "@mui/material/Paper";
+import { Box, Typography } from "@mui/material";
 
 const columns = [
     {
@@ -28,7 +29,7 @@ const columns = [
     {
         field: "actions",
         headerName: "Hành động",
-        width: 130,
+        width: 140,
         renderCell: (params) => (
             <div className="action-button-recipe-table">
                 <i className="bx bx-show"></i>
@@ -73,7 +74,15 @@ export default function DataTable() {
     }, []);
 
     return (
-        <Paper sx={{ maxHeight: "80vh", width: "90%" }}>
+        <Paper className="table-wrapper" sx={{ maxHeight: "80vh", width: "90%" }}>
+            <Box className="table-toolbar">
+                <Typography className="table-title">Danh sách công thức nấu ăn</Typography>
+
+                <div className="erase-button">
+                    <i className="bx bx-trash"></i>
+                </div>
+            </Box>
+
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -84,6 +93,12 @@ export default function DataTable() {
                     border: 0,
                     "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
                         outline: "none",
+                    },
+                    // "& .MuiDataGrid-columnHeader": {
+                    //     backgroundColor: "var(--bg-header-color)",
+                    // },
+                    "& .MuiDataGrid-columnHeaderTitle": {
+                        fontWeight: "bold",
                     },
                 }}
                 localeText={{

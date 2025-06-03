@@ -50,6 +50,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
 
             {
@@ -96,6 +97,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Gà hầm đậu đen và phô mai kem",
@@ -139,6 +141,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Mì Ý gà sốt kem Cajun",
@@ -184,6 +187,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Bánh quy yến mạch nho khô",
@@ -231,6 +235,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Bánh chuối phủ kem phô mai",
@@ -281,6 +286,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Thịt nướng kiểu Mỹ",
@@ -329,6 +335,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Mì Ý sốt bò nổi tiếng kiểu Jo Mama",
@@ -375,6 +382,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Brownies tùy biến siêu ngon",
@@ -419,6 +427,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
             {
                 title: "Bánh kếp mềm xốp",
@@ -462,6 +471,7 @@ mongoose
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isPublished: true,
+                createdBy: "683e705ea69063a60c1401ed",
             },
         ]);
     })

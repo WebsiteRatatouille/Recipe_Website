@@ -36,7 +36,7 @@ function Home() {
                 const res = await axios.get(
                     `${process.env.REACT_APP_API_URL}/api/recipes/top-viewed`
                 );
-                setTopViewedRecipeList(res.data); // hoặc hiển thị trực tiếp
+                setTopViewedRecipeList(res.data);
             } catch (err) {
                 console.error("Lỗi khi lấy công thức nhiều lượt xem:", err);
             } finally {

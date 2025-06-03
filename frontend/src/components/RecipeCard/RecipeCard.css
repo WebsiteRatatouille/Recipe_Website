@@ -1,37 +1,24 @@
 @import url("../../variables.css");
 
 .recipe-card .card {
-    max-height: 300px;
+    position: relative;
+    min-height: 300px;
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, box-shadow;
 }
 
 .recipe-card img {
     height: 200px;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
+    will-change: transform;
 }
 
 .recipe-card .card-body {
     height: 100px;
 }
 
-.recipe-card .card {
-    transition: transform 0.3s ease;
-    will-change: transform;
-}
-
-.recipe-card .card:hover {
-    transform: scale(1.02);
-}
-
-.recipe-card .card img {
-    transition: transform 0.3s ease;
-    will-change: transform;
-}
-
-.recipe-card .card:hover img {
-    transform: scale(1.05);
-}
 .recipe-card .card-link {
     text-decoration: none;
     color: var(--text-color);
@@ -41,4 +28,31 @@
     text-transform: uppercase;
     font-size: 20px;
     font-weight: 500;
+}
+
+.recipe-card .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.recipe-card .card img:hover {
+    transform: scale(1.05);
+}
+
+.bxs-bookmark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 35px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.bxs-bookmark.bookmarked {
+    color: gold;
+}
+
+.bxs-bookmark:hover {
+    color: gold;
 }

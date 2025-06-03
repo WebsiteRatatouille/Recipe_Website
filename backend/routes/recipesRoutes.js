@@ -1,27 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const Recipe = require("../models/Recipe");
 const {
+    getRecipeById,
     getTopLikedRecipes,
     getTopViewedRecipes,
     getRandomRecipes,
     getAllRecipes,
 } = require("../controllers/recipeController");
 
-// GET /api/recipes - All recipes
-router.get("/", async (req, res) => {
-    try {
-        const recipes = await Recipe.find();
-        res.status(200).json(recipes);
-    } catch (err) {
-        res.status(500).json({ msg: "Lỗi server", error: err });
-    }
-});
-
-// GET /api/recipes/top-liked
+// GET /api/recipes
 router.get("/", getAllRecipes);
+// GET /api/recipes/top-liked
 router.get("/top-liked", getTopLikedRecipes);
+// GET /api/recipes/top-viewed
 router.get("/top-viewed", getTopViewedRecipes);
+// GET /api/recipes/random-recipes
 router.get("/random-recipes", getRandomRecipes);
+// GET /api/recipes/:id
+router.get("/:id", getRecipeById);
 
 module.exports = router;
