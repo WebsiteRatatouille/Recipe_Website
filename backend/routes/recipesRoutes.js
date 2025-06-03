@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const {
-    getRecipeById,
-    getTopLikedRecipes,
-    getTopViewedRecipes,
-    getRandomRecipes,
-    getAllRecipes,
-    createRecipe,
-    updateRecipe,
-    deleteRecipe,
-    getRandomTags,
-    getRecipesByTag,
+  getRecipeById,
+  getTopLikedRecipes,
+  getTopViewedRecipes,
+  getRandomRecipes,
+  getAllRecipes,
+  createRecipe,
+  updateRecipe,
+  deleteRecipe,
+  getRandomTags,
+  getRecipesByTag,
 } = require("../controllers/recipeController");
 
 // GET /api/recipes

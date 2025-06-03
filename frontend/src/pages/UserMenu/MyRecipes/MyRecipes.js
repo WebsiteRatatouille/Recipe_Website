@@ -123,7 +123,7 @@ function MyRecipes() {
             <p>Đang tải công thức...</p>
           ) : error ? (
             <p className="error-message">{error}</p>
-          ) : recipes.length === 0 ? (
+          ) : !recipes || recipes.length === 0 ? (
             <p>Không tìm thấy công thức nào.</p>
           ) : (
             <table>
@@ -177,19 +177,23 @@ function MyRecipes() {
           )}
 
           {/* Pagination */}
-          {!loading && !error && recipes.length > 0 && totalPages > 1 && (
-            <div className="pagination">
-              {[...Array(totalPages).keys()].map((page) => (
-                <button
-                  key={page + 1}
-                  onClick={() => handlePageChange(page + 1)}
-                  className={currentPage === page + 1 ? "active" : ""}
-                >
-                  {page + 1}
-                </button>
-              ))}
-            </div>
-          )}
+          {!loading &&
+            !error &&
+            recipes &&
+            recipes.length > 0 &&
+            totalPages > 1 && (
+              <div className="pagination">
+                {[...Array(totalPages).keys()].map((page) => (
+                  <button
+                    key={page + 1}
+                    onClick={() => handlePageChange(page + 1)}
+                    className={currentPage === page + 1 ? "active" : ""}
+                  >
+                    {page + 1}
+                  </button>
+                ))}
+              </div>
+            )}
 
           {/* <p className="placeholder-message"> */}
           {/* Bảng danh sách công thức và phân trang sẽ hiển thị ở đây. */}

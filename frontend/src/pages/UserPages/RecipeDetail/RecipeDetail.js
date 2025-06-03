@@ -11,7 +11,6 @@ import {
 import RecipeInfo from "../../../components/RecipeInfo/RecipeInfo";
 import RecipeGridOneColumn from "../../../components/RecipeGridOneColumn/RecipeGridOneColumn";
 import RecipeSkeletonGrid from "../../../components/RecipeSkeletonGrid/RecipeSkeletonGrid";
-
 import LineSeparator from "../../../components/LineSeparator/LineSeparator";
 import FanFavorite from "../../../components/FanFavorite/FanFavorite";
 
@@ -19,22 +18,15 @@ function RecipeDetail() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [maybeYouLikeList, setMaybeYouLikeList] = useState([]);
-    const { id } = useParams();
-    const [recipe, setRecipe] = useState(null);
-    const [maybeYouLikeList, setMaybeYouLikeList] = useState([]);
-    const [topLikedRecipeList, setTopLikedRecipeList] = useState([]);
+  const [topLikedRecipeList, setTopLikedRecipeList] = useState([]);
 
   const [loadingMaybeYouLikeList, setLoadingMaybeYouLikeList] = useState(true);
+  const [loadingTopLiked, setLoadingTopLiked] = useState(true);
   const [loading, setLoading] = useState(true);
-    const [loadingMaybeYouLikeList, setLoadingMaybeYouLikeList] = useState(true);
-    const [loadingTopLiked, setLoadingTopLiked] = useState(true);
-    const [loading, setLoading] = useState(true);
 
   const [errorMaybeYouLikeList, setErrorMaybeYouLikeList] = useState("");
+  const [errorTopLiked, setErrorTopLiked] = useState("");
   const [error, setError] = useState("");
-    const [errorMaybeYouLikeList, setErrorMaybeYouLikeList] = useState("");
-    const [errorTopLiked, setErrorTopLiked] = useState(true);
-    const [error, setError] = useState("");
 
   // Fetch the main recipe for display
   useEffect(() => {
@@ -60,7 +52,6 @@ function RecipeDetail() {
   useEffect(() => {
     const fetchRandomRecipes = async () => {
       setLoadingMaybeYouLikeList(true);
-
       startProgress();
       try {
         const res = await axios.get(
@@ -78,30 +69,28 @@ function RecipeDetail() {
 
     fetchRandomRecipes();
   }, [id]);
-        fetchRandomRecipes();
-    }, [id]);
 
-    // get top liked recipe for FanFavorite
-    useEffect(() => {
-        const fetchTopLikedRecipeList = async () => {
-            setLoadingTopLiked(true);
+  // get top liked recipe for FanFavorite
+  useEffect(() => {
+    const fetchTopLikedRecipeList = async () => {
+      setLoadingTopLiked(true);
+      startProgress();
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/recipes/top-liked`
+        );
+        setTopLikedRecipeList(res.data);
+      } catch (err) {
+        setErrorTopLiked("Lỗi khi lấy công thức nhiều like");
+        console.error("Lỗi khi fetch công thức nhiều like:", err);
+      } finally {
+        stopProgress();
+        setLoadingTopLiked(false);
+      }
+    };
 
-            startProgress();
-            try {
-                const res = await axios.get(
-                    `${process.env.REACT_APP_API_URL}/api/recipes/top-liked`
-                );
-                setTopLikedRecipeList(res.data);
-            } catch (err) {
-                console.error("Lỗi khi fetch công thức nhiều like:", err);
-            } finally {
-                stopProgress();
-                setLoadingTopLiked(false);
-            }
-        };
-
-        fetchTopLikedRecipeList();
-    }, [id]);
+    fetchTopLikedRecipeList();
+  }, [id]);
 
   if (loading) return <div>Đang tải công thức...</div>;
   if (error) return <div>{error}</div>;
@@ -120,68 +109,42 @@ function RecipeDetail() {
       <div className="recipe-detail-background">
         <img src={recipe.imageThumb} alt="Recipes page background" />
       </div>
-      <div className="recipe-detail-wrapper">
-        <div className="main-page">
-          <RecipeInfo recipe={recipe} recipeImageList={combinedImages} />
-          <RecipeIngredient ingredients={recipe.ingredients} />
-          <RecipeDirection steps={recipe.steps} />
-        </div>
-    return (
-        <>
-            <div className="recipe-detail-background">
-                <img src={recipe.imageThumb} alt="Recipes page background" />
-            </div>
-            <div className="recipe-detail-container">
-                <div className="recipe-detail-wrapper">
-                    <div className="main-page">
-                        <RecipeInfo recipe={recipe} recipeImageList={combinedImages} />
-                    </div>
+      <div className="recipe-detail-container">
+        <div className="recipe-detail-wrapper">
+          <div className="main-page">
+            <RecipeInfo recipe={recipe} recipeImageList={combinedImages} />
+          </div>
 
-        <div className="widget">
-          <span className="title">Có thể bạn thích</span>
-          {loadingMaybeYouLikeList ? (
+          <div className="widget">
+            <span className="title">Có thể bạn thích</span>
+            {loadingMaybeYouLikeList ? (
+              <>
+                <p className="recipe-loading">Đang tải công thức...</p>
+                <RecipeSkeletonGrid number={1} />
+              </>
+            ) : errorMaybeYouLikeList ? (
+              <p>{errorMaybeYouLikeList}</p>
+            ) : (
+              <RecipeGridOneColumn recipeList={maybeYouLikeList} />
+            )}
+          </div>
+        </div>
+        <div className="recipe-top-like">
+          <LineSeparator />
+          {loadingTopLiked ? (
             <>
               <p className="recipe-loading">Đang tải công thức...</p>
-              <RecipeSkeletonGrid number={1} />
+              <RecipeSkeletonGrid number={8} />
             </>
-          ) : errorMaybeYouLikeList ? (
-            <p>{errorMaybeYouLikeList}</p>
+          ) : errorTopLiked ? (
+            <p>{errorTopLiked}</p>
           ) : (
-            <RecipeGridOneColumn recipeList={maybeYouLikeList} />
+            <FanFavorite topLikedRecipeList={topLikedRecipeList} />
           )}
         </div>
       </div>
     </>
   );
-                    <div className="widget">
-                        <span className="title">Có thể bạn thích</span>
-                        {loadingMaybeYouLikeList ? (
-                            <>
-                                <p className="recipe-loading">Đang tải công thức...</p>
-                                <RecipeSkeletonGrid number={1} />
-                            </>
-                        ) : errorMaybeYouLikeList ? (
-                            <p>{errorMaybeYouLikeList}</p>
-                        ) : (
-                            <RecipeGridOneColumn recipeList={maybeYouLikeList} />
-                        )}
-                    </div>
-                </div>
-                <div className="recipe-top-like">
-                    <LineSeparator />
-
-                    {loadingTopLiked ? (
-                        <>
-                            <p className="recipe-loading">Đang tải công thức...</p>
-                            <RecipeSkeletonGrid number={8} />
-                        </>
-                    ) : (
-                        <FanFavorite topLikedRecipeList={topLikedRecipeList} />
-                    )}
-                </div>
-            </div>
-        </>
-    );
 }
 
 export default RecipeDetail;
