@@ -121,7 +121,7 @@ function Navbar({ setShowLogin }) {
                           borderBottom: "1px solid #eee",
                         }}
                       >
-                        <b>{user.username}</b>
+                        <b>{user.name || user.username}</b>
                         <div style={{ fontSize: 12, color: "#888" }}>
                           {user.email}
                         </div>

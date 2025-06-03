@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken"); // Import jwt
+const Recipe = require("./Recipe"); // Import Recipe model
 
 const userSchema = new mongoose.Schema(
   {
@@ -11,6 +12,9 @@ const userSchema = new mongoose.Schema(
     googleId: { type: String, unique: true, sparse: true },
     provider: { type: String }, // 'local', 'facebook', 'google'
     name: { type: String },
+    favoriteRecipes: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }, // Thêm trường favoriteRecipes
+    ],
   },
   { timestamps: true }
 );

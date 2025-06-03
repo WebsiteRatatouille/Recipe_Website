@@ -37,22 +37,36 @@ function App() {
       // Lưu token vào localStorage
       localStorage.setItem("token", token);
 
-      // TODO: Gọi API để lấy thông tin đầy đủ của user dựa vào userId
-      // Hiện tại tạm lưu userId và provider, bạn cần phát triển API để lấy full user data
-      const userData = {
-        id: userId,
-        provider: provider,
-        // Các trường khác sẽ được lấy từ API call
+      // Gọi API để lấy thông tin đầy đủ của user
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/users/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Không thể lấy thông tin người dùng");
+          }
+
+          const userData = await response.json();
+          localStorage.setItem("user", JSON.stringify(userData));
+
+          // Xóa query parameters khỏi URL
+          window.history.replaceState({}, document.title, "/");
+
+          // Reload trang để cập nhật trạng thái đăng nhập
+          window.location.reload();
+        } catch (error) {
+          console.error("Lỗi khi lấy thông tin người dùng:", error);
+        }
       };
-      localStorage.setItem("user", JSON.stringify(userData));
 
-      // Xóa query parameters khỏi URL
-      window.history.replaceState({}, document.title, "/");
-
-      // Cập nhật state hoặc reload trang để áp dụng trạng thái đăng nhập
-      // Có thể cần cơ chế quản lý state global (Context API, Redux) để user state được cập nhật tức thời
-      // Tạm thời có thể reload đơn giản hoặc dùng state management
-      window.location.reload(); // Tạm thời reload để cập nhật trạng thái đăng nhập
+      fetchUserData();
     }
   }, []); // Chạy 1 lần khi component mount
 

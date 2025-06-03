@@ -114,9 +114,17 @@ const updateProfile = async (req, res) => {
       user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    // Cập nhật username nếu có thay đổi
-    if (username.trim() !== user.username) {
-      user.username = username.trim();
+    // Cập nhật username hoặc name tùy thuộc vào provider
+    if (user.provider === "local" || !user.provider) {
+      // Cập nhật username cho tài khoản local
+      if (username.trim() !== user.username) {
+        user.username = username.trim();
+      }
+    } else {
+      // Cập nhật name cho tài khoản social
+      if (username.trim() !== user.name) {
+        user.name = username.trim();
+      }
     }
 
     await user.save();
@@ -155,16 +163,11 @@ const getAllUsers = async (req, res) => {
 // Lấy thông tin chi tiết người dùng (Admin)
 const getUserById = async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ msg: "Không có quyền truy cập" });
-    }
-
-    const user = await User.findById(req.params.id, "-password");
+    const user = await User.findById(req.params.id).select("-password");
     if (!user) {
       return res.status(404).json({ msg: "Không tìm thấy người dùng" });
     }
-
-    res.status(200).json(user);
+    res.json(user);
   } catch (err) {
     console.error("Lỗi khi lấy thông tin người dùng:", err);
     res.status(500).json({ msg: "Lỗi server", error: err.message });

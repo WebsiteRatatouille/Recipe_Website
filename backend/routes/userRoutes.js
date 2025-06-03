@@ -28,4 +28,7 @@ router.put("/admin/users/:id", auth, updateUserByAdmin);
 router.delete("/admin/users/:id", auth, deleteUser);
 router.post("/admin/users/:id/reset-password", auth, resetUserPasswordByAdmin);
 
+// Protected routes
+router.get("/:id", auth, getUserById);
+
 module.exports = router;

@@ -1,26 +1,26 @@
 .recipe-info-wrapper .recipe-title {
-    text-transform: uppercase;
-    font-size: 50px;
+  text-transform: uppercase;
+  font-size: 50px;
 }
 
 .recipe-info-wrapper .recipe-detail .author {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .recipe-info-wrapper .recipe-detail span {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .recipe-info-wrapper .recipe-detail p {
-    margin-top: 10px;
-    font-size: 18px;
+  margin-top: 10px;
+  font-size: 18px;
 }
 
 .recipe-info-wrapper .cooking-detail {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-top: 10px;
 }
