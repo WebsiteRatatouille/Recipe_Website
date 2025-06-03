@@ -16,6 +16,8 @@ import SmallLineSeparator from "../../../components/SmallLineSeparator/SmallLine
 function Recipes() {
     const [recipeList, setRecipeList] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
+    const [randomTags, setRandomTags] = useState([]);
+
     // console.log("food_list", food_list);
     const [categoryLoading, setCategoryLoading] = useState(true);
     const [categoryError, setCategoryError] = useState(null);
@@ -26,6 +28,8 @@ function Recipes() {
     const [category, setCategory] = useState("All");
     const [currPage, setCurrPage] = useState(1);
     const [limit, setLimit] = useState(16);
+
+    const [searchQuery, setSearchQuery] = useState("");
 
     // Get All Categories
     useEffect(() => {
@@ -69,6 +73,22 @@ function Recipes() {
         fetchRecipes();
     }, []);
 
+    useEffect(() => {
+        const fetchRandomTags = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/api/recipes/random-tags`
+                );
+                console.log("Dữ liệu tag ngẫu nhiên:", res.data);
+                setRandomTags(res.data);
+            } catch (err) {
+                console.error("Lỗi khi fetch tag ngẫu nhiên:", err);
+            }
+        };
+
+        fetchRandomTags();
+    }, []);
+
     // Display skeleton card when changing Category filter
     useEffect(() => {
         setRecipeFilterLoading(true);
@@ -81,11 +101,17 @@ function Recipes() {
     }, [category]);
 
     // Filter the recipe list by category
+    const searchLower = searchQuery.toLowerCase();
     let filteredRecipes = [];
-    filteredRecipes =
-        category === "All"
-            ? recipeList
-            : recipeList.filter((recipe) => recipe.category === category);
+    filteredRecipes = recipeList.filter((recipe) => {
+        const matchCategory = category === "All" || recipe.category === category;
+        const matchSearch =
+            recipe.title?.toLowerCase().includes(searchLower) ||
+            recipe.ingredients?.some((ing) => ing.toLowerCase().includes(searchLower)) ||
+            recipe.tags?.some((tag) => tag.toLowerCase().includes(searchLower)) ||
+            recipe.origin?.toLowerCase().includes(searchLower);
+        return matchCategory && matchSearch;
+    });
 
     // Reset currPage to 1 whenever the selected category changes
     useEffect(() => {
@@ -138,8 +164,8 @@ function Recipes() {
                         chuẩn bị những bữa ăn ngon cho gia đình.
                     </p>
                 </div>
-                <SearchBar />
-                <RecipeTagList />
+                <SearchBar onSearch={(query) => setSearchQuery(query)} />
+                <RecipeTagList tags={randomTags} />
 
                 {categoryLoading ? (
                     <>

@@ -22,10 +22,21 @@
     object-position: center;
 }
 
-.recipe-detail-wrapper {
+.recipe-detail-container {
+    /* background: rebeccapurple; */
     display: grid;
     padding-top: 20px;
     padding-bottom: 20px;
+
+    width: 100%;
+    max-width: 1300px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.recipe-detail-wrapper {
+    /* background: red; */
+    display: grid;
     grid-template-columns: 2fr 1fr;
     width: 100%;
     max-width: 1300px;
@@ -78,6 +89,11 @@
     font-size: 20px;
     text-align: center;
     font-weight: bold;
+}
+
+.recipe-top-like {
+    width: 100%;
+    padding: 0;
 }
 
 @media (max-width: 768px) {

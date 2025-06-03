@@ -77,10 +77,11 @@
 
 .footer .footer-col .social-icon a {
     text-decoration: none;
-    padding-bottom: 10px;
-    padding-left: 12px;
-    padding-right: 12px;
-    padding-top: 12px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: white;
     margin: 5px;
     border-radius: 50%;

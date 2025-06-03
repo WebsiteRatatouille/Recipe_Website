@@ -1,5 +1,5 @@
 import React from "react";
-import "./RecipeInfo.css";
+import "./RecipeInfoAdmin.css";
 import Profile from "../../assets/img/ratatouille-icon.png";
 import RecipeSwiper from "../RecipeSwiper/RecipeSwiper";
 
@@ -9,7 +9,7 @@ import RecipeDirection from "../RecipeDirection/RecipeDirection";
 
 function RecipeInfo({ recipe, recipeImageList }) {
     return (
-        <div className="recipe-info-wrapper">
+        <div className="recipe-info-admin-wrapper">
             <h1 className="recipe-title">{recipe.title}</h1>
 
             <div className="recipe-detail">
@@ -31,7 +31,7 @@ function RecipeInfo({ recipe, recipeImageList }) {
 
                 <p>&quot;{recipe.description}&quot;</p>
 
-                <div className="swiper-container">
+                <div className="swiper">
                     <RecipeSwiper recipeImageList={recipeImageList} />
                 </div>
 
@@ -47,7 +47,7 @@ function RecipeInfo({ recipe, recipeImageList }) {
                     </span>
                     <span>
                         <i class="bx  bx-fork"></i> Dinh dưỡng:{" "}
-                        <span style={{ fontWeight: "bold" }}>{recipe.calories} calo</span>
+                        <span style={{ fontWeight: "bold" }}>{recipe.calories} kalo</span>
                     </span>
 
                     <span>

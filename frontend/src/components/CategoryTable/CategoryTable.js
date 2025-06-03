@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./RecipeTable.css";
+import "./CategoryTable.css";
 import { DataGrid } from "@mui/x-data-grid";
 import { viVN } from "@mui/x-data-grid/locales";
-import Paper from "@mui/material/Paper";
 import {
     Box,
+    Paper,
     Typography,
     Tooltip,
     Dialog,
@@ -14,53 +14,41 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
-import RecipeInfoAdmin from "../../components/RecipeInfoAdmin/RecipeInfoAdmin";
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-export default function DataTable() {
+export default function CategoryTable() {
     const [rows, setRows] = useState([]);
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
-    const [selectedRecipe, setSelectedRecipe] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const navigate = useNavigate();
 
-    const handleViewRecipe = async (id) => {
+    const handleViewCategory = async (id) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes/${id}`);
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/categories/${id}`);
             const data = await res.json();
-            setSelectedRecipe(data);
+            setSelectedCategory(data);
             setOpenDialog(true);
         } catch (err) {
-            console.error("Lỗi khi lấy công thức:", err);
+            console.error("Lỗi khi lấy danh mục:", err);
         }
     };
 
-    // For display image
-    const combinedImages =
-        selectedRecipe?.images && selectedRecipe.images.length > 0
-            ? [
-                  selectedRecipe.imageThumb,
-                  ...selectedRecipe.images.filter((img) => img !== selectedRecipe.imageThumb),
-              ]
-            : [selectedRecipe?.imageThumb];
-
     const columns = [
         {
-            field: "imageThumb",
+            field: "image",
             headerName: "Ảnh",
             width: 90,
             renderCell: (params) => (
-                <img src={params.row.imageThumb} alt="" style={{ width: 60 }} />
+                <img src={params.row.image} alt="" style={{ width: 60, height: 40 }} />
             ),
         },
-        { field: "title", headerName: "Tên món", width: 260 },
-        { field: "categoryDisplay", headerName: "Danh mục", width: 120 },
-        { field: "likes", headerName: "Lượt thích", type: "number", width: 100 },
-        { field: "views", headerName: "Lượt xem", type: "number", width: 100 },
+        { field: "displayName", headerName: "Tên hiển thị", width: 200 },
+        { field: "name", headerName: "Slug", width: 200 },
+
         {
             field: "createdAt",
-            headerName: "Ngày tạo",
+            headerName: "Tạo lúc",
             width: 120,
         },
         {
@@ -73,19 +61,12 @@ export default function DataTable() {
             headerName: "Hành động",
             width: 140,
             renderCell: (params) => (
-                <div className="action-button-recipe-table">
-                    <Tooltip title="Đi đến" placement="top">
-                        <i
-                            className="bx bx-link-external"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => navigate(`/recipes/${params.row.id}`)}
-                        ></i>
-                    </Tooltip>
+                <div className="action-button-category-table">
                     <Tooltip title="Xem" placement="top">
                         <i
                             className="bx bx-show"
                             style={{ cursor: "pointer" }}
-                            onClick={() => handleViewRecipe(params.row.id)}
+                            onClick={() => handleViewCategory(params.row.id)}
                         ></i>
                     </Tooltip>
                     <Tooltip title="Sửa" placement="top">
@@ -100,39 +81,31 @@ export default function DataTable() {
     ];
 
     useEffect(() => {
-        const fetchRecipes = async () => {
-            setLoading(true);
+        const fetchCategories = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes`);
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/categories`);
                 const data = await res.json();
-                const formatted = data.map((item) => ({
-                    id: item._id,
-                    imageThumb: item.imageThumb,
-                    title: item.title,
-                    categoryDisplay: item.categoryDisplay,
-                    likes: item.likes,
-                    views: item.views,
-                    createdAt: new Date(item.createdAt).toLocaleDateString("vi-VN"),
-                    updatedAt: new Date(item.updatedAt).toLocaleDateString("vi-VN"),
+                const formatted = data.map((cat) => ({
+                    id: cat._id,
+                    name: cat.name,
+                    displayName: cat.displayName,
+                    image: cat.image,
+
+                    createdAt: new Date(cat.createdAt).toLocaleDateString("vi-VN"),
+                    updatedAt: new Date(cat.updatedAt).toLocaleDateString("vi-VN"),
                 }));
                 setRows(formatted);
             } catch (err) {
-                console.error("Lỗi khi tải công thức:", err);
-            } finally {
-                setLoading(false);
+                console.error("Lỗi khi tải danh mục:", err);
             }
         };
-
-        fetchRecipes();
+        fetchCategories();
     }, []);
 
     return (
         <Paper className="table-wrapper" sx={{ maxHeight: "80vh", width: "90%" }}>
             <Box className="table-toolbar">
-                <Typography className="table-title">Danh sách công thức nấu ăn</Typography>
-                <div className="erase-button">
-                    <i className="bx bx-trash"></i>
-                </div>
+                <Typography className="table-title">Danh sách danh mục</Typography>
             </Box>
 
             <DataGrid
@@ -161,7 +134,7 @@ export default function DataTable() {
                 }}
             />
 
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
                 <DialogTitle>
                     <IconButton
                         onClick={() => setOpenDialog(false)}
@@ -171,7 +144,17 @@ export default function DataTable() {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <RecipeInfoAdmin recipe={selectedRecipe} recipeImageList={combinedImages} />
+                    {selectedCategory && (
+                        <div>
+                            <h2>{selectedCategory.displayName}</h2>
+                            <img
+                                src={selectedCategory.image}
+                                alt="Ảnh danh mục"
+                                style={{ width: "100%" }}
+                            />
+                            <p>{selectedCategory.description}</p>
+                        </div>
+                    )}
                 </DialogContent>
             </Dialog>
         </Paper>

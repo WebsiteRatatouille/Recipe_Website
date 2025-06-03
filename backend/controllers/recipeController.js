@@ -61,10 +61,44 @@ const getRandomRecipes = async (req, res) => {
     }
 };
 
+const getRandomTags = async (req, res) => {
+    try {
+        const tags = await Recipe.aggregate([
+            { $unwind: { path: "$tags", preserveNullAndEmptyArrays: false } },
+            { $group: { _id: "$tags" } },
+            { $sample: { size: 20 } },
+            { $project: { _id: 0, tag: "$_id" } },
+        ]);
+
+        const result = tags.map((t) => t.tag);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Lỗi khi lấy tag ngẫu nhiên:", error);
+        res.status(500).json({ msg: "Lỗi server", error });
+    }
+};
+
+const getRecipesByTag = async (req, res) => {
+    const tag = req.query.query?.toLowerCase() || "";
+
+    try {
+        const recipes = await Recipe.find({
+            tags: { $regex: tag, $options: "i" },
+        }).populate("createdBy", "username");
+
+        res.status(200).json(recipes);
+    } catch (error) {
+        console.error("Lỗi khi tìm công thức theo tag:", error);
+        res.status(500).json({ msg: "Lỗi server khi tìm theo tag", error });
+    }
+};
+
 module.exports = {
     getRecipeById,
     getTopLikedRecipes,
     getTopViewedRecipes,
     getRandomRecipes,
     getAllRecipes,
+    getRandomTags,
+    getRecipesByTag,
 };

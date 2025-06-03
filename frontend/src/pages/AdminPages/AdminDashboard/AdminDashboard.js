@@ -4,7 +4,7 @@ import "./AdminDashboard.css";
 function AdminDashboard() {
     return (
         <div className="admin-dashboard-wrapper">
-            <h1>this is dash board</h1>
+            <h1>Dash board</h1>
         </div>
     );
 }
