@@ -21,14 +21,14 @@ function AdminSideBoard() {
 
                 <div className="side-bar-wrapper">
                     <div className="side-bar-menu">
-                        <NavLink className="side-bar-link" to="/admin">
+                        {/* <NavLink className="side-bar-link" to="/admin">
                             <div className="content">
                                 <span className="icon">
                                     <i className="bx bx-home"></i>
                                 </span>
                                 <span className="title">Tổng quan</span>
                             </div>
-                        </NavLink>
+                        </NavLink> */}
 
                         <NavLink className="side-bar-link" to="/adminRecipes">
                             <div className="content">
@@ -48,14 +48,14 @@ function AdminSideBoard() {
                             </div>
                         </NavLink>
 
-                        <NavLink className="side-bar-link" to="adminCollections">
+                        {/* <NavLink className="side-bar-link" to="adminCollections">
                             <div className="content">
                                 <span className="icon">
                                     <i className="bx bx-collection"></i>
                                 </span>
                                 <span className="title">Bộ sưu tập</span>
                             </div>
-                        </NavLink>
+                        </NavLink> */}
 
                         <NavLink className="side-bar-link" to="adminUsers">
                             <div className="content">
