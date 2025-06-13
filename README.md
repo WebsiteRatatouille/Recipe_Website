@@ -54,22 +54,22 @@ cd recipe_website
 
 ### Cài đặt backend
 
-cd backend
-npm install
-npm run dev
+cd backend 
+npm install 
+npm run dev 
 
 ### Cài đặt frontend
 
-cd frontend
-npm install
-npm start
+cd frontend 
+npm install 
+npm start 
 
 ## Thành viên thực hiện
 
-Họ tên Mã sinh viên Lớp
-Nguyễn Đức Lộc N22DCCN150 D22CQCN02-N
-Nguyễn Hữu Huynh N22DCCN135 D22CQCN02-N
-Mai Vũ Tuấn Minh N22DCCN152 D22CQCN02-N
+Họ tên Mã sinh viên Lớp 
+Nguyễn Đức Lộc N22DCCN150 D22CQCN02-N 
+Nguyễn Hữu Huynh N22DCCN135 D22CQCN02-N 
+Mai Vũ Tuấn Minh N22DCCN152 D22CQCN02-N 
 
 ## Ghi chú
 
