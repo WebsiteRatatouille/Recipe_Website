@@ -57,20 +57,21 @@ cd recipe_website
 cd backend 
 npm install 
 npm run dev 
-
+```
 ### Cài đặt frontend
 ```bash
 cd frontend 
 npm install 
-npm start 
+npm start
+```
 
 ## Thành viên thực hiện
-
+```bash
 Họ tên Mã sinh viên Lớp 
 Nguyễn Đức Lộc N22DCCN150 D22CQCN02-N 
 Nguyễn Hữu Huynh N22DCCN135 D22CQCN02-N 
 Mai Vũ Tuấn Minh N22DCCN152 D22CQCN02-N 
-
+```
 ## Ghi chú
 
 Đây là đồ án môn học nhằm rèn luyện kỹ năng fullstack web development
