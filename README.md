@@ -53,13 +53,13 @@ git clone https://github.com/WebsiteRatatouille/Recipe_Website.git
 cd recipe_website
 
 ### Cài đặt backend
-
+```bash
 cd backend 
 npm install 
 npm run dev 
 
 ### Cài đặt frontend
-
+```bash
 cd frontend 
 npm install 
 npm start 
