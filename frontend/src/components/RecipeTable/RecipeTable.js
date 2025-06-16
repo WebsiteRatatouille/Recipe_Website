@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./RecipeTable.css";
 import { DataGrid } from "@mui/x-data-grid";
-import { viVN } from "@mui/x-data-grid/locales";
-import Paper from "@mui/material/Paper";
 import {
     Box,
     Typography,
@@ -11,12 +9,17 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
+    DialogActions,
     IconButton,
+    Button,
+    Paper,
 } from "@mui/material";
+import { viVN } from "@mui/x-data-grid/locales";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import RecipeInfoAdmin from "../../components/RecipeInfoAdmin/RecipeInfoAdmin";
 import RecipeEditAdmin from "../../components/RecipeEditAdmin/RecipeEditAdmin";
+import RecipeAddAdmin from "../RecipeAddAdmin/RecipeAddAdmin";
 
 const paginationModel = { page: 0, pageSize: 10 };
 
@@ -30,6 +33,10 @@ export default function DataTable() {
     const [openDialog, setOpenDialog] = useState(false);
     // for edit recipe
     const [openEdit, setOpenEdit] = useState(false);
+    const [openAdd, setOpenAdd] = useState(false);
+
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [recipeToDeleteId, setRecipeToDeleteId] = useState(null);
 
     const handleViewRecipe = async (id) => {
         try {
@@ -50,6 +57,35 @@ export default function DataTable() {
             setOpenEdit(true);
         } catch (err) {
             console.error("Lỗi khi lấy công thức:", err);
+        }
+    };
+
+    const handleDeleteRecipe = (id) => {
+        setRecipeToDeleteId(id);
+        setDeleteConfirmOpen(true);
+    };
+
+    const confirmDeleteRecipe = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            // Gọi API xoá công thức
+            await axios.delete(
+                `${process.env.REACT_APP_API_URL}/api/recipes/delete-l/${recipeToDeleteId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            // Cập nhật danh sách công thức
+            setRows((prev) => prev.filter((r) => r.id !== recipeToDeleteId));
+        } catch (err) {
+            console.error("Lỗi khi xoá công thức:", err);
+            alert("Không thể xoá công thức.");
+        } finally {
+            // Đóng dialog và reset state
+            setDeleteConfirmOpen(false);
+            setRecipeToDeleteId(null);
         }
     };
 
@@ -114,7 +150,11 @@ export default function DataTable() {
                     </Tooltip>
 
                     <Tooltip title="Xóa" placement="top">
-                        <i className="bx bx-trash"></i>
+                        <i
+                            className="bx bx-trash"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleDeleteRecipe(params.row.id)}
+                        ></i>
                     </Tooltip>
                 </div>
             ),
@@ -156,9 +196,28 @@ export default function DataTable() {
         <Paper className="table-wrapper" sx={{ maxHeight: "80vh", width: "90%" }}>
             <Box className="table-toolbar">
                 <Typography className="table-title">Danh sách công thức nấu ăn</Typography>
-                <div className="erase-button">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                        borderRadius: "12px",
+                        fontWeight: "bold",
+                        px: 3,
+                        py: 1,
+                        textTransform: "none",
+                        boxShadow: 2,
+                        backgroundColor: "#4a4a48",
+                        "&:hover": {
+                            backgroundColor: "black",
+                        },
+                    }}
+                    onClick={() => setOpenAdd(true)}
+                >
+                    + THÊM
+                </Button>
+                {/* <div className="erase-button">
                     <i className="bx bx-trash"></i>
-                </div>
+                </div> */}
             </Box>
 
             <DataGrid
@@ -212,8 +271,47 @@ export default function DataTable() {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <RecipeEditAdmin recipe={selectedRecipe} />
+                    <RecipeEditAdmin recipe={selectedRecipe} onClose={() => setOpenEdit(false)} />
                 </DialogContent>
+            </Dialog>
+
+            {/* add recipe popup */}
+            <Dialog open={openAdd} onClose={() => setOpenAdd(false)} maxWidth="md" fullWidth>
+                <DialogTitle>
+                    <IconButton
+                        onClick={() => setOpenAdd(false)}
+                        style={{ position: "absolute", right: 8, top: 8 }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <RecipeAddAdmin onClose={() => setOpenAdd(false)} />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+                <DialogTitle>Xác nhận xoá</DialogTitle>
+                <DialogContent>Bạn có chắc chắn muốn xoá công thức này không?</DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteConfirmOpen(false)} color="inherit">
+                        Huỷ
+                    </Button>
+                    <Button
+                        onClick={confirmDeleteRecipe}
+                        color="error"
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#222", // Màu đen
+                            color: "#fff", // Chữ trắng
+                            "&:hover": {
+                                backgroundColor: "#4a4a48", // Khi hover thì đen nhẹ hơn
+                            },
+                        }}
+                    >
+                        Xoá
+                    </Button>
+                </DialogActions>
             </Dialog>
         </Paper>
     );

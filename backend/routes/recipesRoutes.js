@@ -14,6 +14,9 @@ const {
     getRandomTags,
     getRecipesByTag,
     getRecipesByTitleAndIngredient,
+    createRecipeL,
+    updateRecipeL,
+    deleteRecipeL,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -41,6 +44,12 @@ router.get("/random-tags", getRandomTags);
 router.get("/search-tags", getRecipesByTag);
 
 router.get("/search-combined", getRecipesByTitleAndIngredient);
+
+router.post("/create-l", auth, createRecipeL);
+
+router.delete("/delete-l/:id", auth, deleteRecipeL);
+
+router.put("/update-l/:id", updateRecipeL);
 
 // GET /api/recipes/:id
 router.get("/:id", getRecipeById);

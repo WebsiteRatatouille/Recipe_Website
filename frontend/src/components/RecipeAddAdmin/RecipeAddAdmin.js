@@ -1,51 +1,32 @@
-import React, { useEffect, useState } from "react";
-import "./RecipeEditAdmin.css";
+// RecipeAddAdmin.jsx
+import React, { useState } from "react";
+import "./RecipeAddAdmin.css";
 import axios from "axios";
-import { Snackbar, Alert, Button } from "@mui/material";
+import { Snackbar, Alert } from "@mui/material";
 
-function RecipeEditAdmin({ recipe, onClose }) {
+function RecipeAddAdmin({ onClose }) {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-
     const [formData, setFormData] = useState({
         title: "",
         description: "",
         ingredients: "",
         steps: "",
         imageThumb: "",
+        images: [],
         cookingTime: "",
         serves: 0,
         calories: 0,
         origin: "",
         videoUrl: "",
         tags: "",
+        imageThumbFile: null,
+        subImageFiles: [],
     });
-
-    useEffect(() => {
-        if (recipe) {
-            setFormData({
-                title: recipe.title || "",
-                description: recipe.description || "",
-                ingredients: recipe.ingredients?.join("\n") || "",
-                steps: recipe.steps?.join("\n") || "",
-                imageThumb: recipe.imageThumb || "",
-                images: recipe.images || "",
-                cookingTime: recipe.cookingTime || "",
-                serves: recipe.serves || 0,
-                calories: recipe.calories || 0,
-                origin: recipe.origin || "",
-                videoUrl: recipe.videoUrl || "",
-                tags: recipe.tags?.join(", ") || "",
-            });
-        }
-    }, [recipe]);
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
+        setFormData((prev) => ({ ...prev, [id]: value }));
     };
 
     const handleChangeMainImage = (e) => {
@@ -54,11 +35,10 @@ function RecipeEditAdmin({ recipe, onClose }) {
 
         const reader = new FileReader();
         reader.onloadend = () => {
-            // Lưu URL tạm thời (base64) để hiển thị preview
             setFormData((prev) => ({
                 ...prev,
                 imageThumb: reader.result,
-                imageThumbFile: file, // lưu lại file để upload sau
+                imageThumbFile: file,
             }));
         };
         reader.readAsDataURL(file);
@@ -73,24 +53,16 @@ function RecipeEditAdmin({ recipe, onClose }) {
             reader.onloadend = () => {
                 previews.push({ url: reader.result, file });
 
-                // Khi tất cả ảnh đã đọc xong thì cập nhật state
                 if (previews.length === files.length) {
                     setFormData((prev) => ({
                         ...prev,
                         images: [...prev.images, ...previews.map((p) => p.url)],
-                        subImageFiles: [
-                            ...(prev.subImageFiles || []),
-                            ...previews.map((p) => p.file),
-                        ],
+                        subImageFiles: [...prev.subImageFiles, ...previews.map((p) => p.file)],
                     }));
                 }
             };
             reader.readAsDataURL(file);
         });
-    };
-
-    const handleCancel = () => {
-        if (onClose) onClose();
     };
 
     const mainImage = formData.imageThumb;
@@ -99,47 +71,39 @@ function RecipeEditAdmin({ recipe, onClose }) {
         : [];
 
     const handleSave = async () => {
+        if (
+            !formData.title?.trim() ||
+            !formData.description?.trim() ||
+            !formData.ingredients?.trim() ||
+            !formData.steps?.trim() ||
+            !formData.cookingTime?.trim() ||
+            !formData.serves ||
+            !formData.calories ||
+            !formData.origin?.trim() ||
+            !formData.videoUrl?.trim() ||
+            !formData.tags?.trim()
+        ) {
+            setErrorMessage("Vui lòng điền đầy đủ tất cả các trường.");
+            return;
+        }
+
         try {
-            const recipeId = recipe._id;
+            // 1. Tạo công thức ban đầu (chỉ cần title) để lấy _id
+            const createRes = await axios.post(
+                `${process.env.REACT_APP_API_URL}/api/recipes/create-l`,
+                { title: formData.title?.trim() },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
+            const recipeId = createRes.data._id;
 
-            const originalImages = recipe.images || [];
-            const currentImages = formData.images || [];
+            let imageThumbUrl = "";
+            let uploadedSubImages = [];
 
-            // Phân loại ảnh:
-            const deletedImages = originalImages.filter((img) => !currentImages.includes(img));
-            const base64NewImages = currentImages.filter((img) => img.startsWith("data:image"));
-            const unchangedImages = currentImages.filter((img) => !img.startsWith("data:image"));
-
-            let updatedImageUrls = [...unchangedImages];
-
-            // xóa ảnh phụ cũ đã bị xóa
-            if (deletedImages.length > 0) {
-                await axios.post(
-                    `${process.env.REACT_APP_API_URL}/api/cloudinary/recipes/${recipeId}/delete-images`,
-                    { publicUrls: deletedImages }
-                );
-            }
-
-            // Upload ảnh phụ mới (base64)
-            for (const base64 of base64NewImages) {
-                const blob = await (await fetch(base64)).blob();
-                const form = new FormData();
-                form.append(
-                    "image",
-                    new File([blob], `new-${Date.now()}.jpg`, { type: blob.type })
-                );
-
-                const res = await axios.post(
-                    `${process.env.REACT_APP_API_URL}/api/cloudinary/recipes/upload-image?recipeId=${recipeId}`,
-                    form,
-                    { headers: { "Content-Type": "multipart/form-data" } }
-                );
-
-                updatedImageUrls.push(res.data.url);
-            }
-
-            // Upload ảnh đại diện nếu có thay đổi
-            let imageThumbUrl = recipe.imageThumb;
+            // 2. Upload ảnh đại diện nếu có
             if (formData.imageThumbFile) {
                 const form = new FormData();
                 form.append("image", formData.imageThumbFile);
@@ -149,11 +113,25 @@ function RecipeEditAdmin({ recipe, onClose }) {
                     form,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
-
                 imageThumbUrl = res.data.url;
             }
 
-            // Tạo dữ liệu cập nhật
+            // 3. Upload ảnh phụ nếu có
+            if (formData.subImageFiles?.length > 0) {
+                for (const file of formData.subImageFiles) {
+                    const form = new FormData();
+                    form.append("image", file);
+
+                    const res = await axios.post(
+                        `${process.env.REACT_APP_API_URL}/api/cloudinary/recipes/upload-image?recipeId=${recipeId}`,
+                        form,
+                        { headers: { "Content-Type": "multipart/form-data" } }
+                    );
+                    uploadedSubImages.push(res.data.url);
+                }
+            }
+
+            // 4. Cập nhật công thức với đầy đủ dữ liệu
             const updatedData = {
                 title: formData.title?.trim(),
                 description: formData.description?.trim(),
@@ -175,19 +153,23 @@ function RecipeEditAdmin({ recipe, onClose }) {
                     .map((t) => t.trim())
                     .filter(Boolean),
                 imageThumb: imageThumbUrl,
-                images: updatedImageUrls,
+                images: uploadedSubImages,
             };
 
-            //Gửi PUT cập nhật
             await axios.put(
                 `${process.env.REACT_APP_API_URL}/api/recipes/update-l/${recipeId}`,
-                updatedData
+                updatedData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
             );
 
-            setSuccessMessage("Đã cập nhật công thức thành công!");
+            setSuccessMessage("Đã thêm công thức thành công!");
         } catch (error) {
-            console.error("Lỗi cập nhật:", error);
-            setErrorMessage("Có lỗi khi cập nhật công thức hoặc ảnh.");
+            console.error("Lỗi thêm công thức:", error);
+            setErrorMessage("Không thể thêm công thức.");
         }
     };
 
@@ -203,9 +185,8 @@ function RecipeEditAdmin({ recipe, onClose }) {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
                 <Alert
-                    onClose={() => setSuccessMessage("")}
                     severity="success"
-                    variant="filled" //
+                    variant="filled"
                     sx={{ width: "100%", fontWeight: "bold" }}
                 >
                     {successMessage}
@@ -218,19 +199,14 @@ function RecipeEditAdmin({ recipe, onClose }) {
                 onClose={() => setErrorMessage("")}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
-                <Alert
-                    onClose={() => setErrorMessage("")}
-                    severity="error"
-                    variant="filled"
-                    sx={{ width: "100%", fontWeight: "bold" }}
-                >
+                <Alert severity="error" variant="filled" sx={{ width: "100%", fontWeight: "bold" }}>
                     {errorMessage}
                 </Alert>
             </Snackbar>
-            <div className="recipe-edit-admin-header">
-                <h1>Chỉnh sửa công thức</h1>
-            </div>
 
+            <div className="recipe-edit-admin-header">
+                <h1>Thêm công thức</h1>
+            </div>
             <div className="recipe-edit-admin-form">
                 <div className="image-upload-section">
                     {/* Ảnh đại diện */}
@@ -354,7 +330,7 @@ function RecipeEditAdmin({ recipe, onClose }) {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>Không có ảnh phụ</p>
+                                    <p>Chưa có ảnh phụ</p>
                                 )}
                             </div>
                         </label>
@@ -372,134 +348,51 @@ function RecipeEditAdmin({ recipe, onClose }) {
                 <div className="recipe-details-section">
                     <div className="form-group">
                         <label htmlFor="title">Tiêu đề món ăn</label>
-                        <input
-                            type="text"
-                            id="title"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                        />
+                        <input type="text" id="title" onChange={handleInputChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="description">Mô tả</label>
-                        <textarea
-                            id="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                        ></textarea>
+                        <textarea id="description" onChange={handleInputChange}></textarea>
                     </div>
                     <div className="form-group">
                         <label htmlFor="ingredients">Nguyên liệu (mỗi nguyên liệu 1 dòng)</label>
-                        <textarea
-                            id="ingredients"
-                            value={formData.ingredients}
-                            onChange={handleInputChange}
-                        ></textarea>
+                        <textarea id="ingredients" onChange={handleInputChange}></textarea>
                     </div>
                     <div className="form-group">
                         <label htmlFor="steps">Hướng dẫn (mỗi bước 1 dòng)</label>
-                        <textarea
-                            id="steps"
-                            value={formData.steps}
-                            onChange={handleInputChange}
-                        ></textarea>
+                        <textarea id="steps" onChange={handleInputChange}></textarea>
                     </div>
                     <div className="form-group">
                         <label htmlFor="cookingTime">Thời gian nấu</label>
-                        <input
-                            type="text"
-                            id="cookingTime"
-                            value={formData.cookingTime}
-                            onChange={handleInputChange}
-                        />
+                        <input type="text" id="cookingTime" onChange={handleInputChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="serves">Khẩu phần</label>
-                        <input
-                            type="number"
-                            id="serves"
-                            min="0"
-                            value={formData.serves}
-                            onChange={handleInputChange}
-                        />
+                        <input type="number" id="serves" min="0" onChange={handleInputChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="calories">Calories</label>
-                        <input
-                            type="number"
-                            id="calories"
-                            min="0"
-                            value={formData.calories}
-                            onChange={handleInputChange}
-                        />
+                        <input type="number" id="calories" min="0" onChange={handleInputChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="origin">Nguồn gốc</label>
-                        <input
-                            type="text"
-                            id="origin"
-                            value={formData.origin}
-                            onChange={handleInputChange}
-                        />
+                        <input type="text" id="origin" onChange={handleInputChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="videoUrl">Video URL</label>
-                        <input
-                            type="text"
-                            id="videoUrl"
-                            value={formData.videoUrl}
-                            onChange={handleInputChange}
-                        />
+                        <input type="text" id="videoUrl" onChange={handleInputChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="tags">Tags (phân cách bằng dấu phẩy)</label>
-                        <input
-                            type="text"
-                            id="tags"
-                            value={formData.tags}
-                            onChange={handleInputChange}
-                        />
+                        <input type="text" id="tags" onChange={handleInputChange} />
                     </div>
                 </div>
             </div>
 
-            <div className="form-actions" style={{ gap: "30px" }}>
-                <button className="cancel_button" onClick={handleCancel}>
+            <div className="form-actions">
+                <button className="cancel_button" onClick={onClose}>
                     HỦY
                 </button>
-                {/* <Button
-                    variant="text"
-                    sx={{
-                        marginRight: "20px",
-                        borderRadius: "12px",
-                        fontWeight: "bold",
-                        px: 3,
-                        py: 1,
-                        textTransform: "none",
-                        boxShadow: "none",
-                        backgroundColor: "none",
-                    }}
-                >
-                    HỦY
-                </Button>
-
-                <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                        borderRadius: "12px",
-                        fontWeight: "bold",
-                        px: 3,
-                        py: 1,
-                        textTransform: "none",
-                        boxShadow: 2,
-                        backgroundColor: "#4a4a48",
-                        "&:hover": {
-                            backgroundColor: "black",
-                        },
-                    }}
-                >
-                    THÊM
-                </Button> */}
                 <button className="submit_button" onClick={handleSave}>
                     LƯU
                 </button>
@@ -508,4 +401,4 @@ function RecipeEditAdmin({ recipe, onClose }) {
     );
 }
 
-export default RecipeEditAdmin;
+export default RecipeAddAdmin;

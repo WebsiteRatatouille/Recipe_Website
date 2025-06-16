@@ -1,5 +1,6 @@
 const Recipe = require("../models/Recipe");
 const mongoose = require("mongoose"); // Import mongoose để sử dụng Types.ObjectId
+const cloudinary = require("cloudinary").v2;
 
 const getRecipeById = async (req, res) => {
     try {
@@ -157,6 +158,43 @@ const createRecipe = async (req, res) => {
     }
 };
 
+const createRecipeL = async (req, res) => {
+    try {
+        const {
+            title,
+            description,
+            ingredients,
+            steps,
+            cookingTime,
+            serves,
+            tags,
+            calories,
+            origin,
+            videoUrl,
+        } = req.body;
+
+        const newRecipe = new Recipe({
+            title,
+            description,
+            ingredients,
+            steps,
+            cookingTime,
+            serves,
+            tags,
+            calories,
+            origin,
+            videoUrl,
+            createdBy: req.user.id,
+        });
+
+        const savedRecipe = await newRecipe.save();
+        res.status(201).json(savedRecipe);
+    } catch (error) {
+        console.error("Lỗi khi tạo công thức (L):", error);
+        res.status(500).json({ msg: "Lỗi server khi tạo công thức", error });
+    }
+};
+
 // @desc    Update recipe
 // @route   PUT /api/recipes/:id
 // @access  Private (requires user authentication)
@@ -209,6 +247,55 @@ const updateRecipe = async (req, res) => {
     }
 };
 
+const updateRecipeL = async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.id);
+
+        if (recipe) {
+            const {
+                title,
+                description,
+                ingredients,
+                steps,
+                imageThumb,
+                images,
+                videoUrl,
+                category,
+                categoryDisplay,
+                cookingTime,
+                serves,
+                tags,
+                calories,
+                origin,
+            } = req.body;
+
+            recipe.title = title ?? recipe.title;
+            recipe.description = description ?? recipe.description;
+            recipe.ingredients = ingredients ?? recipe.ingredients;
+            recipe.steps = steps ?? recipe.steps;
+            recipe.imageThumb = imageThumb ?? recipe.imageThumb;
+            recipe.images = images ?? recipe.images;
+            recipe.videoUrl = videoUrl ?? recipe.videoUrl;
+            recipe.category = category ?? recipe.category;
+            recipe.categoryDisplay = categoryDisplay ?? recipe.categoryDisplay;
+            recipe.cookingTime = cookingTime ?? recipe.cookingTime;
+            recipe.serves = serves ?? recipe.serves;
+            recipe.tags = tags ?? recipe.tags;
+            recipe.calories = calories ?? recipe.calories;
+            recipe.origin = origin ?? recipe.origin;
+            recipe.updatedAt = Date.now();
+
+            const updatedRecipe = await recipe.save();
+            res.status(200).json(updatedRecipe);
+        } else {
+            res.status(404).json({ msg: "Không tìm thấy công thức" });
+        }
+    } catch (error) {
+        console.error("Lỗi khi cập nhật (updateRecipeL):", error);
+        res.status(500).json({ msg: "Lỗi server", error });
+    }
+};
+
 // @desc    Delete recipe
 // @route   DELETE /api/recipes/:id
 // @access  Private (requires user authentication)
@@ -225,6 +312,33 @@ const deleteRecipe = async (req, res) => {
     } catch (error) {
         console.error("Lỗi khi xóa công thức:", error);
         res.status(500).json({ msg: "Lỗi server", error });
+    }
+};
+
+const deleteRecipeL = async (req, res) => {
+    try {
+        const recipeId = req.params.id;
+
+        // 1. Xoá công thức khỏi MongoDB
+        const deleted = await Recipe.findByIdAndDelete(recipeId);
+        if (!deleted) return res.status(404).json({ msg: "Không tìm thấy công thức." });
+
+        // 2. Xoá ảnh trên Cloudinary (folder recipes/:id)
+        const folderPath = `recipes/${recipeId}`;
+        const result = await cloudinary.api.resources({
+            type: "upload",
+            prefix: folderPath + "/",
+            max_results: 100,
+        });
+        const publicIds = result.resources.map((file) => file.public_id);
+        if (publicIds.length > 0) {
+            await cloudinary.api.delete_resources(publicIds);
+        }
+
+        return res.status(200).json({ msg: "Đã xoá công thức và ảnh thành công." });
+    } catch (err) {
+        console.error("Lỗi xoá công thức:", err);
+        return res.status(500).json({ msg: "Lỗi server", error: err });
     }
 };
 
@@ -296,8 +410,11 @@ module.exports = {
     getAllRecipes,
     getAllRecipesOnly,
     createRecipe,
+    createRecipeL,
     updateRecipe,
+    updateRecipeL,
     deleteRecipe,
+    deleteRecipeL,
     getRandomTags,
     getRecipesByTag,
     getRecipesByTitleAndIngredient,
