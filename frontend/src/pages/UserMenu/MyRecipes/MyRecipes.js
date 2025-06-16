@@ -16,14 +16,35 @@ function MyRecipes() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState(""); // State for the search input
+  const [userId, setUserId] = useState(null); // Add state for user ID
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null,
+  }); // Thêm state notification
+
+  // Get user ID from localStorage when component mounts
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user._id) {
+      setUserId(user._id);
+    } else {
+      setError("Vui lòng đăng nhập để xem công thức của bạn.");
+      setLoading(false);
+    }
+  }, []);
 
   const fetchRecipes = async (search = "", page = 1) => {
     setLoading(true);
     setError(null);
     try {
-      // Construct the API URL with query parameters
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${API_BASE_URL}/api/recipes?keyword=${search}&page=${page}&limit=10` // Use absolute URL with backend port
+        `${API_BASE_URL}/api/recipes?keyword=${search}&page=${page}&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setRecipes(response.data.recipes);
       setTotalPages(response.data.pages);
@@ -37,8 +58,10 @@ function MyRecipes() {
   };
 
   useEffect(() => {
-    fetchRecipes(keyword, currentPage);
-  }, [keyword, currentPage]); // Refetch when keyword or page changes
+    if (userId) {
+      fetchRecipes(keyword, currentPage);
+    }
+  }, [keyword, currentPage, userId]); // Add userId to dependencies
 
   const handleCreateNewRecipe = () => {
     navigate("/add-recipe"); // Navigate to the new add recipe page
@@ -68,14 +91,31 @@ function MyRecipes() {
   const handleDeleteRecipe = async (recipeId) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa công thức này không?")) {
       try {
+        const token = localStorage.getItem("token"); // Lấy token
         // Call backend API to delete the recipe
-        await axios.delete(`${API_BASE_URL}/api/recipes/${recipeId}`);
+        await axios.delete(`${API_BASE_URL}/api/recipes/${recipeId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         // Refetch recipes to update the list after deletion
         fetchRecipes(keyword, currentPage);
         console.log(`Công thức với ID ${recipeId} đã được xóa.`);
+        setNotification({
+          message: "Công thức đã được xóa thành công!",
+          type: "success",
+        }); // Thông báo thành công
+        window.scrollTo({ top: 0, behavior: "smooth" }); // Cuộn lên đầu
+        setTimeout(() => setNotification({ message: null, type: null }), 3000);
       } catch (error) {
         console.error("Error deleting recipe:", error);
         setError("Không thể xóa công thức.");
+        setNotification({
+          message: "Không thể xóa công thức. Vui lòng thử lại.",
+          type: "error",
+        }); // Thông báo lỗi
+        window.scrollTo({ top: 0, behavior: "smooth" }); // Cuộn lên đầu
+        setTimeout(() => setNotification({ message: null, type: null }), 3000);
       }
     }
   };
@@ -90,6 +130,12 @@ function MyRecipes() {
       <div className="recipes-header">
         <h1>Quản lý công thức</h1>
       </div>
+
+      {notification.message && (
+        <div className={`notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
 
       <div className="recipes-content">
         <div className="recipes-actions">

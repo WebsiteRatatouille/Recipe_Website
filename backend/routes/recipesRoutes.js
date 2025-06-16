@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
 const {
-    getRecipeById,
-    getTopLikedRecipes,
-    getTopViewedRecipes,
-    getRandomRecipes,
-    getAllRecipes,
-    getAllRecipesOnly,
-    createRecipe,
-    updateRecipe,
-    deleteRecipe,
-    getRandomTags,
-    getRecipesByTag,
+  getRecipeById,
+  getTopLikedRecipes,
+  getTopViewedRecipes,
+  getRandomRecipes,
+  getAllRecipes,
+  getAllRecipesOnly,
+  createRecipe,
+  updateRecipe,
+  deleteRecipe,
+  getRandomTags,
+  getRecipesByTag,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -19,7 +20,7 @@ const favoriteRoutes = require("./favoriteRoutes");
 router.use("/", favoriteRoutes);
 
 // GET /api/recipes
-router.get("/", getAllRecipes);
+router.get("/", auth, getAllRecipes);
 
 router.get("/all-recipes-only", getAllRecipesOnly);
 
@@ -42,12 +43,12 @@ router.get("/search", getRecipesByTag);
 router.get("/:id", getRecipeById);
 
 // POST /api/recipes
-router.post("/", createRecipe);
+router.post("/", auth, createRecipe);
 
 // PUT /api/recipes/:id
-router.put("/:id", updateRecipe);
+router.put("/:id", auth, updateRecipe);
 
 // DELETE /api/recipes/:id
-router.delete("/:id", deleteRecipe);
+router.delete("/:id", auth, deleteRecipe);
 
 module.exports = router;
