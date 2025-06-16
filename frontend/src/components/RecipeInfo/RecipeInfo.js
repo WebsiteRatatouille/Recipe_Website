@@ -1,18 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./RecipeInfo.css";
 import Profile from "../../assets/img/ratatouille-icon.png";
 import RecipeSwiper from "../RecipeSwiper/RecipeSwiper";
 import SmallLineSeparator from "../SmallLineSeparator/SmallLineSeparator";
 import RecipeIngredient from "../RecipeIngredient/RecipeIngredient";
 import RecipeDirection from "../RecipeDirection/RecipeDirection";
+import axios from "../../utils/axios";
+import { toast } from "react-toastify";
 
 function RecipeInfo({ recipe, recipeImageList }) {
   const currentUser = JSON.parse(localStorage.getItem("user"));
   const isAuthor = currentUser && recipe.createdBy?._id === currentUser.id;
 
+  // Thêm state cho nút yêu thích
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      try {
+        const response = await axios.get(
+          `/api/recipes/${recipe._id}/favorite-status`
+        );
+        setIsFavorite(response.data.isFavorite);
+      } catch (error) {
+        // Không cần báo lỗi ở đây
+      }
+    };
+    if (recipe && recipe._id) checkFavoriteStatus();
+  }, [recipe]);
+
+  const handleFavoriteClick = async (e) => {
+    e.preventDefault();
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      if (isFavorite) {
+        await axios.delete(`/api/recipes/${recipe._id}/favorite`);
+        setIsFavorite(false);
+        toast.info("Đã xóa khỏi công thức yêu thích!");
+      } else {
+        await axios.post(`/api/recipes/${recipe._id}/favorite`);
+        setIsFavorite(true);
+        toast.success("Đã thêm vào công thức yêu thích!");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="recipe-info-wrapper">
-      <h1 className="recipe-title">{recipe.title}</h1>
+      <h1 className="recipe-title">
+        {recipe.title}
+        <i
+          className={`bx bxs-heart favorite-icon-detail ${
+            isFavorite ? "favorited" : ""
+          }`}
+          onClick={handleFavoriteClick}
+          style={{
+            marginLeft: 16,
+            cursor: "pointer",
+            fontSize: 32,
+            verticalAlign: "middle",
+          }}
+        ></i>
+      </h1>
 
       <div className="recipe-detail">
         <div className="author">

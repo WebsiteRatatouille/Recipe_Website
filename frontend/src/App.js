@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import Home from "./pages/UserPages/Home/Home";
@@ -124,6 +126,7 @@ function App() {
           </Route>
         </Routes>
       </div>
+      <ToastContainer />
     </>
   );
 }
