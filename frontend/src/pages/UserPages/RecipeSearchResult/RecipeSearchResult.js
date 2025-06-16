@@ -4,7 +4,6 @@ import "./RecipeSearchResult.css";
 
 import axios from "axios";
 import RecipesPageBgImage from "../../../assets/img/recipes-background.webp";
-import SearchBar from "../../../components/SearchBar/SearchBar";
 import PagePagination from "../../../components/PagePagination/PagePagination";
 import RecipeGrid from "../../../components/RecipeGrid/RecipeGrid";
 import SmallLineSeparator from "../../../components/SmallLineSeparator/SmallLineSeparator";
@@ -62,12 +61,12 @@ function RecipeSearchResult() {
     }
 
     return (
-        <div className="recipes">
-            <div className="recipes-background">
+        <div className="recipes-search-result">
+            <div className="recipes-search-result-background">
                 <img src={RecipesPageBgImage} alt="Recipes page background" />
             </div>
 
-            <div className="recipes-body-wrapper">
+            <div className="recipes-search-result-body-wrapper">
                 <div className="title">
                     <h1>Kết quả tìm kiếm</h1>
                     <p>

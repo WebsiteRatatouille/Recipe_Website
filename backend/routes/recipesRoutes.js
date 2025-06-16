@@ -1,16 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getRecipeById,
-  getTopLikedRecipes,
-  getTopViewedRecipes,
-  getRandomRecipes,
-  getAllRecipes,
-  createRecipe,
-  updateRecipe,
-  deleteRecipe,
-  getRandomTags,
-  getRecipesByTag,
+    getRecipeById,
+    getTopLikedRecipes,
+    getTopViewedRecipes,
+    getRandomRecipes,
+    getAllRecipes,
+    getAllRecipesOnly,
+    createRecipe,
+    updateRecipe,
+    deleteRecipe,
+    getRandomTags,
+    getRecipesByTag,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -19,6 +20,8 @@ router.use("/", favoriteRoutes);
 
 // GET /api/recipes
 router.get("/", getAllRecipes);
+
+router.get("/all-recipes-only", getAllRecipesOnly);
 
 // GET /api/recipes/top-liked
 router.get("/top-liked", getTopLikedRecipes);
