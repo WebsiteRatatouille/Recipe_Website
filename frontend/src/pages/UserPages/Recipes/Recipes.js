@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Recipes.css";
 
 import axios from "axios";
@@ -25,7 +26,6 @@ function Recipes() {
     const [category, setCategory] = useState("All");
     const [currPage, setCurrPage] = useState(1);
     const [limit, setLimit] = useState(16);
-    const [searchQuery, setSearchQuery] = useState("");
 
     // Get All Categories
     useEffect(() => {
@@ -105,18 +105,18 @@ function Recipes() {
         return () => clearTimeout(timeout);
     }, [category]);
 
-    // Filter the recipe list by category and search
-    const searchLower = searchQuery.toLowerCase();
+    // navigation for searchBar
+    const navigate = useNavigate();
+    const handleSearch = (query) => {
+        if (query.trim() !== "") {
+            navigate(`/search?query=${encodeURIComponent(query)}&type=combined`);
+        }
+    };
 
-    let filteredRecipes = recipeList.filter((recipe) => {
-        const matchCategory = category === "All" || recipe.category === category;
-        const matchSearch =
-            recipe.title?.toLowerCase().includes(searchLower) ||
-            recipe.ingredients?.some((ing) => ing.toLowerCase().includes(searchLower)) ||
-            recipe.tags?.some((tag) => tag.toLowerCase().includes(searchLower)) ||
-            recipe.origin?.toLowerCase().includes(searchLower);
-        return matchCategory && matchSearch;
-    });
+    // Filter the recipe list by category and search
+    let filteredRecipes = recipeList.filter(
+        (recipe) => category === "All" || recipe.category === category
+    );
 
     // Reset currPage to 1 whenever the selected category changes
     useEffect(() => {
@@ -165,7 +165,7 @@ function Recipes() {
                         chuẩn bị những bữa ăn ngon cho gia đình.
                     </p>
                 </div>
-                <SearchBar onSearch={(query) => setSearchQuery(query)} />
+                <SearchBar onSearch={handleSearch} />
                 <RecipeTagList tags={randomTags} />
 
                 {categoryLoading ? (

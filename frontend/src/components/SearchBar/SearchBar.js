@@ -21,6 +21,12 @@ function SearchBar({ onSearch }) {
                     placeholder="Tìm kiếm công thức"
                     value={query}
                     onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault(); // Ngăn reload trang
+                            handleSearch();
+                        }
+                    }}
                 />
                 <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
                     Tìm kiếm

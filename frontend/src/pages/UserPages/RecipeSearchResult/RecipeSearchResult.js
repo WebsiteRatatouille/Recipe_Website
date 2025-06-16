@@ -9,13 +9,17 @@ import RecipeGrid from "../../../components/RecipeGrid/RecipeGrid";
 import SmallLineSeparator from "../../../components/SmallLineSeparator/SmallLineSeparator";
 
 import { useLocation } from "react-router-dom";
+import SearchBar from "../../../components/SearchBar/SearchBar";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
 
 function RecipeSearchResult() {
-    const [allResults, setAllResults] = useState([]);
+    const [titleResults, setTitleResults] = useState([]);
+    const [ingredientResults, setIngredientResults] = useState([]);
+    const [tagResults, setTagResults] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -25,18 +29,34 @@ function RecipeSearchResult() {
     const query = useQuery();
     const searchQuery = query.get("query") || "";
 
+    const type = query.get("type") || "tag";
+
     useEffect(() => {
         const fetchSearchResults = async () => {
             setLoading(true);
             setError(null);
 
             try {
-                const res = await axios.get(
-                    `${process.env.REACT_APP_API_URL}/api/recipes/search?query=${encodeURIComponent(
-                        searchQuery
-                    )}`
-                );
-                setAllResults(res.data);
+                if (type === "combined") {
+                    const res = await axios.get(
+                        `${
+                            process.env.REACT_APP_API_URL
+                        }/api/recipes/search-combined?query=${encodeURIComponent(searchQuery)}`
+                    );
+
+                    const byTitle = res.data.byTitle || [];
+                    const byIngredients = res.data.byIngredients || [];
+
+                    setTitleResults(byTitle);
+                    setIngredientResults(byIngredients);
+                } else {
+                    const res = await axios.get(
+                        `${
+                            process.env.REACT_APP_API_URL
+                        }/api/recipes/search-tags?query=${encodeURIComponent(searchQuery)}`
+                    );
+                    setTagResults(res.data);
+                }
             } catch (err) {
                 console.error("Lỗi khi tìm kiếm:", err);
                 setError("Không thể tải kết quả tìm kiếm.");
@@ -46,18 +66,34 @@ function RecipeSearchResult() {
         };
 
         fetchSearchResults();
-        setCurrPage(1); // reset về trang 1 khi đổi query
-    }, [searchQuery]);
+        setCurrPage(1);
+    }, [searchQuery, type]);
 
-    const totalPage = Math.ceil(allResults.length / limit);
-    const paginatedRecipes = allResults.slice((currPage - 1) * limit, currPage * limit);
+    let totalPage = Math.ceil(tagResults.length / limit);
 
+    // Paginate the filtered recipes based on the current page and limit per page
+    let paginatedRecipes = tagResults.slice((currPage - 1) * limit, currPage * limit);
+
+    // handle page change
     function handlePageChange(value) {
-        if (value === "<<") setCurrPage(1);
-        else if (value === "<" && currPage > 1) setCurrPage(currPage - 1);
-        else if (value === ">" && currPage < totalPage) setCurrPage(currPage + 1);
-        else if (value === ">>") setCurrPage(totalPage);
-        else if (![" ...", "... "].includes(value)) setCurrPage(value);
+        console.log(currPage);
+        if (value === "<<") {
+            setCurrPage(1);
+        } else if (value === "<") {
+            if (currPage !== 1) {
+                setCurrPage(currPage - 1);
+            }
+        } else if (value === ">") {
+            if (currPage !== totalPage) {
+                setCurrPage(currPage + 1);
+            }
+        } else if (value === ">>") {
+            setCurrPage(totalPage);
+        } else if (value === " ..." || value === "... ") {
+            setCurrPage(currPage);
+        } else {
+            setCurrPage(value);
+        }
     }
 
     return (
@@ -75,29 +111,64 @@ function RecipeSearchResult() {
                     </p>
                 </div>
 
-                <h2>
-                    Kết quả tìm kiếm của: <strong>{searchQuery || "(Trống)"}</strong>
-                </h2>
-
-                <SmallLineSeparator />
-
                 {loading ? (
                     <p>Đang tải kết quả...</p>
                 ) : error ? (
                     <p>{error}</p>
-                ) : allResults.length === 0 ? (
-                    <p>Không tìm thấy công thức nào phù hợp với từ khóa.</p>
+                ) : type === "combined" ? (
+                    <>
+                        {titleResults.length === 0 && ingredientResults.length === 0 ? (
+                            <p>Không tìm thấy công thức phù hợp với từ khóa.</p>
+                        ) : (
+                            <>
+                                {titleResults.length > 0 && (
+                                    <>
+                                        <h2>
+                                            Kết quả theo Tiêu đề:
+                                            <strong> {searchQuery || "(Trống)"}</strong>
+                                        </h2>
+                                        <SmallLineSeparator />
+
+                                        <RecipeGrid recipeList={titleResults} />
+                                    </>
+                                )}
+
+                                {ingredientResults.length > 0 && (
+                                    <>
+                                        <h2 style={{ marginTop: "50px" }}>
+                                            Kết quả theo Nguyên liệu:
+                                            <strong> {searchQuery || "(Trống)"}</strong>
+                                        </h2>
+                                        <SmallLineSeparator />
+
+                                        <RecipeGrid recipeList={ingredientResults} />
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </>
                 ) : (
                     <>
-                        <RecipeGrid recipeList={paginatedRecipes} />
-                        {allResults.length > limit && (
-                            <PagePagination
-                                totalPage={totalPage}
-                                currPage={currPage}
-                                limit={limit}
-                                siblings={1}
-                                onPageChange={handlePageChange}
-                            />
+                        {tagResults.length === 0 ? (
+                            <p>Không tìm thấy công thức nào phù hợp với tag.</p>
+                        ) : (
+                            <>
+                                <h2>
+                                    Kết quả theo Tag:
+                                    <strong> {searchQuery || "(Trống)"}</strong>
+                                </h2>
+                                <SmallLineSeparator />
+                                <RecipeGrid recipeList={paginatedRecipes} />
+                                {tagResults.length > limit && (
+                                    <PagePagination
+                                        totalPage={totalPage}
+                                        currPage={currPage}
+                                        limit={limit}
+                                        siblings={1}
+                                        onPageChange={handlePageChange}
+                                    />
+                                )}
+                            </>
                         )}
                     </>
                 )}

@@ -15,6 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import RecipeInfoAdmin from "../../components/RecipeInfoAdmin/RecipeInfoAdmin";
+import RecipeEditAdmin from "../../components/RecipeEditAdmin/RecipeEditAdmin";
 
 const paginationModel = { page: 0, pageSize: 10 };
 
@@ -22,8 +23,12 @@ export default function DataTable() {
     const [rows, setRows] = useState([]);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+
     const [selectedRecipe, setSelectedRecipe] = useState(null);
+    // for show recipe
     const [openDialog, setOpenDialog] = useState(false);
+    // for edit recipe
+    const [openEdit, setOpenEdit] = useState(false);
 
     const handleViewRecipe = async (id) => {
         try {
@@ -31,6 +36,17 @@ export default function DataTable() {
             const data = await res.json();
             setSelectedRecipe(data);
             setOpenDialog(true);
+        } catch (err) {
+            console.error("Lỗi khi lấy công thức:", err);
+        }
+    };
+
+    const handleEditRecipe = async (id) => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes/${id}`);
+            const data = await res.json();
+            setSelectedRecipe(data);
+            setOpenEdit(true);
         } catch (err) {
             console.error("Lỗi khi lấy công thức:", err);
         }
@@ -89,8 +105,13 @@ export default function DataTable() {
                         ></i>
                     </Tooltip>
                     <Tooltip title="Sửa" placement="top">
-                        <i className="bx bx-edit"></i>
+                        <i
+                            className="bx bx-edit"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleEditRecipe(params.row.id)}
+                        ></i>
                     </Tooltip>
+
                     <Tooltip title="Xóa" placement="top">
                         <i className="bx bx-trash"></i>
                     </Tooltip>
@@ -160,7 +181,7 @@ export default function DataTable() {
                         `${from}–${to} trong ${count}`,
                 }}
             />
-
+            {/* show recipe popup */}
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
                 <DialogTitle>
                     <IconButton
@@ -172,6 +193,21 @@ export default function DataTable() {
                 </DialogTitle>
                 <DialogContent>
                     <RecipeInfoAdmin recipe={selectedRecipe} recipeImageList={combinedImages} />
+                </DialogContent>
+            </Dialog>
+
+            {/* edit recipe popup */}
+            <Dialog open={openEdit} onClose={() => setOpenEdit(false)} maxWidth="md" fullWidth>
+                <DialogTitle>
+                    <IconButton
+                        onClick={() => setOpenEdit(false)}
+                        style={{ position: "absolute", right: 8, top: 8 }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <RecipeEditAdmin recipe={selectedRecipe} />
                 </DialogContent>
             </Dialog>
         </Paper>

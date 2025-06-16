@@ -250,6 +250,34 @@ const getRecipesByTag = async (req, res) => {
     }
 };
 
+const getRecipesByTitleAndIngredient = async (req, res) => {
+    const keyword = req.query.query?.toLowerCase() || "";
+
+    try {
+        // Tìm theo title
+        const byTitle = await Recipe.find({
+            title: { $regex: keyword, $options: "i" },
+        });
+
+        // Lấy id của kết quả tìm theo title để loại khỏi nguyên liệu
+        const titleIds = byTitle.map((r) => r._id.toString());
+
+        // Tìm theo ingredients nhưng loại bỏ các recipe đã có trong title
+        const byIngredients = await Recipe.find({
+            ingredients: { $elemMatch: { $regex: keyword, $options: "i" } },
+            _id: { $nin: titleIds }, // loại công thức đã tìm thấy theo title
+        });
+
+        res.status(200).json({
+            byTitle,
+            byIngredients,
+        });
+    } catch (error) {
+        console.error("Lỗi khi tìm theo title và nguyên liệu:", error);
+        res.status(500).json({ msg: "Lỗi server khi tìm kiếm", error });
+    }
+};
+
 module.exports = {
     getRecipeById,
     getTopLikedRecipes,
@@ -262,4 +290,5 @@ module.exports = {
     deleteRecipe,
     getRandomTags,
     getRecipesByTag,
+    getRecipesByTitleAndIngredient,
 };

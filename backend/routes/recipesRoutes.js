@@ -12,6 +12,7 @@ const {
     deleteRecipe,
     getRandomTags,
     getRecipesByTag,
+    getRecipesByTitleAndIngredient,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -36,7 +37,9 @@ router.get("/random-recipes", getRandomRecipes);
 router.get("/random-tags", getRandomTags);
 
 // GET /api/recipes/search
-router.get("/search", getRecipesByTag);
+router.get("/search-tags", getRecipesByTag);
+
+router.get("/search-combined", getRecipesByTitleAndIngredient);
 
 // GET /api/recipes/:id
 router.get("/:id", getRecipeById);
