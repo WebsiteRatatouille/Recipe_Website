@@ -25,11 +25,10 @@ function MyRecipes() {
   // Get user ID from localStorage when component mounts
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user._id) {
-      setUserId(user._id);
-    } else {
-      setError("Vui lòng đăng nhập để xem công thức của bạn.");
-      setLoading(false);
+    console.log("User from localStorage:", user); // LOGGING
+    if (user && user.id) {
+      setUserId(user.id);
+      console.log("userId set:", user.id); // LOGGING
     }
   }, []);
 
@@ -38,6 +37,7 @@ function MyRecipes() {
     setError(null);
     try {
       const token = localStorage.getItem("token");
+      console.log("Token in fetchRecipes:", token); // LOGGING
       const response = await axios.get(
         `${API_BASE_URL}/api/recipes?keyword=${search}&page=${page}&limit=10`,
         {

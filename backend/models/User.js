@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema(
     favoriteRecipes: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }, // Thêm trường favoriteRecipes
     ],
+    isVerified: { type: Boolean, default: false }, // Thêm trường xác thực email
+    verificationToken: { type: String, unique: true, sparse: true }, // Thêm trường token xác thực
   },
   { timestamps: true }
 );

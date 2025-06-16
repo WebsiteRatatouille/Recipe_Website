@@ -59,7 +59,7 @@ function LoginPopup({ setShowLogin }) {
         return;
       }
 
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      alert(data.msg);
       setCurrState("Đăng nhập");
       resetForm();
     } catch (error) {
@@ -94,6 +94,15 @@ function LoginPopup({ setShowLogin }) {
 
       if (!response.ok) {
         alert(data.msg || "Đăng nhập thất bại");
+        return;
+      }
+
+      // Kiểm tra trạng thái xác thực email
+      // Bỏ qua kiểm tra xác thực email cho tài khoản admin
+      if (data.user && !data.user.isVerified && data.user.role !== "admin") {
+        alert(
+          "Tài khoản của bạn chưa được xác thực. Vui lòng kiểm tra email của bạn để xác thực."
+        );
         return;
       }
 

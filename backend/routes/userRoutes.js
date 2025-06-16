@@ -11,11 +11,13 @@ const {
   createUserByAdmin,
   getUserDetailsWithPassword,
   resetUserPasswordByAdmin,
+  verifyEmail,
 } = require("../controllers/userController");
 const auth = require("../middleware/auth");
 
 // Routes cho người dùng thông thường
 router.post("/register", register);
+router.get("/verify-email", verifyEmail);
 router.post("/login", login);
 router.put("/update-profile", auth, updateProfile);
 
