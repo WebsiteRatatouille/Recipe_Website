@@ -11,26 +11,23 @@ import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 function Slide({ image, title, subtitle, description, link }) {
-    return (
-        <div className="slide-container">
-            <div class="home-text">
-                <span>Công thức đặc biệt trong ngày</span>
-                <h1>{title}</h1>
-                <p>{description}</p>
-                <p>{subtitle}</p>
-                <Link to={link}>
-                    <button
-                        type="button"
-                        class="btn btn-light btn-check-now"
-                    >
-                        Xem ngay
-                    </button>
-                </Link>
-            </div>
+  return (
+    <div className="slide-container">
+      <div class="home-text">
+        <span>Công thức đặc biệt trong ngày</span>
+        <h1>{title}</h1>
+        <p>{description}</p>
+        <p>{subtitle}</p>
+        <Link to={link}>
+          <button type="button" class="btn btn-light btn-check-now">
+            Xem ngay
+          </button>
+        </Link>
+      </div>
 
-            <img src={image} alt="Slide" />
-        </div>
-    );
+      <img src={image} alt="Slide" />
+    </div>
+  );
 }
 
 export default Slide;

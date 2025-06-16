@@ -1,4 +1,5 @@
 const Recipe = require("../models/Recipe");
+const mongoose = require("mongoose"); // Import mongoose để sử dụng Types.ObjectId
 
 const getRecipeById = async (req, res) => {
     try {
@@ -19,21 +20,29 @@ const getAllRecipes = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const keyword = req.query.keyword || "";
 
-        // Tạo query để tìm kiếm
-        const query = keyword
-            ? {
-                  $or: [
-                      { title: { $regex: keyword, $options: "i" } },
-                      { description: { $regex: keyword, $options: "i" } },
-                      { tags: { $regex: keyword, $options: "i" } },
-                  ],
-              }
-            : {};
+        // LOGGING ĐỂ DEBUG
+        // console.log("----------------- DEBUG getAllRecipes -----------------");
+        // console.log("req.user:", req.user);
+        // console.log("req.user.id:", req.user.id);
+        // console.log("req.user.isAdmin:", req.user.isAdmin);
+        // console.log("---------------------------------------------------");
 
-        // Đếm tổng số công thức phù hợp với điều kiện tìm kiếm
+        // Nếu là admin thì lấy tất cả, nếu không thì chỉ lấy công thức của user hiện tại
+        let query = {};
+        if (keyword) {
+            query.$or = [
+                { title: { $regex: keyword, $options: "i" } },
+                { description: { $regex: keyword, $options: "i" } },
+                { tags: { $regex: keyword, $options: "i" } },
+            ];
+        }
+        // Nếu không phải admin thì chỉ lấy công thức của user hiện tại
+        if (!req.user.isAdmin) {
+            // Chuyển đổi chuỗi ID thành ObjectId để đảm bảo so sánh đúng
+            query.createdBy = new mongoose.Types.ObjectId(req.user.id);
+        }
+
         const total = await Recipe.countDocuments(query);
-
-        // Lấy danh sách công thức với phân trang
         const recipes = await Recipe.find(query)
             .populate("createdBy", "username")
             .sort({ createdAt: -1 })
@@ -137,6 +146,7 @@ const createRecipe = async (req, res) => {
             tags,
             calories,
             origin,
+            createdBy: req.user.id,
         });
 
         const createdRecipe = await recipe.save();
@@ -247,6 +257,34 @@ const getRecipesByTag = async (req, res) => {
     } catch (error) {
         console.error("Lỗi khi tìm công thức theo tag:", error);
         res.status(500).json({ msg: "Lỗi server khi tìm theo tag", error });
+    }
+};
+
+const getRecipesByTitleAndIngredient = async (req, res) => {
+    const keyword = req.query.query?.toLowerCase() || "";
+
+    try {
+        // Tìm theo title
+        const byTitle = await Recipe.find({
+            title: { $regex: keyword, $options: "i" },
+        });
+
+        // Lấy id của kết quả tìm theo title để loại khỏi nguyên liệu
+        const titleIds = byTitle.map((r) => r._id.toString());
+
+        // Tìm theo ingredients nhưng loại bỏ các recipe đã có trong title
+        const byIngredients = await Recipe.find({
+            ingredients: { $elemMatch: { $regex: keyword, $options: "i" } },
+            _id: { $nin: titleIds }, // loại công thức đã tìm thấy theo title
+        });
+
+        res.status(200).json({
+            byTitle,
+            byIngredients,
+        });
+    } catch (error) {
+        console.error("Lỗi khi tìm theo title và nguyên liệu:", error);
+        res.status(500).json({ msg: "Lỗi server khi tìm kiếm", error });
     }
 };
 

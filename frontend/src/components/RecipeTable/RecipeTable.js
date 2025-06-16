@@ -124,9 +124,13 @@ export default function DataTable() {
         const fetchRecipes = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes`);
-                const data = await res.json();
-                const formatted = data.recipes.map((item) => ({
+                const token = localStorage.getItem("token");
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/recipes`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const formatted = res.data.recipes.map((item) => ({
                     id: item._id,
                     imageThumb: item.imageThumb,
                     title: item.title,

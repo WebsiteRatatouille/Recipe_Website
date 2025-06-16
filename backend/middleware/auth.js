@@ -10,6 +10,7 @@ const auth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "1234");
     req.user = decoded;
+    req.user.isAdmin = decoded.role === "admin";
     next();
   } catch (err) {
     console.error("Lỗi xác thực:", err);

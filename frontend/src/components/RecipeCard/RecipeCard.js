@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./RecipeCard.css";
 import { Link } from "react-router-dom";
 import axios from "../../utils/axios";
+import { toast } from "react-toastify";
 
 function RecipeCard({ image, name, link, id }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -29,12 +30,16 @@ function RecipeCard({ image, name, link, id }) {
       setIsLoading(true);
       if (isFavorite) {
         await axios.delete(`/api/recipes/${id}/favorite`);
+        setIsFavorite(false);
+        toast.info("Đã xóa khỏi công thức yêu thích!");
       } else {
         await axios.post(`/api/recipes/${id}/favorite`);
+        setIsFavorite(true);
+        toast.success("Đã thêm vào công thức yêu thích!");
       }
-      setIsFavorite(!isFavorite);
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái yêu thích:", error);
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!");
     } finally {
       setIsLoading(false);
     }
