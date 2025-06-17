@@ -122,10 +122,99 @@ const createUploaderWithRecipeId = () => {
     };
 };
 
+//  uploader cho danh mục
+const createCustomUploaderCategory = (categoryId) => {
+    const storage = new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: `categories/${categoryId}`,
+            format: async () => "jpg",
+            public_id: (req, file) =>
+                Date.now() + "-" + file.originalname.replace(/[^a-zA-Z0-9]/g, "").toLowerCase(),
+        },
+    });
+
+    return multer({ storage });
+};
+
+// Upload ảnh danh mục
+const uploadCategoryImage = (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ msg: "Không có file ảnh" });
+    }
+
+    res.status(200).json({
+        url: req.file.path,
+        public_id: req.file.filename,
+    });
+};
+
+const createUploaderWithCategoryId = () => {
+    return (req, res, next) => {
+        const categoryId = req.query.categoryId;
+        if (!categoryId) {
+            return res.status(400).json({ msg: "Thiếu categoryId trong query" });
+        }
+
+        const storage = new CloudinaryStorage({
+            cloudinary,
+            params: {
+                folder: `categories/${categoryId}`,
+                format: async () => "jpg",
+                public_id: (req, file) =>
+                    Date.now() + "-" + file.originalname.replace(/[^a-zA-Z0-9]/g, "").toLowerCase(),
+            },
+        });
+
+        const upload = multer({ storage }).single("image");
+
+        upload(req, res, function (err) {
+            if (err) {
+                return res.status(500).json({ msg: "Lỗi upload ảnh", error: err });
+            }
+            next();
+        });
+    };
+};
+
+const deleteImagesInCategoryFolder = async (req, res) => {
+    const categoryId = req.params.id;
+    const folderPath = `categories/${categoryId}`;
+
+    try {
+        const result = await cloudinary.api.resources({
+            type: "upload",
+            prefix: folderPath + "/", // chỉ ảnh trong folder này
+            max_results: 100,
+        });
+
+        const publicIds = result.resources.map((file) => file.public_id);
+
+        if (publicIds.length > 0) {
+            await cloudinary.api.delete_resources(publicIds);
+        }
+
+        return res.status(200).json({
+            msg: "Đã xóa toàn bộ ảnh trong thư mục danh mục",
+            deleted: publicIds,
+        });
+    } catch (error) {
+        console.error("Lỗi khi xóa ảnh trong thư mục danh mục:", error);
+        return res.status(500).json({
+            msg: "Lỗi khi xóa ảnh trong thư mục",
+            error,
+        });
+    }
+};
+
 module.exports = {
     deleteImagesInRecipeFolder,
     deleteSelectedImages,
     uploadRecipeImage,
     createCustomUploader,
     createUploaderWithRecipeId,
+    uploadCategoryImage,
+    createCustomUploaderCategory,
+    createUploaderWithCategoryId,
+    deleteImagesInCategoryFolder,
 };

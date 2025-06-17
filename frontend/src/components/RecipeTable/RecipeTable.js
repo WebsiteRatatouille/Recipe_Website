@@ -13,6 +13,8 @@ import {
     IconButton,
     Button,
     Paper,
+    Alert,
+    Snackbar,
 } from "@mui/material";
 import { viVN } from "@mui/x-data-grid/locales";
 import CloseIcon from "@mui/icons-material/Close";
@@ -37,6 +39,8 @@ export default function DataTable() {
 
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [recipeToDeleteId, setRecipeToDeleteId] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleViewRecipe = async (id) => {
         try {
@@ -79,9 +83,12 @@ export default function DataTable() {
 
             // Cập nhật danh sách công thức
             setRows((prev) => prev.filter((r) => r.id !== recipeToDeleteId));
+
+            setSuccessMessage("Xoá công thức thành công");
         } catch (err) {
             console.error("Lỗi khi xoá công thức:", err);
             alert("Không thể xoá công thức.");
+            setSuccessMessage("Không thể xoá công thức");
         } finally {
             // Đóng dialog và reset state
             setDeleteConfirmOpen(false);
@@ -313,6 +320,40 @@ export default function DataTable() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <Snackbar
+                open={!!successMessage}
+                autoHideDuration={3000}
+                onClose={() => {
+                    setSuccessMessage("");
+                }}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={() => setSuccessMessage("")}
+                    severity="success"
+                    variant="filled" //
+                    sx={{ width: "100%", fontWeight: "bold" }}
+                >
+                    {successMessage}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar
+                open={!!errorMessage}
+                autoHideDuration={4000}
+                onClose={() => setErrorMessage("")}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={() => setErrorMessage("")}
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: "100%", fontWeight: "bold" }}
+                >
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
         </Paper>
     );
 }

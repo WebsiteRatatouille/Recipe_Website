@@ -6,6 +6,10 @@ const {
     uploadRecipeImage,
     createCustomUploader,
     createUploaderWithRecipeId,
+    uploadCategoryImage,
+    createCustomUploaderCategory,
+    createUploaderWithCategoryId,
+    deleteImagesInCategoryFolder,
 } = require("../controllers/cloudinaryController");
 
 // Xóa ảnh trong folder
@@ -17,7 +21,7 @@ router.post("/recipes/:id/delete-images", deleteSelectedImages);
 router.post(
     "/recipes/upload-image",
     (req, res, next) => {
-        const folderName = req.query.recipeId; // <-- Lấy từ query thay vì body
+        const folderName = req.query.recipeId; // Lấy từ query thay vì body
         if (!folderName) {
             return res.status(400).json({ msg: "Thiếu recipeId trong query" });
         }
@@ -33,6 +37,9 @@ router.post(
     uploadRecipeImage
 );
 
-router.post("/recipes/upload-image", createUploaderWithRecipeId(), uploadRecipeImage);
+router.delete("/categories/:id/images", deleteImagesInCategoryFolder);
+
+//  upload ảnh danh mục theo ID
+router.post("/categories/upload-image", createUploaderWithCategoryId(), uploadCategoryImage);
 
 module.exports = router;

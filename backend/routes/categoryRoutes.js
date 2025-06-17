@@ -1,15 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const Category = require("../models/Category");
+const {
+    getCategoryById,
+    updateCategory,
+    getAllCategories,
+    createCategory,
+    deleteCategory,
+} = require("../controllers/categoryController");
+const auth = require("../middleware/auth");
 
-// GET all categories
-router.get("/", async (req, res) => {
-  try {
-    const categories = await Category.find();
-    res.json(categories);
-  } catch (err) {
-    res.status(500).json({ msg: "Lỗi khi lấy categories", error: err });
-  }
-});
+// Lấy tất cả danh mục
+router.get("/", getAllCategories);
+
+// Lấy danh mục theo id
+router.get("/:id", getCategoryById);
+
+// Cập nhật danh mục
+router.put("/:id", auth, updateCategory);
+
+router.post("/", auth, createCategory);
+router.delete("/:id", auth, deleteCategory);
 
 module.exports = router;

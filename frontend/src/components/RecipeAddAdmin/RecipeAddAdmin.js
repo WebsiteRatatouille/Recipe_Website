@@ -1,5 +1,5 @@
 // RecipeAddAdmin.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./RecipeAddAdmin.css";
 import axios from "axios";
 import { Snackbar, Alert } from "@mui/material";
@@ -7,11 +7,27 @@ import { Snackbar, Alert } from "@mui/material";
 function RecipeAddAdmin({ onClose }) {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/categories`);
+                setCategories(res.data);
+            } catch (err) {
+                console.error("Lỗi khi lấy danh mục:", err);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
         ingredients: "",
         steps: "",
+        category: "",
         imageThumb: "",
         images: [],
         cookingTime: "",
@@ -154,6 +170,9 @@ function RecipeAddAdmin({ onClose }) {
                     .filter(Boolean),
                 imageThumb: imageThumbUrl,
                 images: uploadedSubImages,
+                category: formData.category,
+                categoryDisplay:
+                    categories.find((c) => c._id === formData.category)?.displayName || "",
             };
 
             await axios.put(
@@ -385,6 +404,26 @@ function RecipeAddAdmin({ onClose }) {
                     <div className="form-group">
                         <label htmlFor="tags">Tags (phân cách bằng dấu phẩy)</label>
                         <input type="text" id="tags" onChange={handleInputChange} />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="category">Danh mục</label>
+                        <select
+                            id="category"
+                            value={formData.category}
+                            onChange={(e) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    category: e.target.value,
+                                }))
+                            }
+                        >
+                            <option value="">-- Chọn danh mục --</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat._id}>
+                                    {cat.displayName}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </div>

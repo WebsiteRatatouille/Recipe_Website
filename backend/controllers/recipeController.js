@@ -285,8 +285,9 @@ const updateRecipeL = async (req, res) => {
             recipe.origin = origin ?? recipe.origin;
             recipe.updatedAt = Date.now();
 
-            const updatedRecipe = await recipe.save();
-            res.status(200).json(updatedRecipe);
+            await recipe.save();
+            const populatedRecipe = await Recipe.findById(recipe._id).populate("category", "name");
+            res.status(200).json(populatedRecipe);
         } else {
             res.status(404).json({ msg: "Không tìm thấy công thức" });
         }
