@@ -10,6 +10,10 @@ const ContactForm = () => {
     message: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -20,30 +24,44 @@ const ContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+
     try {
       const response = await axios.post(
         "http://localhost:5000/api/contact",
         formData
       );
-      console.log("Message sent successfully:", response.data);
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-      alert(
-        "Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ phản hồi sớm nhất có thể!"
-      );
+
+      if (response.data.success) {
+        setSuccess(true);
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      }
     } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau.");
+      setError(
+        error.response?.data?.message ||
+          "Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="contact-form-container">
       <h2>Gửi Tin Nhắn Cho Chúng Tôi</h2>
+      {success && (
+        <div className="success-message">
+          Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ phản hồi sớm nhất có thể!
+        </div>
+      )}
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit} className="contact-form">
         <div className="form-group">
           <label htmlFor="name">Họ và tên</label>
@@ -55,6 +73,7 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             placeholder="Nhập họ và tên của bạn"
+            disabled={isLoading}
           />
         </div>
 
@@ -68,6 +87,7 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             placeholder="Nhập địa chỉ email của bạn"
+            disabled={isLoading}
           />
         </div>
 
@@ -81,6 +101,7 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             placeholder="Nhập tiêu đề tin nhắn"
+            disabled={isLoading}
           />
         </div>
 
@@ -94,11 +115,23 @@ const ContactForm = () => {
             required
             placeholder="Nhập nội dung tin nhắn của bạn"
             rows="5"
+            disabled={isLoading}
           ></textarea>
         </div>
 
-        <button type="submit" className="submit-button">
-          Gửi tin nhắn
+        <button
+          type="submit"
+          className={`submit-button ${isLoading ? "loading" : ""}`}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className="loading-spinner"></span>
+              Đang gửi...
+            </>
+          ) : (
+            "Gửi tin nhắn"
+          )}
         </button>
       </form>
     </div>
