@@ -7,13 +7,13 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 
 function UserLayout({ setShowLogin }) {
-    return (
-        <div className="user-layout">
-            <Navbar setShowLogin={setShowLogin} />
-            <Outlet />
-            <Footer />
-        </div>
-    );
+  return (
+    <div className="user-layout">
+      <Navbar setShowLogin={setShowLogin} />
+      <Outlet />
+      <Footer />
+    </div>
+  );
 }
 
 export default UserLayout;

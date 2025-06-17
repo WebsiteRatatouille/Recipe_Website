@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { sendVerificationEmail } = require("../services/emailService");
 
 // Sign in
 const register = async (req, res) => {
@@ -18,10 +20,15 @@ const register = async (req, res) => {
       email: emailNormalized,
       password: hashedPassword,
       role: "user",
+      verificationToken: crypto.randomBytes(32).toString("hex"),
     });
     await newUser.save();
 
-    res.status(201).json({ msg: "Đăng ký thành công" });
+    await sendVerificationEmail(newUser.email, newUser.verificationToken);
+
+    res.status(201).json({
+      msg: "Đăng ký thành công. Vui lòng kiểm tra email của bạn để xác thực tài khoản.",
+    });
   } catch (err) {
     res.status(500).json({ msg: "Lỗi server", error: err });
   }
@@ -64,6 +71,7 @@ const login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role || "user",
+        isVerified: user.isVerified,
       },
       token,
     });
@@ -312,6 +320,41 @@ const resetUserPasswordByAdmin = async (req, res) => {
   }
 };
 
+// Verify email
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ msg: "Token xác thực không hợp lệ hoặc đã hết hạn." });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined; // Xóa token sau khi xác thực
+    await user.save();
+
+    res.redirect(
+      `${
+        process.env.FRONTEND_URL
+      }/verify-email-status?status=success&msg=${encodeURIComponent(
+        "Email của bạn đã được xác thực thành công."
+      )}`
+    );
+  } catch (err) {
+    console.error("Lỗi xác thực email:", err);
+    res.redirect(
+      `${
+        process.env.FRONTEND_URL
+      }/verify-email-status?status=error&msg=${encodeURIComponent(
+        "Token xác thực không hợp lệ hoặc đã hết hạn."
+      )}`
+    );
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -323,4 +366,5 @@ module.exports = {
   createUserByAdmin,
   getUserDetailsWithPassword,
   resetUserPasswordByAdmin,
+  verifyEmail,
 };

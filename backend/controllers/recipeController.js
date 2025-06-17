@@ -22,11 +22,11 @@ const getAllRecipes = async (req, res) => {
         const keyword = req.query.keyword || "";
 
         // LOGGING ĐỂ DEBUG
-        // console.log("----------------- DEBUG getAllRecipes -----------------");
-        // console.log("req.user:", req.user);
-        // console.log("req.user.id:", req.user.id);
-        // console.log("req.user.isAdmin:", req.user.isAdmin);
-        // console.log("---------------------------------------------------");
+        console.log("----------------- DEBUG getAllRecipes -----------------");
+        console.log("req.user:", req.user);
+        console.log("req.user.id:", req.user.id);
+        console.log("req.user.isAdmin:", req.user.isAdmin);
+        console.log("---------------------------------------------------");
 
         // Nếu là admin thì lấy tất cả, nếu không thì chỉ lấy công thức của user hiện tại
         let query = {};
