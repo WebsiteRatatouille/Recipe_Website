@@ -17,6 +17,7 @@ function Home() {
     const [topLikedRecipeList, setTopLikedRecipeList] = useState([]);
     const [topViewedRecipeList, setTopViewedRecipeList] = useState([]);
     const [randomRecipeList, setRandomRecipeList] = useState([]);
+    const [randomRecipeListForSwiper, setRandomRecipeListForSwiper] = useState([]);
 
     const [loadingTopLiked, setLoadingTopLiked] = useState(true);
     const [loadingTopViewed, setLoadingTopViewed] = useState(true);
@@ -90,6 +91,24 @@ function Home() {
         };
 
         fetchRandomRecipes();
+    }, []);
+
+    useEffect(() => {
+        const fetchRandomRecipesForSwiper = async () => {
+            startProgress();
+            try {
+                const res = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/api/recipes/random-recipes-big-swiper`
+                );
+                setRandomRecipeListForSwiper(res.data);
+            } catch (err) {
+                console.error("Lỗi khi lấy công thức ngẫu nhiên cho Swiper:", err);
+            } finally {
+                stopProgress();
+            }
+        };
+
+        fetchRandomRecipesForSwiper();
     }, []);
 
     return (
