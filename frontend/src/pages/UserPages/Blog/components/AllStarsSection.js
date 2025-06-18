@@ -1,5 +1,6 @@
 import React from 'react';
 import imageBlog4 from "../../../../assets/imgBlog/Leslie.jpg";
+import './AllStarsSection.css';
 
 const AllStarsSection = () => {
   return (

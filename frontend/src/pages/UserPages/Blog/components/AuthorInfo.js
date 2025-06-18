@@ -1,5 +1,6 @@
 import React from 'react';
 import imagePopUp from "../../../../assets/imgBlog/jerry.png";
+import './AuthorInfo.css';
 
 const AuthorInfo = () => {
   return (

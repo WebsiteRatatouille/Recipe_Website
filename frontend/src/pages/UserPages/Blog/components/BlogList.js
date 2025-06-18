@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import BlogPostCard from "./components/BlogPostCard";
-import axios from "../../../utils/axios";
+import BlogPostCard from "./BlogPostCard";
+import axios from "../../../../utils/axios";
+import "./BlogList.css";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,8 +13,8 @@ const BlogList = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Tìm Ý Tưởng Mới ? Đọc bài viết dưới đây</h2>
+    <div className="blog-list-container">
+      <h2 className="blog-list-title">Tìm Ý Tưởng Mới ? Đọc bài viết dưới đây</h2>
       {blogs.map(blog => (
         <BlogPostCard key={blog._id} blog={blog} />
       ))}

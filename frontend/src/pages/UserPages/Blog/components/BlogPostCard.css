@@ -1,3 +1,5 @@
+@import url("../BlogVariables.css");
+
 .blog-post-item {
   display: flex;
   background: #f8f8e8;

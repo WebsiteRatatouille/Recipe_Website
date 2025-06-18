@@ -1,5 +1,6 @@
 import React from 'react';
 import videoBlog from "../../../../assets/imgBlog/video2.mp4";
+import './VideoHeader.css';
 
 const VideoHeader = () => {
   return (

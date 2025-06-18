@@ -9,7 +9,7 @@ import SocialIcons from './components/SocialIcons';
 import AllStarsSection from './components/AllStarsSection';
 import FeedbackSection from './components/FeedbackSection';
 import TikTokVideo from './components/TikTokVideo';
-import BlogList from './BlogList';
+import BlogList from './components/BlogList';
 
 const Blog = () => {
   return (

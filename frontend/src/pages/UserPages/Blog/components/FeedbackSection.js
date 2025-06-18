@@ -1,4 +1,5 @@
 import React from "react";
+import './FeedbackSection.css';
 
 const FeedbackSection = () => {
   const exploreTags = [

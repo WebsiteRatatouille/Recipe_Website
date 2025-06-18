@@ -1,6 +1,7 @@
 import React from 'react';
 import videoBlog2 from "../../../../assets/imgBlog/Creamy Garlic Chicken.mp4";
 import ratLogo from "../../../../assets/imgBlog/rat_logo.png";
+import './TikTokVideo.css';
 
 const TikTokVideo = () => {
   return (
