@@ -53,6 +53,8 @@ const recipeRoutes = require("./routes/recipesRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const blogRoutes = require('./routes/blogRoutes');
+const blogReviewRoutes = require('./routes/blogReviewRoutes');
 
 app.use("/api/users", userRoutes);
 app.use("/auth", authRoutes);
@@ -61,6 +63,8 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/blogreviews', blogReviewRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

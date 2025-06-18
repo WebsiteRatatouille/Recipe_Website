@@ -23,6 +23,8 @@ import AdminUsers from "./pages/AdminPages/AdminUsers/AdminUsers";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
 import RecipeDetail from "./pages/UserPages/RecipeDetail/RecipeDetail";
 import RecipeSearchResult from "./pages/UserPages/RecipeSearchResult/RecipeSearchResult";
+import BlogList from "./pages/UserPages/Blog/BlogList";
+import BlogDetail from "./pages/UserPages/Blog/BlogDetail";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -86,6 +88,8 @@ function App() {
             <Route path="/recipes/:id" element={<RecipeDetail />} />
             <Route path="/search" element={<RecipeSearchResult />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blogs" element={<BlogList />} />
+            <Route path="/blogs/:id" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/aboutUs" element={<AboutUs />} />
           </Route>
