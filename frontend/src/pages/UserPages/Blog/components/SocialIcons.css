@@ -1,0 +1,19 @@
+.blog-social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.blog-social-icons i {
+  font-size: 45px;
+  color: var(--text-color);
+  margin: 0 10px;
+  transition: transform var(--transition-speed) ease;
+  cursor: pointer;
+}
+
+.blog-social-icons i:hover {
+  transform: scale(1.2);
+  color: var(--primary-color);
+}

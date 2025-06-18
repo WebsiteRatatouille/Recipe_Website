@@ -13,13 +13,13 @@
 }
 
 /* Layout */
-.blog-container {
+.blog-main-container {
   max-width: var(--max-width-website);
   padding: 0;
   margin: 10px auto;
 }
 
-.title {
+.blog-main-container .title {
   text-align: center;
   font-size: 36px;
   font-weight: bold;
@@ -29,7 +29,7 @@
   display: block;
 }
 
-.all-star-container {
+.blog-cta-container {
   max-width: 700px;
   margin: 40px auto;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -76,7 +76,7 @@
 }
 
 /* Navigation */
-.text-field-1 {
+.blog-navigation {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,11 +86,11 @@
   margin-bottom: 15px;
 }
 
-.text-field-1 i {
+.blog-navigation i {
   font-size: 30px;
 }
 
-.text-field-1 .dieu-huong {
+.blog-navigation .dieu-huong {
   position: relative;
   text-decoration: none;
   color: var(--text-color);
@@ -100,7 +100,7 @@
   margin: 0 5px;
 }
 
-.text-field-1 .dieu-huong::after {
+.blog-navigation .dieu-huong::after {
   content: "";
   position: absolute;
   left: 0;
@@ -111,7 +111,7 @@
   transition: width var(--transition-speed) ease-in-out;
 }
 
-.text-field-1 .dieu-huong:hover::after {
+.blog-navigation .dieu-huong:hover::after {
   width: 100%;
 }
 
@@ -174,28 +174,9 @@
 }
 
 /* Social Icons */
-.social-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80px;
-}
-
-.social-icon i {
-  font-size: 45px;
-  color: var(--text-color);
-  margin: 0 10px;
-  transition: transform var(--transition-speed) ease;
-  cursor: pointer;
-}
-
-.social-icon i:hover {
-  transform: scale(1.2);
-  color: var(--primary-color);
-}
 
 /* All Stars Section */
-.all-stars-container {
+.blog-all-stars-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
@@ -223,146 +204,147 @@
 }
 
 .all-stars-image {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  max-width: 400px;
   border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
 .image-credit {
-  font-size: 12px;
-  color: #777;
+  font-size: 14px;
+  color: var(--secondary-text-color);
   margin-top: 10px;
+  font-style: italic;
 }
 
 .text-section {
-  flex: 1.5;
+  flex: 2;
   min-width: 300px;
-  font-size: 20px;
-  line-height: 1.7;
+  line-height: 1.8;
 }
 
-/* Feedback Section */
-.feedback-section {
-  margin-top: 40px;
+.blog-feedback-section {
+  margin: 40px 0;
+  text-align: center;
 }
 
 .explore-more {
-  margin-bottom: 40px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .explore-more h2 {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 12px;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--text-color);
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
+  justify-content: center;
 }
 
 .tags a {
-  padding: 10px 16px;
-  border: 2px solid #444;
-  border-radius: 25px;
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
   text-decoration: none;
-  color: var(--text-color);
+  border-radius: var(--border-radius);
   font-weight: 500;
   transition: background-color var(--transition-speed);
 }
 
 .tags a:hover {
-  background-color: #f2f2f2;
+  background-color: #b71c1c;
 }
 
 .feedback {
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
-  text-align: left;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: var(--hover-color);
+  border-radius: var(--border-radius);
 }
 
 .feedback p {
-  font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
+  line-height: 1.6;
 }
 
 .feedback-buttons {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .feedback-buttons button {
-  font-size: 24px;
-  background: none;
-  border: 2px solid var(--primary-color);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  color: var(--primary-color);
-  transition: background-color var(--transition-speed);
+  font-weight: 500;
+  transition: all var(--transition-speed);
 }
 
 .feedback-buttons button:hover,
-.feedback-buttons button.active {
-  background-color: var(--hover-color);
+.feedback-buttons button:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* TikTok Video */
 .video-tiktok-container {
-  position: relative;
-  max-width: 325px;
-  height: auto;
-  margin: 0 auto;
-  border-radius: var(--border-radius);
+  max-width: 400px;
+  margin: 20px auto;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--box-shadow);
+  position: relative;
 }
 
 .video-tiktok-container video {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover;
+  border-radius: 12px;
 }
 
 .tiktok-logo {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 48px;
-  color: var(--text-color);
   z-index: 10;
 }
 
-/* CTA Button */
-.cta-button {
-  margin-top: 24px;
+.blog-cta-button {
+  text-align: center;
+  margin: 30px 0;
 }
 
 .cta-link {
   display: inline-block;
+  padding: 15px 30px;
   background-color: var(--primary-color);
   color: white;
   text-decoration: none;
-  padding: 12px 24px;
+  border-radius: var(--border-radius);
   font-weight: bold;
+  font-size: 18px;
+  transition: all var(--transition-speed);
   border: none;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: background-color var(--transition-speed);
+  cursor: pointer;
 }
 
 .cta-link:hover {
-  background-color: #b33a12;
+  background-color: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .video-blog-background .content {
-    font-size: 40px;
+    font-size: 50px;
   }
 
   .all-stars-content {
@@ -370,7 +352,7 @@
   }
 
   .text-section {
-    font-size: 16px;
+    order: -1;
   }
 
   .author-popup {
@@ -380,14 +362,15 @@
 
 @media (max-width: 480px) {
   .video-blog-background .content {
-    font-size: 30px;
+    font-size: 40px;
   }
 
-  .text-field-1 {
-    flex-wrap: wrap;
+  .blog-navigation {
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .social-icon i {
-    font-size: 35px;
+  .blog-social-icons i {
+    font-size: 24px;
   }
 }

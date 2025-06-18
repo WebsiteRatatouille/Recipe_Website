@@ -15,7 +15,7 @@ const Blog = () => {
   return (
     <>
       <VideoHeader />
-      <div className="blog-container">
+      <div className="blog-main-container">
         <Navigation />
         <h1 className="title">RATATOUILLE</h1>
         <AuthorInfo />
@@ -23,7 +23,7 @@ const Blog = () => {
         <AllStarsSection />
       </div>
 
-      <div className="all-star-container">
+      <div className="blog-cta-container">
         <h1>Trở thành một người dùng Ratatouille, và bạn sẽ...</h1>
 
         <p>
@@ -64,7 +64,7 @@ const Blog = () => {
           tháng.
         </p>
 
-        <div className="cta-button">
+        <div className="blog-cta-button">
           <button className="cta-link">
             Đăng kí để trở thành thành viên
           </button>

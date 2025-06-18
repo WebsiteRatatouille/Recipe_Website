@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./BlogPostCard.css";
 
 const BlogPostCard = ({ blog }) => (
-  <div className="blog-post-card">
+  <div className="blog-post-item">
     <div className="blog-post-image">
       <Link to={`/blogs/${blog._id}`}>
         <img src={blog.image} alt={blog.title} />

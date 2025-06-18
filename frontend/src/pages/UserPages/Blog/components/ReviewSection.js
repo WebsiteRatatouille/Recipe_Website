@@ -52,7 +52,7 @@ const ReviewSection = ({ blogId }) => {
   };
 
   return (
-    <div className="review-section">
+    <div className="blog-review-section">
       <h2>Reviews ({reviews.length})</h2>
       {!user ? (
         <div className="review-login-warning">Đăng nhập để sử dụng tính năng</div>

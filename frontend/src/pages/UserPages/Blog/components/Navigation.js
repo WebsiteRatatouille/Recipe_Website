@@ -10,7 +10,7 @@ const Navigation = () => {
   ];
 
   return (
-    <div className="text-field-1">
+    <div className="blog-navigation">
       {navItems.map((item, index) => (
         <React.Fragment key={item.path}>
           <Link className="dieu-huong" to={item.path}>

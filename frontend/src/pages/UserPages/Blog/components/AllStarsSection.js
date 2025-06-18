@@ -3,7 +3,7 @@ import imageBlog4 from "../../../../assets/imgBlog/Leslie.jpg";
 
 const AllStarsSection = () => {
   return (
-    <div className="all-stars-container">
+    <div className="blog-all-stars-container">
       <h1 className="all-stars-title">Home Cooks Are Our Heroes</h1>
       <div className="all-stars-content">
         <div className="image-section">
