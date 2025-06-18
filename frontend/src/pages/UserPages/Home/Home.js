@@ -113,7 +113,7 @@ function Home() {
 
     return (
         <div className="home">
-            <BigSwiper />
+            <BigSwiper recipeList={randomRecipeListForSwiper} />
 
             <LineSeparator />
             {loadingTopViewed ? (
