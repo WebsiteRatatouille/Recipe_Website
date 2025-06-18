@@ -432,6 +432,175 @@ const increaseViewCount = async (req, res) => {
   }
 };
 
+// @desc    Lấy danh sách bình luận của recipe
+// @route   GET /api/recipes/:id/comments
+// @access  Public
+const getRecipeComments = async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id).populate(
+      "comments.user",
+      "username name"
+    );
+    if (!recipe)
+      return res.status(404).json({ msg: "Không tìm thấy công thức" });
+    res.status(200).json(recipe.comments || []);
+  } catch (error) {
+    res.status(500).json({ msg: "Lỗi server", error });
+  }
+};
+
+// @desc    Thêm bình luận cho recipe
+// @route   POST /api/recipes/:id/comments
+// @access  Private
+const addRecipeComment = async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content)
+      return res
+        .status(400)
+        .json({ msg: "Nội dung bình luận không được để trống" });
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe)
+      return res.status(404).json({ msg: "Không tìm thấy công thức" });
+    const userId = req.user._id || req.user.id;
+    recipe.comments.push({ user: userId, content });
+    await recipe.save();
+    res.status(201).json({ msg: "Đã thêm bình luận thành công" });
+  } catch (error) {
+    res.status(500).json({ msg: "Lỗi server", error });
+  }
+};
+
+// @desc    Sửa bình luận cho recipe
+// @route   PUT /api/recipes/:recipeId/comments/:commentId
+// @access  Private
+const updateRecipeComment = async (req, res) => {
+  try {
+    const { recipeId, commentId } = req.params;
+    const { content } = req.body;
+    const userId = req.user._id || req.user.id;
+    console.log("[UPDATE COMMENT]", { recipeId, commentId, userId, content });
+    if (!content)
+      return res
+        .status(400)
+        .json({ msg: "Nội dung bình luận không được để trống" });
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      console.log("[UPDATE COMMENT] Không tìm thấy recipe");
+      return res.status(404).json({ msg: "Không tìm thấy công thức" });
+    }
+    const comment = recipe.comments.id(commentId);
+    if (!comment) {
+      console.log("[UPDATE COMMENT] Không tìm thấy comment");
+      return res.status(404).json({ msg: "Không tìm thấy bình luận" });
+    }
+    if (comment.user.toString() !== userId.toString()) {
+      console.log("[UPDATE COMMENT] Không phải chủ bình luận");
+      return res
+        .status(403)
+        .json({ msg: "Bạn không có quyền sửa bình luận này" });
+    }
+    comment.content = content;
+    await recipe.save();
+    res.status(200).json({ msg: "Đã sửa bình luận thành công" });
+  } catch (error) {
+    console.error("[UPDATE COMMENT] Lỗi:", error);
+    res.status(500).json({ msg: "Lỗi server", error });
+  }
+};
+
+// @desc    Xóa bình luận cho recipe
+// @route   DELETE /api/recipes/:recipeId/comments/:commentId
+// @access  Private
+const deleteRecipeComment = async (req, res) => {
+  try {
+    const { recipeId, commentId } = req.params;
+    const userId = req.user._id || req.user.id;
+    const isAdmin = req.user.isAdmin;
+    console.log("[DELETE COMMENT]", { recipeId, commentId, userId, isAdmin });
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      console.log("[DELETE COMMENT] Không tìm thấy recipe");
+      return res.status(404).json({ msg: "Không tìm thấy công thức" });
+    }
+    const comment = recipe.comments.id(commentId);
+    if (!comment) {
+      console.log("[DELETE COMMENT] Không tìm thấy comment");
+      return res.status(404).json({ msg: "Không tìm thấy bình luận" });
+    }
+    if (comment.user.toString() !== userId.toString() && !isAdmin) {
+      console.log("[DELETE COMMENT] Không phải chủ bình luận hoặc admin");
+      return res
+        .status(403)
+        .json({ msg: "Bạn không có quyền xóa bình luận này" });
+    }
+    // Xóa comment bằng filter
+    recipe.comments = recipe.comments.filter(
+      (c) => c._id.toString() !== commentId.toString()
+    );
+    await recipe.save();
+    res.status(200).json({ msg: "Đã xóa bình luận thành công" });
+  } catch (error) {
+    console.error("[DELETE COMMENT] Lỗi:", error);
+    res.status(500).json({ msg: "Lỗi server", error });
+  }
+};
+
+// @desc    Top công thức nhiều bình luận nhất
+// @route   GET /api/recipes/top-comments
+// @access  Public
+const getTopCommentedRecipes = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const recipes = await Recipe.find()
+      .populate("createdBy", "username")
+      .lean();
+    // Thêm trường commentCount
+    recipes.forEach(
+      (r) => (r.commentCount = r.comments ? r.comments.length : 0)
+    );
+    // Sắp xếp giảm dần theo commentCount
+    recipes.sort((a, b) => b.commentCount - a.commentCount);
+    res.status(200).json(recipes.slice(0, limit));
+  } catch (error) {
+    res.status(500).json({ msg: "Lỗi server", error });
+  }
+};
+
+// @desc    Bảng tổng quan tất cả công thức, sắp xếp theo điểm trung bình cộng của views, likes, comments
+// @route   GET /api/recipes/overview
+// @access  Public
+const getRecipeOverview = async (req, res) => {
+  try {
+    const recipes = await Recipe.find()
+      .populate("createdBy", "username")
+      .lean();
+    // Tính max cho từng tiêu chí
+    let maxViews = 1,
+      maxLikes = 1,
+      maxComments = 1;
+    recipes.forEach((r) => {
+      if (r.views > maxViews) maxViews = r.views;
+      if (r.likes > maxLikes) maxLikes = r.likes;
+      if ((r.comments?.length || 0) > maxComments)
+        maxComments = r.comments.length;
+    });
+    // Tính điểm trung bình cộng (chuẩn hóa về 0-1)
+    recipes.forEach((r) => {
+      const viewScore = r.views / maxViews;
+      const likeScore = r.likes / maxLikes;
+      const commentScore = (r.comments?.length || 0) / maxComments;
+      r.overviewScore = ((viewScore + likeScore + commentScore) / 3).toFixed(3);
+      r.commentCount = r.comments?.length || 0;
+    });
+    // Sắp xếp giảm dần theo overviewScore
+    recipes.sort((a, b) => b.overviewScore - a.overviewScore);
+    res.status(200).json(recipes);
+  } catch (error) {
+    res.status(500).json({ msg: "Lỗi server", error });
+  }
+};
+
 module.exports = {
   getRecipeById,
   getTopLikedRecipes,
@@ -450,4 +619,10 @@ module.exports = {
   getRecipesByTag,
   getRecipesByTitleAndIngredient,
   increaseViewCount,
+  getRecipeComments,
+  addRecipeComment,
+  updateRecipeComment,
+  deleteRecipeComment,
+  getTopCommentedRecipes,
+  getRecipeOverview,
 };

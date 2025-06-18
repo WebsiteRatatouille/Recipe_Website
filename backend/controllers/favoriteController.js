@@ -82,6 +82,8 @@ const addToFavorites = async (req, res) => {
     });
 
     await favorite.save();
+    recipe.likes = (recipe.likes || 0) + 1;
+    await recipe.save();
     res.status(201).json({ msg: "Đã thêm vào danh sách yêu thích" });
   } catch (error) {
     if (error.code === 11000) {
@@ -112,6 +114,12 @@ const removeFromFavorites = async (req, res) => {
       return res
         .status(404)
         .json({ msg: "Không tìm thấy công thức trong danh sách yêu thích" });
+    }
+
+    const recipe = await Recipe.findById(req.params.id);
+    if (recipe) {
+      recipe.likes = Math.max((recipe.likes || 1) - 1, 0);
+      await recipe.save();
     }
 
     res.status(200).json({ msg: "Đã xóa khỏi danh sách yêu thích" });

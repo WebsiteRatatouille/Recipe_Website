@@ -2,23 +2,29 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const {
-    getRecipeById,
-    getTopLikedRecipes,
-    getTopViewedRecipes,
-    getRandomRecipes,
-    getRandomRecipesForBigSwiper,
-    getAllRecipes,
-    getAllRecipesOnly,
-    createRecipe,
-    updateRecipe,
-    deleteRecipe,
-    getRandomTags,
-    getRecipesByTag,
-    getRecipesByTitleAndIngredient,
-    createRecipeL,
-    updateRecipeL,
-    deleteRecipeL,
-    increaseViewCount,
+  getRecipeById,
+  getTopLikedRecipes,
+  getTopViewedRecipes,
+  getRandomRecipes,
+  getRandomRecipesForBigSwiper,
+  getAllRecipes,
+  getAllRecipesOnly,
+  createRecipe,
+  updateRecipe,
+  deleteRecipe,
+  getRandomTags,
+  getRecipesByTag,
+  getRecipesByTitleAndIngredient,
+  createRecipeL,
+  updateRecipeL,
+  deleteRecipeL,
+  increaseViewCount,
+  getRecipeComments,
+  addRecipeComment,
+  updateRecipeComment,
+  deleteRecipeComment,
+  getTopCommentedRecipes,
+  getRecipeOverview,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -57,16 +63,34 @@ router.put("/update-l/:id", updateRecipeL);
 
 router.patch("/:id/view", increaseViewCount);
 
-// GET /api/recipes/:id
+// GET /api/recipes/top-comments
+router.get("/top-comments", getTopCommentedRecipes);
+
+// GET /api/recipes/overview
+router.get("/overview", getRecipeOverview);
+
+// Route động để sau cùng
 router.get("/:id", getRecipeById);
+
+// GET /api/recipes/:id/comments
+router.get("/:id/comments", getRecipeComments);
 
 // POST /api/recipes
 router.post("/", auth, createRecipe);
+
+// POST /api/recipes/:id/comments
+router.post("/:id/comments", auth, addRecipeComment);
 
 // PUT /api/recipes/:id
 router.put("/:id", auth, updateRecipe);
 
 // DELETE /api/recipes/:id
 router.delete("/:id", auth, deleteRecipe);
+
+// PUT /api/recipes/:recipeId/comments/:commentId
+router.put("/:recipeId/comments/:commentId", auth, updateRecipeComment);
+
+// DELETE /api/recipes/:recipeId/comments/:commentId
+router.delete("/:recipeId/comments/:commentId", auth, deleteRecipeComment);
 
 module.exports = router;

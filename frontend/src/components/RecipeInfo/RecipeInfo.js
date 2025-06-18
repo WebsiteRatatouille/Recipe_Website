@@ -32,6 +32,10 @@ function RecipeInfo({ recipe, recipeImageList }) {
 
   const handleFavoriteClick = async (e) => {
     e.preventDefault();
+    if (!currentUser) {
+      toast.info("Vui lòng đăng nhập để sử dụng tính năng yêu thích!");
+      return;
+    }
     if (isLoading) return;
     try {
       setIsLoading(true);

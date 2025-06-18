@@ -175,7 +175,7 @@ const UserList = () => {
     <div>
       <Box className="user-list-header">
         <Typography variant="h5" component="h2">
-          Quản lý người dùng
+          Quản lý tài khoản
         </Typography>
         <Box className="user-list-actions">
           <TextField
