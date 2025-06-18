@@ -1,52 +1,52 @@
-@import url("./BlogVariables.css");
+@import url("../../../BlogVariables.css");
 
 /* Layout */
 .blog-main-container {
-  max-width: var(--max-width-website);
-  padding: 0;
-  margin: 10px auto;
+    max-width: var(--max-width-website);
+    padding: 0;
+    margin: 10px auto;
 }
 
 .blog-main-container .title {
-  text-align: center;
-  font-size: 36px;
-  font-weight: bold;
-  margin: 20px 0;
-  color: var(--text-color);
-  width: 100%;
-  display: block;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: var(--text-color);
+    width: 100%;
+    display: block;
 }
 
 .blog-cta-container {
-  max-width: 700px;
-  margin: 40px auto;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
+    max-width: 700px;
+    margin: 40px auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
 }
 
 /* CTA Button */
 .blog-cta-button {
-  text-align: center;
-  margin: 30px 0;
+    text-align: center;
+    margin: 30px 0;
 }
 
 .cta-link {
-  display: inline-block;
-  padding: 15px 30px;
-  background-color: var(--primary-color);
-  color: white;
-  text-decoration: none;
-  border-radius: var(--border-radius);
-  font-weight: bold;
-  font-size: 18px;
-  transition: all var(--transition-speed);
-  border: none;
-  cursor: pointer;
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    font-size: 18px;
+    transition: all var(--transition-speed);
+    border: none;
+    cursor: pointer;
 }
 
 .cta-link:hover {
-  background-color: #b71c1c;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background-color: black;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

@@ -10,6 +10,8 @@ import RecipeGridOneColumn from "../../../components/RecipeGridOneColumn/RecipeG
 import RecipeSkeletonGrid from "../../../components/RecipeSkeletonGrid/RecipeSkeletonGrid";
 import LineSeparator from "../../../components/LineSeparator/LineSeparator";
 import FanFavorite from "../../../components/FanFavorite/FanFavorite";
+import ReviewSection from "../../../components/ReviewSection/ReviewSection";
+import SmallLineSeparator from "../../../components/SmallLineSeparator/SmallLineSeparator";
 
 function RecipeDetail() {
     const { id } = useParams();
@@ -111,6 +113,9 @@ function RecipeDetail() {
                 <div className="recipe-detail-wrapper">
                     <div className="main-page">
                         <RecipeInfo recipe={recipe} recipeImageList={combinedImages} />
+
+                        <SmallLineSeparator />
+                        <ReviewSection />
                     </div>
 
                     <div className="widget">
