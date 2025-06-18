@@ -110,6 +110,16 @@ const getRandomRecipes = async (req, res) => {
     }
 };
 
+const getRandomRecipesForBigSwiper = async (req, res) => {
+    try {
+        const randomRecipes = await Recipe.aggregate([{ $sample: { size: 3 } }]);
+        res.status(200).json(randomRecipes);
+    } catch (error) {
+        console.error("Lỗi khi lấy công thức ngẫu nhiên:", error);
+        res.status(500).json({ msg: "Lỗi server", error });
+    }
+};
+
 // @desc    Create new recipe
 // @route   POST /api/recipes
 // @access  Private (requires user authentication)
@@ -403,11 +413,24 @@ const getRecipesByTitleAndIngredient = async (req, res) => {
     }
 };
 
+const increaseViewCount = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await Recipe.findByIdAndUpdate(id, { $inc: { views: 1 } });
+
+        res.status(200).json({ msg: "Đã tăng lượt xem" });
+    } catch (error) {
+        res.status(500).json({ msg: "Lỗi khi tăng lượt xem", error });
+    }
+};
+
 module.exports = {
     getRecipeById,
     getTopLikedRecipes,
     getTopViewedRecipes,
     getRandomRecipes,
+    getRandomRecipesForBigSwiper,
     getAllRecipes,
     getAllRecipesOnly,
     createRecipe,
@@ -419,4 +442,5 @@ module.exports = {
     getRandomTags,
     getRecipesByTag,
     getRecipesByTitleAndIngredient,
+    increaseViewCount,
 };

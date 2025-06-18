@@ -6,6 +6,7 @@ const {
     getTopLikedRecipes,
     getTopViewedRecipes,
     getRandomRecipes,
+    getRandomRecipesForBigSwiper,
     getAllRecipes,
     getAllRecipesOnly,
     createRecipe,
@@ -17,6 +18,7 @@ const {
     createRecipeL,
     updateRecipeL,
     deleteRecipeL,
+    increaseViewCount,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -37,6 +39,8 @@ router.get("/top-viewed", getTopViewedRecipes);
 // GET /api/recipes/random-recipes
 router.get("/random-recipes", getRandomRecipes);
 
+router.get("/random-recipes-big-swiper", getRandomRecipesForBigSwiper);
+
 // GET /api/recipes/random-tags
 router.get("/random-tags", getRandomTags);
 
@@ -50,6 +54,8 @@ router.post("/create-l", auth, createRecipeL);
 router.delete("/delete-l/:id", auth, deleteRecipeL);
 
 router.put("/update-l/:id", updateRecipeL);
+
+router.patch("/:id/view", increaseViewCount);
 
 // GET /api/recipes/:id
 router.get("/:id", getRecipeById);
