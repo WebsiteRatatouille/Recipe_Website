@@ -1,319 +1,52 @@
-@import url("../../../variables.css");
-.video-blog-background {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-}
-.video-blog-background .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: rgba(45, 27, 27, 0.9);
-}
-.video-blog-background video {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.video-blog-background .content {
-  display: flex;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  font-size: 70px;
-  justify-content: center;
-  align-items: center;
-  color: aliceblue;
-  flex-direction: column;
-  font-weight: bold;
-}
-.blog-container {
+@import url("./BlogVariables.css");
+
+/* Layout */
+.blog-main-container {
   max-width: var(--max-width-website);
   padding: 0;
-  justify-self: center;
-  justify-content: center;
-  margin: 10px 0;
+  margin: 10px auto;
 }
 
-.blog-container .text-field-1 i {
-  font-size: 30px;
-}
-.blog-container .social-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80px;
-  /* background-color: lightgray; */
-}
-.blog-container .social-icon i {
-  font-size: 45px;
-  color: #000;
-  margin: 0 10px;
-  transition: transform 0.3s ease;
-  cursor: pointer;
-}
-
-.blog-container .social-icon i:hover {
-  transform: scale(1.2); /* Hiệu ứng phóng to khi hover */
-  color: red; /* Thay đổi màu khi hover */
-}
-
-.blog-container .text-field-1 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
-.blog-container .text-field-1 .dieu-huong {
-  position: relative;
-  text-decoration: none;
-  color: black;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 16px; /* Giữ kích thước chữ rõ ràng */
-  margin: 0 5px; /* Giảm khoảng cách giữa các mục */
-}
-.blog-container .text-field-1 .dieu-huong::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 2px;
-  background-color: red;
-  transition: width 0.3s ease-in-out; /* Tạo hiệu ứng */
-}
-.blog-container .text-field-1 .dieu-huong:hover::after {
-  width: 100%;
-}
-
-.blog-container .title {
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-  margin: 10px 0;
-}
-.blog-container .author-info {
-  text-align: center;
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 15px;
-}
-.blog-container .author-info .author-wrapper {
-  position: relative;
-  display: inline-block;
-}
-.blog-container .author-info .author-name {
-  text-decoration: none;
-  font-weight: bold;
-  color: black;
-  position: relative;
-}
-.blog-container .author-info .article-date {
-  margin-left: 10px;
-  color: #777;
-}
-.blog-container .author-info .author-wrapper .author-popup {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  cursor: pointer;
-
-  width: 400px; /* Tăng chiều ngang popup */
-  padding: 20px; /* Tăng khoảng cách bên trong */
-  font-size: 15px; /* Tăng cỡ chữ nếu muốn */
-
-  background-color: #fff;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-.blog-container .author-wrapper:hover .author-popup {
-  opacity: 1;
-  visibility: visible;
-}
-.blog-container .author-wrapper .author-popup .author-image {
-  width: 60px;
-  border-radius: 8px;
-  object-fit: cover; /* giữ tỉ lệ ảnh đẹp */
-  margin-bottom: 10px;
-}
-.blog-container .author-wrapper .author-popup .name-1 {
-  text-decoration: none;
-  font-weight: bold;
-  color: black;
-  position: relative;
-}
-.allstars-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  font-family: "Segoe UI", sans-serif;
-}
-
-.allstars-container .allstars-title {
+.blog-main-container .title {
   text-align: center;
   font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 40px;
+  font-weight: bold;
+  margin: 20px 0;
+  color: var(--text-color);
+  width: 100%;
+  display: block;
 }
 
-.allstars-container .allstars-content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 40px;
-}
-
-.allstars-container .image-section {
-  flex: 1;
-  min-width: 300px;
-  text-align: center;
-}
-
-.allstars-container .allstars-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-.allstars-container .image-credit {
-  font-size: 12px;
-  color: #777;
-  margin-top: 10px;
-}
-
-.allstars-container .text-section {
-  flex: 1.5;
-  min-width: 300px;
-  font-size: 20px;
-  line-height: 1.7;
-}
-.allstar-container {
+.blog-cta-container {
   max-width: 700px;
   margin: 40px auto;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  color: #111;
+  color: var(--text-color);
 }
 
-.allstar-container h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 24px;
-  line-height: 1.3;
+/* CTA Button */
+.blog-cta-button {
+  text-align: center;
+  margin: 30px 0;
 }
 
-.allstar-container p {
-  font-size: 16px;
-  margin-bottom: 20px;
-}
-
-.allstar-container strong {
-  font-weight: 700;
-  display: inline-block;
-  margin-bottom: 4px;
-}
-.cta-button {
-  margin-top: 24px;
-}
 .cta-link {
   display: inline-block;
-  background-color: #d84315;
+  padding: 15px 30px;
+  background-color: var(--primary-color);
   color: white;
   text-decoration: none;
-  padding: 12px 24px;
+  border-radius: var(--border-radius);
   font-weight: bold;
+  font-size: 18px;
+  transition: all var(--transition-speed);
   border: none;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.explore-more {
-  margin-top: 40px;
-}
-.explore-more h2 {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.tags a {
-  padding: 10px 16px;
-  border: 2px solid #444;
-  border-radius: 25px;
-  text-decoration: none;
-  color: #111;
-  font-weight: 500;
-  transition: background-color 0.3s;
-}
-.tags a:hover {
-  background-color: #f2f2f2;
-}
-
-.feedback {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
-  text-align: left;
-}
-.feedback p {
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-.feedback-buttons button {
-  font-size: 24px;
-  background: none;
-  border: 2px solid #d84315;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  margin-right: 12px;
   cursor: pointer;
-  color: #d84315;
-  transition: background-color 0.3s;
-}
-.feedback-buttons button:hover {
-  background-color: #ffece6;
 }
 
-.video-tiktok-container {
-  position: relative;
-  max-width: 325px; /* hoặc 100% tuỳ bạn */
-  height: auto;
-  margin: 0 auto;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.video-tiktok-container video {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-}
-.video-tiktok-container .tiktok-logo {
-  position: absolute;
-  top: 10px;
-  right: 10px; /* đổi từ left -> right */
-  font-size: 48px;
-  color: black; /* đổi màu thành đen */
-  z-index: 10;
+.cta-link:hover {
+  background-color: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
