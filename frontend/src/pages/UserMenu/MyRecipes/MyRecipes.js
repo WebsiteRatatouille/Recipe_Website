@@ -16,21 +16,10 @@ function MyRecipes() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState(""); // State for the search input
-  const [userId, setUserId] = useState(null); // Add state for user ID
   const [notification, setNotification] = useState({
     message: null,
     type: null,
   }); // Thêm state notification
-
-  // Get user ID from localStorage when component mounts
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log("User from localStorage:", user); // LOGGING
-    if (user && user.id) {
-      setUserId(user.id);
-      console.log("userId set:", user.id); // LOGGING
-    }
-  }, []);
 
   const fetchRecipes = async (search = "", page = 1) => {
     setLoading(true);
@@ -58,10 +47,9 @@ function MyRecipes() {
   };
 
   useEffect(() => {
-    if (userId) {
-      fetchRecipes(keyword, currentPage);
-    }
-  }, [keyword, currentPage, userId]); // Add userId to dependencies
+    fetchRecipes(keyword, currentPage);
+    // eslint-disable-next-line
+  }, [keyword, currentPage]);
 
   const handleCreateNewRecipe = () => {
     navigate("/add-recipe"); // Navigate to the new add recipe page

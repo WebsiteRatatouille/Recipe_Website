@@ -31,11 +31,21 @@ module.exports = (passport) => {
           let user = await User.findOne({ facebookId: profile.id });
 
           if (!user) {
+            const existingUser = await User.findOne({
+              email: profile.emails[0].value,
+            });
+            if (existingUser) {
+              return done(null, false, {
+                message:
+                  "Email đã tồn tại. Vui lòng đăng nhập bằng tài khoản đã liên kết.",
+              });
+            }
             user = await User.create({
               facebookId: profile.id,
               email: profile.emails[0].value,
               name: `${profile.name.givenName} ${profile.name.familyName}`,
               provider: "facebook",
+              isVerified: true,
             });
           }
 
@@ -60,11 +70,21 @@ module.exports = (passport) => {
           let user = await User.findOne({ googleId: profile.id });
 
           if (!user) {
+            const existingUser = await User.findOne({
+              email: profile.emails[0].value,
+            });
+            if (existingUser) {
+              return done(null, false, {
+                message:
+                  "Email đã tồn tại. Vui lòng đăng nhập bằng tài khoản đã liên kết.",
+              });
+            }
             user = await User.create({
               googleId: profile.id,
               email: profile.emails[0].value,
               name: profile.displayName,
               provider: "google",
+              isVerified: true,
             });
           }
 

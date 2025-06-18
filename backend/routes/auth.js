@@ -10,7 +10,13 @@ router.get(
 
 router.get(
   "/facebook/callback",
-  passport.authenticate("facebook", { failureRedirect: "/login" }),
+  passport.authenticate("facebook", {
+    failureRedirect:
+      "/auth/social-fail?msg=" +
+      encodeURIComponent(
+        "Email đã tồn tại. Vui lòng đăng nhập bằng tài khoản đã liên kết."
+      ),
+  }),
   (req, res) => {
     // Đăng nhập Facebook thành công, redirect về frontend kèm token và user ID
     const token = req.user.generateAuthToken();
@@ -33,7 +39,13 @@ router.get(
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    failureRedirect:
+      "/auth/social-fail?msg=" +
+      encodeURIComponent(
+        "Email đã tồn tại. Vui lòng đăng nhập bằng tài khoản đã liên kết."
+      ),
+  }),
   (req, res) => {
     // Đăng nhập Google thành công, redirect về frontend kèm token và user ID
     const token = req.user.generateAuthToken();
@@ -52,6 +64,13 @@ router.get(
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
+});
+
+// Route xử lý khi social login thất bại
+router.get("/social-fail", (req, res) => {
+  // Redirect về trang frontend kèm thông báo lỗi
+  const msg = req.query.msg || "Đăng nhập thất bại";
+  res.redirect(`http://localhost:3000/login?error=${encodeURIComponent(msg)}`);
 });
 
 module.exports = router;
