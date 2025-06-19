@@ -2,29 +2,29 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const {
-  getRecipeById,
-  getTopLikedRecipes,
-  getTopViewedRecipes,
-  getRandomRecipes,
-  getRandomRecipesForBigSwiper,
-  getAllRecipes,
-  getAllRecipesOnly,
-  createRecipe,
-  updateRecipe,
-  deleteRecipe,
-  getRandomTags,
-  getRecipesByTag,
-  getRecipesByTitleAndIngredient,
-  createRecipeL,
-  updateRecipeL,
-  deleteRecipeL,
-  increaseViewCount,
-  getRecipeComments,
-  addRecipeComment,
-  updateRecipeComment,
-  deleteRecipeComment,
-  getTopCommentedRecipes,
-  getRecipeOverview,
+    getRecipeById,
+    getTopLikedRecipes,
+    getTopViewedRecipes,
+    getRandomRecipes,
+    getRandomRecipesForBigSwiper,
+    getAllRecipes,
+    getAllRecipesApproved,
+    createRecipe,
+    updateRecipe,
+    deleteRecipe,
+    getRandomTags,
+    getRecipesByTag,
+    getRecipesByTitleAndIngredient,
+    createRecipeL,
+    updateRecipeL,
+    deleteRecipeL,
+    increaseViewCount,
+    getRecipeComments,
+    addRecipeComment,
+    updateRecipeComment,
+    deleteRecipeComment,
+    getTopCommentedRecipes,
+    getRecipeOverview,
 } = require("../controllers/recipeController");
 const favoriteRoutes = require("./favoriteRoutes");
 
@@ -34,7 +34,7 @@ router.use("/", favoriteRoutes);
 // GET /api/recipes
 router.get("/", auth, getAllRecipes);
 
-router.get("/all-recipes-only", getAllRecipesOnly);
+router.get("/all-recipes-approved", getAllRecipesApproved);
 
 // GET /api/recipes/top-liked
 router.get("/top-liked", getTopLikedRecipes);

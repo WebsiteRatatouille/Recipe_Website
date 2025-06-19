@@ -8,8 +8,11 @@ const recipeSchema = new mongoose.Schema({
     imageThumb: String,
     images: [String],
     videoUrl: String,
-    category: String,
-    categoryDisplay: String,
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
+    },
     cookingTime: String,
     serves: Number,
     tags: [String],
@@ -29,6 +32,10 @@ const recipeSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+    },
+    isApproved: {
+        type: Boolean,
+        default: false,
     },
 });
 

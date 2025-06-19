@@ -10,7 +10,7 @@ const BlogDetail = () => {
 
     useEffect(() => {
         axios
-            .get(`/api/blogs/${id}`)
+            .get(`${process.env.REACT_APP_API_URL}/api/blogs/${id}`)
             .then((res) => setBlog(res.data))
             .catch((err) => console.error(err));
     }, [id]);

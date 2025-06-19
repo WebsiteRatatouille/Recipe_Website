@@ -55,7 +55,7 @@ const deleteCategory = async (req, res) => {
     const categoryId = req.params.id;
 
     try {
-        // 1. Xóa ảnh trong thư mục Cloudinary
+        //  xoa anh trong cloudinary
         const folderPath = `categories/${categoryId}`;
         const result = await cloudinary.api.resources({
             type: "upload",
@@ -68,7 +68,7 @@ const deleteCategory = async (req, res) => {
             await cloudinary.api.delete_resources(publicIds);
         }
 
-        // 2. Xóa danh mục khỏi MongoDB
+        // 2. xoa danh muc khoi mongo
         const deleted = await Category.findByIdAndDelete(categoryId);
 
         if (!deleted) {

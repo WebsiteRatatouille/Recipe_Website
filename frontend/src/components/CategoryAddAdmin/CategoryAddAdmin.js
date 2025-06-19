@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./CategoryAddAdmin.css";
 import { TextField, Snackbar, Alert, Box } from "@mui/material";
 
-function CategoryAddAdmin({ onClose }) {
+function CategoryAddAdmin({ onClose, onUpdateSuccess }) {
     const [formData, setFormData] = useState({
         name: "",
         displayName: "",
@@ -88,6 +88,7 @@ function CategoryAddAdmin({ onClose }) {
             }
 
             setSuccessMessage("Tạo danh mục thành công");
+            onUpdateSuccess?.();
         } catch (error) {
             console.error(error);
             setErrorMessage("Không thể tạo danh mục");

@@ -103,8 +103,13 @@ export default function CategoryTable() {
             field: "image",
             headerName: "Ảnh",
             width: 90,
+            headerAlign: "center",
             renderCell: (params) => (
-                <img src={params.row.image} alt="" style={{ width: 60, height: 40 }} />
+                <img
+                    src={params.row.image}
+                    alt=""
+                    style={{ width: 60, height: 40, marginLeft: "8px" }}
+                />
             ),
         },
         { field: "displayName", headerName: "Tên hiển thị", width: 200 },
@@ -151,26 +156,26 @@ export default function CategoryTable() {
             ),
         },
     ];
+    // get all categories
+    const fetchCategories = async () => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/categories`);
+            const data = await res.json();
+            const formatted = data.map((cat) => ({
+                id: cat._id,
+                name: cat.name,
+                displayName: cat.displayName,
+                image: cat.image,
 
+                createdAt: new Date(cat.createdAt).toLocaleDateString("vi-VN"),
+                updatedAt: new Date(cat.updatedAt).toLocaleDateString("vi-VN"),
+            }));
+            setRows(formatted);
+        } catch (err) {
+            console.error("Lỗi khi tải danh mục:", err);
+        }
+    };
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/categories`);
-                const data = await res.json();
-                const formatted = data.map((cat) => ({
-                    id: cat._id,
-                    name: cat.name,
-                    displayName: cat.displayName,
-                    image: cat.image,
-
-                    createdAt: new Date(cat.createdAt).toLocaleDateString("vi-VN"),
-                    updatedAt: new Date(cat.updatedAt).toLocaleDateString("vi-VN"),
-                }));
-                setRows(formatted);
-            } catch (err) {
-                console.error("Lỗi khi tải danh mục:", err);
-            }
-        };
         fetchCategories();
     }, []);
 
@@ -204,7 +209,7 @@ export default function CategoryTable() {
                 columns={columns}
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
+                // checkboxSelection
                 sx={{
                     border: 0,
                     "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
@@ -217,8 +222,8 @@ export default function CategoryTable() {
                 localeText={{
                     ...viVN.components.MuiDataGrid.defaultProps.localeText,
                     noRowsLabel: "Không có dữ liệu",
-                    footerRowSelected: (count) =>
-                        count === 1 ? "Đã chọn 1 dòng" : `Đã chọn ${count} dòng`,
+                    footerRowSelected: () => "",
+                    // count === 1 ? "Đã chọn 1 dòng" : `Đã chọn ${count} dòng`,
                     footerPaginationLabelRowsPerPage: "Số dòng mỗi trang",
                     footerPaginationLabelDisplayedRows: ({ from, to, count }) =>
                         `${from}–${to} trong ${count}`,
@@ -248,7 +253,7 @@ export default function CategoryTable() {
                     )}
                 </DialogContent>
             </Dialog>
-
+            {/* edit category */}
             <Dialog open={openEdit} onClose={() => setOpenEdit(false)} maxWidth="sm" fullWidth>
                 <DialogTitle>
                     <IconButton
@@ -262,15 +267,11 @@ export default function CategoryTable() {
                     <CategoryEditAdmin
                         category={selectedCategory}
                         onClose={() => setOpenEdit(false)}
-                        onUpdated={() => {
-                            setOpenEdit(false);
-
-                            window.location.reload();
-                        }}
+                        onUpdateSuccess={fetchCategories}
                     />
                 </DialogContent>
             </Dialog>
-
+            {/* add category */}
             <Dialog open={openAdd} onClose={() => setOpenAdd(false)} maxWidth="sm" fullWidth>
                 <DialogTitle>
                     <IconButton
@@ -283,10 +284,7 @@ export default function CategoryTable() {
                 <DialogContent>
                     <CategoryAddAdmin
                         onClose={() => setOpenAdd(false)}
-                        onAdded={() => {
-                            setOpenAdd(false);
-                            window.location.reload();
-                        }}
+                        onUpdateSuccess={fetchCategories}
                     />
                 </DialogContent>
             </Dialog>

@@ -4,7 +4,7 @@ import "./RecipeAddAdmin.css";
 import axios from "axios";
 import { Snackbar, Alert } from "@mui/material";
 
-function RecipeAddAdmin({ onClose }) {
+function RecipeAddAdmin({ onClose, onUpdateSuccess }) {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [categories, setCategories] = useState([]);
@@ -97,9 +97,15 @@ function RecipeAddAdmin({ onClose }) {
             !formData.calories ||
             !formData.origin?.trim() ||
             !formData.videoUrl?.trim() ||
-            !formData.tags?.trim()
+            !formData.tags?.trim() ||
+            !formData.category
         ) {
             setErrorMessage("Vui lòng điền đầy đủ tất cả các trường.");
+            return;
+        }
+
+        if (!Array.isArray(formData.images) || formData.images.length === 0) {
+            setErrorMessage("Vui lòng thêm ít nhất 1 ảnh cho món ăn.");
             return;
         }
 
@@ -107,7 +113,7 @@ function RecipeAddAdmin({ onClose }) {
             // 1. Tạo công thức ban đầu (chỉ cần title) để lấy _id
             const createRes = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/recipes/create-l`,
-                { title: formData.title?.trim() },
+                { title: formData.title?.trim(), category: formData.category },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -171,21 +177,16 @@ function RecipeAddAdmin({ onClose }) {
                 imageThumb: imageThumbUrl,
                 images: uploadedSubImages,
                 category: formData.category,
-                categoryDisplay:
-                    categories.find((c) => c._id === formData.category)?.displayName || "",
             };
 
             await axios.put(
                 `${process.env.REACT_APP_API_URL}/api/recipes/update-l/${recipeId}`,
                 updatedData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }
+                { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
             );
 
             setSuccessMessage("Đã thêm công thức thành công!");
+            onUpdateSuccess?.();
         } catch (error) {
             console.error("Lỗi thêm công thức:", error);
             setErrorMessage("Không thể thêm công thức.");

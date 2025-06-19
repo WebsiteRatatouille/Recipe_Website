@@ -48,14 +48,14 @@ function Recipes() {
         fetchCategories();
     }, []);
 
-    // Get ALL Recipes
+    // Get ALL Recipes isApprove = true
     useEffect(() => {
         const fetchRecipes = async () => {
             startProgress();
             setRecipeLoading(true);
             try {
                 const res = await axios.get(
-                    `${process.env.REACT_APP_API_URL}/api/recipes/all-recipes-only`
+                    `${process.env.REACT_APP_API_URL}/api/recipes/all-recipes-approved`
                 );
                 console.log("Dữ liệu lấy về:", res.data);
                 // Đảm bảo recipeList luôn là một mảng
@@ -78,6 +78,7 @@ function Recipes() {
         fetchRecipes();
     }, []);
 
+    // TagList
     useEffect(() => {
         const fetchRandomTags = async () => {
             try {

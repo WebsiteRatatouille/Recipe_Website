@@ -110,13 +110,34 @@ export default function DataTable() {
             field: "imageThumb",
             headerName: "Ảnh",
             width: 90,
+            headerAlign: "center",
             renderCell: (params) => (
-                <img src={params.row.imageThumb} alt="" style={{ width: 60 }} />
+                <div>
+                    <img
+                        src={params.row.imageThumb}
+                        alt=""
+                        style={{ width: 60, marginLeft: "8px" }}
+                    />
+                </div>
             ),
         },
-        { field: "title", headerName: "Tên món", width: 250 },
+        {
+            field: "title",
+            headerName: "Tên món",
+            width: 300,
+        },
         { field: "categoryDisplay", headerName: "Danh mục", width: 120 },
-        { field: "likes", headerName: "Lượt thích", type: "number", width: 100 },
+        {
+            field: "isApproved",
+            headerName: "Trạng thái",
+            width: 100,
+            renderCell: (params) =>
+                params.value ? (
+                    <span style={{ color: "green", fontWeight: "bold" }}>Đã duyệt</span>
+                ) : (
+                    <span style={{ color: "orange", fontWeight: "bold" }}>Chờ duyệt</span>
+                ),
+        },
         { field: "views", headerName: "Lượt xem", type: "number", width: 100 },
         {
             field: "createdAt",
@@ -167,35 +188,34 @@ export default function DataTable() {
             ),
         },
     ];
+    const fetchRecipes = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/recipes`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const formatted = res.data.recipes.map((item) => ({
+                id: item._id,
+                imageThumb: item.imageThumb,
+                title: item.title,
+                categoryDisplay: item.category?.displayName || "Không có",
+                isApproved: item.isApproved,
+                views: item.views,
+                createdAt: new Date(item.createdAt).toLocaleDateString("vi-VN"),
+                updatedAt: new Date(item.updatedAt).toLocaleDateString("vi-VN"),
+            }));
+            setRows(formatted);
+        } catch (err) {
+            console.error("Lỗi khi tải công thức:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchRecipes = async () => {
-            setLoading(true);
-            try {
-                const token = localStorage.getItem("token");
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/recipes`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const formatted = res.data.recipes.map((item) => ({
-                    id: item._id,
-                    imageThumb: item.imageThumb,
-                    title: item.title,
-                    categoryDisplay: item.categoryDisplay,
-                    likes: item.likes,
-                    views: item.views,
-                    createdAt: new Date(item.createdAt).toLocaleDateString("vi-VN"),
-                    updatedAt: new Date(item.updatedAt).toLocaleDateString("vi-VN"),
-                }));
-                setRows(formatted);
-            } catch (err) {
-                console.error("Lỗi khi tải công thức:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchRecipes();
     }, []);
 
@@ -232,7 +252,7 @@ export default function DataTable() {
                 columns={columns}
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
+                // checkboxSelection
                 sx={{
                     border: 0,
                     "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
@@ -245,8 +265,8 @@ export default function DataTable() {
                 localeText={{
                     ...viVN.components.MuiDataGrid.defaultProps.localeText,
                     noRowsLabel: "Không có dữ liệu",
-                    footerRowSelected: (count) =>
-                        count === 1 ? "Đã chọn 1 dòng" : `Đã chọn ${count} dòng`,
+                    footerRowSelected: () => "",
+                    // count === 1 ? "Đã chọn 1 dòng" : `Đã chọn ${count} dòng`,
                     footerPaginationLabelRowsPerPage: "Số dòng mỗi trang",
                     footerPaginationLabelDisplayedRows: ({ from, to, count }) =>
                         `${from}–${to} trong ${count}`,
@@ -278,7 +298,11 @@ export default function DataTable() {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <RecipeEditAdmin recipe={selectedRecipe} onClose={() => setOpenEdit(false)} />
+                    <RecipeEditAdmin
+                        recipe={selectedRecipe}
+                        onClose={() => setOpenEdit(false)}
+                        onUpdateSuccess={fetchRecipes}
+                    />
                 </DialogContent>
             </Dialog>
 
@@ -293,7 +317,10 @@ export default function DataTable() {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <RecipeAddAdmin onClose={() => setOpenAdd(false)} />
+                    <RecipeAddAdmin
+                        onClose={() => setOpenAdd(false)}
+                        onUpdateSuccess={fetchRecipes}
+                    />
                 </DialogContent>
             </Dialog>
 

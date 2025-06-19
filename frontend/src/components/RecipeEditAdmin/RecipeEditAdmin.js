@@ -3,9 +3,24 @@ import "./RecipeEditAdmin.css";
 import axios from "axios";
 import { Snackbar, Alert, Button } from "@mui/material";
 
-function RecipeEditAdmin({ recipe, onClose }) {
+function RecipeEditAdmin({ recipe, onClose, onUpdateSuccess }) {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    const [categories, setCategories] = useState([]);
+    // get all categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/categories`);
+                setCategories(res.data);
+            } catch (err) {
+                console.error("Lỗi khi lấy danh mục:", err);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -19,6 +34,8 @@ function RecipeEditAdmin({ recipe, onClose }) {
         origin: "",
         videoUrl: "",
         tags: "",
+        category: "",
+        isApproved: false,
     });
 
     useEffect(() => {
@@ -34,8 +51,13 @@ function RecipeEditAdmin({ recipe, onClose }) {
                 serves: recipe.serves || 0,
                 calories: recipe.calories || 0,
                 origin: recipe.origin || "",
+                category:
+                    typeof recipe.category === "object"
+                        ? recipe.category._id
+                        : recipe.category || "",
                 videoUrl: recipe.videoUrl || "",
                 tags: recipe.tags?.join(", ") || "",
+                isApproved: recipe.isApproved || false,
             });
         }
     }, [recipe]);
@@ -99,6 +121,22 @@ function RecipeEditAdmin({ recipe, onClose }) {
         : [];
 
     const handleSave = async () => {
+        if (
+            !formData.title?.trim() ||
+            !formData.description?.trim() ||
+            !formData.ingredients?.trim() ||
+            !formData.steps?.trim() ||
+            !formData.cookingTime?.trim() ||
+            !formData.serves ||
+            !formData.calories ||
+            !formData.origin?.trim() ||
+            !formData.videoUrl?.trim() ||
+            !formData.tags?.trim() ||
+            !formData.category
+        ) {
+            setErrorMessage("Vui lòng điền đầy đủ tất cả các trường.");
+            return;
+        }
         try {
             const recipeId = recipe._id;
 
@@ -176,6 +214,8 @@ function RecipeEditAdmin({ recipe, onClose }) {
                     .filter(Boolean),
                 imageThumb: imageThumbUrl,
                 images: updatedImageUrls,
+                category: formData.category,
+                isApproved: formData.isApproved,
             };
 
             //Gửi PUT cập nhật
@@ -185,6 +225,7 @@ function RecipeEditAdmin({ recipe, onClose }) {
             );
 
             setSuccessMessage("Đã cập nhật công thức thành công!");
+            onUpdateSuccess?.();
         } catch (error) {
             console.error("Lỗi cập nhật:", error);
             setErrorMessage("Có lỗi khi cập nhật công thức hoặc ảnh.");
@@ -458,6 +499,43 @@ function RecipeEditAdmin({ recipe, onClose }) {
                             value={formData.tags}
                             onChange={handleInputChange}
                         />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="category">Danh mục</label>
+                        <select
+                            id="category"
+                            value={formData.category}
+                            onChange={(e) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    category: e.target.value,
+                                }))
+                            }
+                        >
+                            <option value="">-- Chọn danh mục --</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat._id}>
+                                    {cat.displayName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="isApproved">Trạng thái phê duyệt</label>
+                        <select
+                            id="isApproved"
+                            value={formData.isApproved ? "true" : "false"}
+                            onChange={(e) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    isApproved: e.target.value === "true",
+                                }))
+                            }
+                        >
+                            <option value="true">Đã duyệt</option>
+                            <option value="false">Chờ duyệt</option>
+                        </select>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./CategoryEditAdmin.css";
 import { TextField, Button, Alert, Snackbar, Typography, Box } from "@mui/material";
 
-function CategoryEditAdmin({ category, onClose }) {
+function CategoryEditAdmin({ category, onClose, onUpdateSuccess }) {
     const [formData, setFormData] = useState({
         name: "",
         displayName: "",
@@ -52,6 +52,11 @@ function CategoryEditAdmin({ category, onClose }) {
     };
 
     const handleSave = async () => {
+        if (!formData.name?.trim() || !formData.displayName?.trim() || !formData.image?.trim()) {
+            setErrorMessage("Vui lòng điền đầy đủ tất cả các trường.");
+            return;
+        }
+
         try {
             const token = localStorage.getItem("token");
             let uploadedImageUrl = formData.image;
@@ -116,6 +121,7 @@ function CategoryEditAdmin({ category, onClose }) {
             if (!updateRes.ok) throw new Error("Cập nhật thất bại");
 
             setSuccessMessage("Cập nhật danh mục thành công");
+            onUpdateSuccess?.();
         } catch (error) {
             console.error("Lỗi khi cập nhật:", error);
             setErrorMessage("Không thể cập nhật danh mục");
@@ -228,7 +234,7 @@ function CategoryEditAdmin({ category, onClose }) {
                         margin="normal"
                     />
                     <TextField
-                        label="Mô tả"
+                        label="Mô tả (Có thể có hoặc không)"
                         name="description"
                         value={formData.description}
                         onChange={handleInputChange}

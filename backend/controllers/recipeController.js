@@ -4,10 +4,14 @@ const cloudinary = require("cloudinary").v2;
 
 const getRecipeById = async (req, res) => {
     try {
-        const recipe = await Recipe.findById(req.params.id).populate("createdBy", "username"); // Populate tên người dùng
+        const recipe = await Recipe.findById(req.params.id)
+            .populate("createdBy", "username")
+            .populate("category", "name displayName");
+
         if (!recipe) {
             return res.status(404).json({ msg: "Không tìm thấy công thức" });
         }
+
         res.status(200).json(recipe);
     } catch (error) {
         console.error("Lỗi khi lấy công thức theo ID:", error);
@@ -46,6 +50,7 @@ const getAllRecipes = async (req, res) => {
         const total = await Recipe.countDocuments(query);
         const recipes = await Recipe.find(query)
             .populate("createdBy", "username")
+            .populate("category", "displayName name")
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .limit(limit);
@@ -62,9 +67,9 @@ const getAllRecipes = async (req, res) => {
     }
 };
 
-const getAllRecipesOnly = async (req, res) => {
+const getAllRecipesApproved = async (req, res) => {
     try {
-        const allRecipes = await Recipe.find()
+        const allRecipes = await Recipe.find({ isApproved: true })
             .populate("createdBy", "username")
             .sort({ createdAt: -1 });
         res.status(200).json(allRecipes);
@@ -76,7 +81,7 @@ const getAllRecipesOnly = async (req, res) => {
 
 const getTopLikedRecipes = async (req, res) => {
     try {
-        const topRecipes = await Recipe.find()
+        const topRecipes = await Recipe.find({ isApproved: true })
             .populate("createdBy", "username")
             .sort({ likes: -1 })
             .limit(12);
@@ -89,7 +94,7 @@ const getTopLikedRecipes = async (req, res) => {
 
 const getTopViewedRecipes = async (req, res) => {
     try {
-        const topViewed = await Recipe.find()
+        const topViewed = await Recipe.find({ isApproved: true })
             .populate("createdBy", "username")
             .sort({ views: -1 })
             .limit(4);
@@ -102,7 +107,10 @@ const getTopViewedRecipes = async (req, res) => {
 
 const getRandomRecipes = async (req, res) => {
     try {
-        const randomRecipes = await Recipe.aggregate([{ $sample: { size: 4 } }]);
+        const randomRecipes = await Recipe.aggregate([
+            { $match: { isApproved: true } },
+            { $sample: { size: 4 } },
+        ]);
         res.status(200).json(randomRecipes);
     } catch (error) {
         console.error("Lỗi khi lấy công thức ngẫu nhiên:", error);
@@ -112,7 +120,10 @@ const getRandomRecipes = async (req, res) => {
 
 const getRandomRecipesForBigSwiper = async (req, res) => {
     try {
-        const randomRecipes = await Recipe.aggregate([{ $sample: { size: 3 } }]);
+        const randomRecipes = await Recipe.aggregate([
+            { $match: { isApproved: true } },
+            { $sample: { size: 3 } },
+        ]);
         res.status(200).json(randomRecipes);
     } catch (error) {
         console.error("Lỗi khi lấy công thức ngẫu nhiên:", error);
@@ -181,7 +192,13 @@ const createRecipeL = async (req, res) => {
             calories,
             origin,
             videoUrl,
+            category,
+            isApproved,
         } = req.body;
+
+        if (!title || !category) {
+            return res.status(400).json({ msg: "Thiếu tiêu đề hoặc danh mục." });
+        }
 
         const newRecipe = new Recipe({
             title,
@@ -195,10 +212,19 @@ const createRecipeL = async (req, res) => {
             origin,
             videoUrl,
             createdBy: req.user.id,
+            category: new mongoose.Types.ObjectId(category),
+            isApproved: isApproved ?? false,
         });
 
         const savedRecipe = await newRecipe.save();
-        res.status(201).json(savedRecipe);
+
+        // Gửi lại bản đầy đủ có populate category
+        const populatedRecipe = await Recipe.findById(savedRecipe._id).populate(
+            "category",
+            "displayName"
+        );
+
+        res.status(201).json(populatedRecipe);
     } catch (error) {
         console.error("Lỗi khi tạo công thức (L):", error);
         res.status(500).json({ msg: "Lỗi server khi tạo công thức", error });
@@ -261,46 +287,60 @@ const updateRecipeL = async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
 
-        if (recipe) {
-            const {
-                title,
-                description,
-                ingredients,
-                steps,
-                imageThumb,
-                images,
-                videoUrl,
-                category,
-                categoryDisplay,
-                cookingTime,
-                serves,
-                tags,
-                calories,
-                origin,
-            } = req.body;
-
-            recipe.title = title ?? recipe.title;
-            recipe.description = description ?? recipe.description;
-            recipe.ingredients = ingredients ?? recipe.ingredients;
-            recipe.steps = steps ?? recipe.steps;
-            recipe.imageThumb = imageThumb ?? recipe.imageThumb;
-            recipe.images = images ?? recipe.images;
-            recipe.videoUrl = videoUrl ?? recipe.videoUrl;
-            recipe.category = category ?? recipe.category;
-            recipe.categoryDisplay = categoryDisplay ?? recipe.categoryDisplay;
-            recipe.cookingTime = cookingTime ?? recipe.cookingTime;
-            recipe.serves = serves ?? recipe.serves;
-            recipe.tags = tags ?? recipe.tags;
-            recipe.calories = calories ?? recipe.calories;
-            recipe.origin = origin ?? recipe.origin;
-            recipe.updatedAt = Date.now();
-
-            await recipe.save();
-            const populatedRecipe = await Recipe.findById(recipe._id).populate("category", "name");
-            res.status(200).json(populatedRecipe);
-        } else {
-            res.status(404).json({ msg: "Không tìm thấy công thức" });
+        if (!recipe) {
+            return res.status(404).json({ msg: "Không tìm thấy công thức" });
         }
+
+        const {
+            title,
+            description,
+            ingredients,
+            steps,
+            imageThumb,
+            images,
+            videoUrl,
+            category,
+            cookingTime,
+            serves,
+            tags,
+            calories,
+            origin,
+            isApproved,
+        } = req.body;
+
+        // Cập nhật dữ liệu nếu có
+        recipe.title = title ?? recipe.title;
+        recipe.description = description ?? recipe.description;
+        recipe.ingredients = ingredients ?? recipe.ingredients;
+        recipe.steps = steps ?? recipe.steps;
+        recipe.imageThumb = imageThumb ?? recipe.imageThumb;
+        recipe.images = images ?? recipe.images;
+        recipe.videoUrl = videoUrl ?? recipe.videoUrl;
+        recipe.cookingTime = cookingTime ?? recipe.cookingTime;
+        recipe.serves = serves ?? recipe.serves;
+        recipe.tags = tags ?? recipe.tags;
+        recipe.calories = calories ?? recipe.calories;
+        recipe.origin = origin ?? recipe.origin;
+
+        if (category) {
+            recipe.category = new mongoose.Types.ObjectId(category); // ✅ ép kiểu
+        }
+
+        if (isApproved !== undefined) {
+            recipe.isApproved = isApproved;
+        }
+
+        recipe.updatedAt = Date.now();
+
+        await recipe.save();
+
+        // Populate lại category để client hiển thị
+        const populatedRecipe = await Recipe.findById(recipe._id).populate(
+            "category",
+            "displayName"
+        );
+
+        res.status(200).json(populatedRecipe);
     } catch (error) {
         console.error("Lỗi khi cập nhật (updateRecipeL):", error);
         res.status(500).json({ msg: "Lỗi server", error });
@@ -356,6 +396,7 @@ const deleteRecipeL = async (req, res) => {
 const getRandomTags = async (req, res) => {
     try {
         const tags = await Recipe.aggregate([
+            { $match: { isApproved: true } },
             { $unwind: { path: "$tags", preserveNullAndEmptyArrays: false } },
             { $group: { _id: "$tags" } },
             { $sample: { size: 20 } },
@@ -549,7 +590,9 @@ const getTopCommentedRecipes = async (req, res) => {
 // @access  Public
 const getRecipeOverview = async (req, res) => {
     try {
-        const recipes = await Recipe.find().populate("createdBy", "username").lean();
+        const recipes = await Recipe.find({ isApproved: true })
+            .populate("createdBy", "username")
+            .lean();
         // Tính max cho từng tiêu chí
         let maxViews = 1,
             maxLikes = 1,
@@ -582,7 +625,7 @@ module.exports = {
     getRandomRecipes,
     getRandomRecipesForBigSwiper,
     getAllRecipes,
-    getAllRecipesOnly,
+    getAllRecipesApproved,
     createRecipe,
     createRecipeL,
     updateRecipe,
