@@ -44,7 +44,7 @@ function LoginPopup({ setShowLogin }) {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/users/register", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -78,7 +78,7 @@ function LoginPopup({ setShowLogin }) {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/users/login", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -200,10 +200,10 @@ function LoginPopup({ setShowLogin }) {
 
                 {/* Social Login Buttons */}
                 <div className="social-login-buttons">
-                    <a href="http://localhost:5000/auth/facebook">
+                    <a href={`${process.env.REACT_APP_API_URL}/auth/facebook`}>
                         <button type="button">Đăng nhập bằng Facebook</button>
                     </a>
-                    <a href="http://localhost:5000/auth/google">
+                    <a href={`${process.env.REACT_APP_API_URL}/auth/google`}>
                         <button type="button">Đăng nhập bằng Google</button>
                     </a>
                 </div>
