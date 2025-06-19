@@ -75,6 +75,7 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role || "user",
         isVerified: user.isVerified,
+        isAdmin: user.role === "admin",
       },
       token,
     });

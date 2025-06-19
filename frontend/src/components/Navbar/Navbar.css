@@ -169,3 +169,23 @@ header {
 .logout-btn:hover {
   background-color: #fff0f0;
 }
+
+.admin-dashboard-separator {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 8px 0 4px 0;
+}
+
+.admin-dashboard-btn {
+  color: #007bff !important;
+  font-weight: bold;
+  background: none;
+  border-radius: 6px;
+  text-align: left;
+  padding-left: 20px;
+  transition: background 0.2s;
+}
+.admin-dashboard-btn:hover {
+  background: #f0f7ff;
+  color: #0056b3 !important;
+}

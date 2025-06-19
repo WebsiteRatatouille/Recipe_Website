@@ -164,6 +164,20 @@ function Navbar({ setShowLogin }) {
                           Liên hệ
                         </Link>
 
+                        {user && user.isAdmin && (
+                          <>
+                            <hr className="admin-dashboard-separator" />
+                            <Link
+                              to="/admin"
+                              className="menu-item admin-dashboard-btn"
+                              onClick={() => setShowMenu(false)}
+                            >
+                              <i className="fas fa-tachometer-alt"></i> Trang
+                              quản trị
+                            </Link>
+                          </>
+                        )}
+
                         <button
                           className="menu-item logout-btn"
                           onClick={handleLogout}
