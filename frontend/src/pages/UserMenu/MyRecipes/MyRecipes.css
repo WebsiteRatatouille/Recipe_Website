@@ -204,3 +204,21 @@
     font-size: 12px;
   }
 }
+
+.status-approved {
+  color: #fff;
+  background: #28a745;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 0.95em;
+  display: inline-block;
+}
+
+.status-pending {
+  color: #fff;
+  background: #ffc107;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 0.95em;
+  display: inline-block;
+}
