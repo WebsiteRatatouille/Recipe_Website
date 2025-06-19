@@ -15,10 +15,13 @@ const BlogList = () => {
 
     return (
         <div className="blog-list-container">
-            <h2 className="blog-list-title">Tìm Ý Tưởng Mới ? Đọc bài viết dưới đây</h2>
+            <h2 className="blog-list-title">Tìm Ý Tưởng Mới ? Đọc các bài viết do các Admin Ratatouille ngay !</h2>
             {blogs.map((blog) => (
                 <BlogPostCard key={blog._id} blog={blog} />
             ))}
+            <div className="forum-cta-box">
+                THAM GIA NGAY DIỄN ĐÀN ĐỂ KẾT NỐI VỚI MỌI NGƯỜI
+            </div>
         </div>
     );
 };

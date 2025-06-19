@@ -20,12 +20,10 @@ const BlogDetail = () => {
     return (
         <div className="blog-detail-container">
             <h1 className="blog-title">{blog.title}</h1>
-            {/* Nếu có rating trung bình, hiển thị ở đây */}
-            {/* <div className="blog-rating">★ 4.9</div> */}
-            <div className="blog-desc">{blog.content}</div>
+            <div className="blog-desc">{blog.summary}</div>
             <div className="blog-meta">
                 <span>
-                    Submitted by <b>France C</b>
+                    Submitted by <b>{blog.author}</b>
                 </span>
                 <span className="blog-date">
                     {" "}
@@ -33,9 +31,6 @@ const BlogDetail = () => {
                 </span>
             </div>
             <div className="blog-actions">
-                <button className="save-btn">
-                    SAVE <span>♡</span>
-                </button>
                 {/* Thêm các nút khác nếu muốn */}
             </div>
             {blog.image && (
@@ -43,6 +38,7 @@ const BlogDetail = () => {
                     <img src={blog.image} alt={blog.title} />
                 </div>
             )}
+            <div className="blog-content">{blog.content}</div>
             <ReviewSection blogId={blog._id} />
         </div>
     );

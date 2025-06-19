@@ -31,4 +31,4 @@ const blogReviewSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('BlogReview', blogReviewSchema); 
+module.exports = mongoose.model('BlogReview', blogReviewSchema, 'blogreviews1'); 

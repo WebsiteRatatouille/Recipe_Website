@@ -75,5 +75,9 @@
 
 .review-stars .star {
     font-size: 1.2em;
+    color: #ccc;
+}
+
+.review-stars .star.filled {
     color: #d84315;
 }

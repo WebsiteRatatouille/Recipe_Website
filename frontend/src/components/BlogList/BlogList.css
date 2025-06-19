@@ -31,3 +31,18 @@
         font-size: 20px;
     }
 }
+
+.forum-cta-box {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    background: #e0e0e0;
+    color: #222;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 12px;
+    padding: 28px 10px;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+}

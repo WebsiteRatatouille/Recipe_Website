@@ -10,7 +10,27 @@ const ReviewSection = ({ blogId }) => {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
-    const user = JSON.parse(localStorage.getItem("user"));
+    
+    // Đọc user từ localStorage mỗi khi render
+    const getUser = () => {
+        try {
+            const userStr = localStorage.getItem("user");
+            const user = userStr ? JSON.parse(userStr) : null;
+            console.log("Current user from localStorage:", user);
+            return user;
+        } catch (error) {
+            console.error("Error parsing user from localStorage:", error);
+            return null;
+        }
+    };
+
+    // Debug: Log user mỗi khi component render
+    useEffect(() => {
+        const user = getUser();
+        const token = localStorage.getItem("token");
+        console.log("ReviewSection mounted/updated - User:", user);
+        console.log("ReviewSection mounted/updated - Token:", token ? "Present" : "Missing");
+    });
 
     // Lấy danh sách review
     useEffect(() => {
@@ -28,30 +48,57 @@ const ReviewSection = ({ blogId }) => {
         e.preventDefault();
         setSubmitting(true);
         setError("");
+        
+        const user = getUser();
+        const token = localStorage.getItem("token");
+        console.log("Submitting review with user:", user);
+        console.log("Token:", token);
+        
+        if (!user) {
+            setError("Vui lòng đăng nhập để gửi đánh giá");
+            setSubmitting(false);
+            return;
+        }
+        
+        if (!token) {
+            setError("Token không hợp lệ, vui lòng đăng nhập lại");
+            setSubmitting(false);
+            return;
+        }
+        
         try {
-            await axios.post(
+            const response = await axios.post(
                 "/api/blogreviews",
-                { blogId, rating, text: review },
+                { blogId, rating: Number(rating), text: review },
                 {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
+            console.log("Review submitted successfully:", response.data);
             setReview("");
             setRating(0);
             // Reload reviews
             const res = await axios.get(`/api/blogreviews?blogId=${blogId}`);
             setReviews(res.data);
         } catch (err) {
+            console.error("Error submitting review:", err);
             setError(err.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại.");
         }
         setSubmitting(false);
     };
 
+    const user = getUser();
+
     return (
         <div className="blog-review-section">
             <h2>Reviews ({reviews.length})</h2>
+            {/* Debug info */}
+            {/* <div style={{fontSize: '12px', color: '#666', marginBottom: '10px'}}>
+                Debug: User logged in: {user ? 'Yes' : 'No'} | 
+                Token: {localStorage.getItem("token") ? 'Present' : 'Missing'}
+            </div> */}
             {!user ? (
                 <div className="review-login-warning">Đăng nhập để sử dụng tính năng</div>
             ) : (
@@ -61,7 +108,7 @@ const ReviewSection = ({ blogId }) => {
                             <span
                                 key={star}
                                 className={star <= (hover || rating) ? "star filled" : "star"}
-                                onClick={() => setRating(star)}
+                                onClick={() => setRating(Number(star))}
                                 onMouseEnter={() => setHover(star)}
                                 onMouseLeave={() => setHover(0)}
                             >
@@ -96,7 +143,7 @@ const ReviewSection = ({ blogId }) => {
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <span
                                         key={star}
-                                        className={star <= r.rating ? "star filled" : "star"}
+                                        className={star <= Number(r.rating) ? "star filled" : "star"}
                                     >
                                         ★
                                     </span>
