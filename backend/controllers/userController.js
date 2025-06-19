@@ -2,7 +2,10 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { sendVerificationEmail } = require("../services/emailService");
+const {
+  sendVerificationEmail,
+  sendNewPasswordEmail,
+} = require("../services/emailService");
 
 // Sign in
 const register = async (req, res) => {
@@ -355,6 +358,27 @@ const verifyEmail = async (req, res) => {
   }
 };
 
+// Quên mật khẩu
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ msg: "Vui lòng nhập email" });
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
+    if (!user) return res.status(400).json({ msg: "Email không tồn tại" });
+    // Tạo mật khẩu mới random
+    const newPassword = Math.random().toString(36).slice(-8);
+    const hashed = await bcrypt.hash(newPassword, 10);
+    user.password = hashed;
+    await user.save();
+    // Gửi email cho user
+    await sendNewPasswordEmail(user.email, newPassword);
+    res.json({ msg: "Mật khẩu mới đã được gửi tới email của bạn." });
+  } catch (err) {
+    console.error("Lỗi quên mật khẩu:", err);
+    res.status(500).json({ msg: "Lỗi server", error: err.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -367,4 +391,5 @@ module.exports = {
   getUserDetailsWithPassword,
   resetUserPasswordByAdmin,
   verifyEmail,
+  forgotPassword,
 };

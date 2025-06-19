@@ -59,8 +59,19 @@ const sendContactConfirmationEmail = async ({ to, name }) => {
   });
 };
 
+const sendNewPasswordEmail = async (email, newPassword) => {
+  const html = `<p>Mật khẩu mới của bạn là: <b>${newPassword}</b></p><p>Vui lòng đăng nhập và đổi lại mật khẩu sau khi đăng nhập thành công.</p>`;
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Mật khẩu mới cho tài khoản Ratatouille",
+    html,
+  });
+};
+
 module.exports = {
   sendVerificationEmail,
   sendContactNotificationEmail,
   sendContactConfirmationEmail,
+  sendNewPasswordEmail,
 };

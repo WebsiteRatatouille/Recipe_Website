@@ -12,6 +12,7 @@ const {
   getUserDetailsWithPassword,
   resetUserPasswordByAdmin,
   verifyEmail,
+  forgotPassword,
 } = require("../controllers/userController");
 const auth = require("../middleware/auth");
 
@@ -32,5 +33,6 @@ router.post("/admin/users/:id/reset-password", auth, resetUserPasswordByAdmin);
 
 // Protected routes
 router.get("/:id", auth, getUserById);
+router.post("/forgot-password", forgotPassword);
 
 module.exports = router;
