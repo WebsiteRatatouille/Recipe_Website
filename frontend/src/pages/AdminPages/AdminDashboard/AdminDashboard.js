@@ -10,7 +10,9 @@ function AdminDashboard() {
   useEffect(() => {
     const fetchOverview = async () => {
       try {
-        const res = await axios.get("/api/recipes/overview");
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/recipes/overview`
+        );
         setRecipes(res.data);
       } catch (err) {
         setError("Lỗi khi tải dữ liệu tổng quan");
