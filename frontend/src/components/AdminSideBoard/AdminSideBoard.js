@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 import "./AdminSideBoard.css";
 import Logo from "../../assets/img/ratatouille-original.png";
 
+import { FaRegPenToSquare } from "react-icons/fa6";
+
 function AdminSideBoard() {
     const handleLogout = () => {
         localStorage.removeItem("user");
@@ -63,6 +65,15 @@ function AdminSideBoard() {
                                     <i className="bx bx-user-circle"></i>
                                 </span>
                                 <span className="title">Người dùng</span>
+                            </div>
+                        </NavLink>
+
+                        <NavLink className="side-bar-link" to="adminBlog">
+                            <div className="content">
+                                <span className="icon">
+                                    <FaRegPenToSquare className="pen-icon" />
+                                </span>
+                                <span className="title">Blog</span>
                             </div>
                         </NavLink>
                     </div>

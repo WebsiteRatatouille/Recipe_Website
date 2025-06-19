@@ -1,0 +1,10 @@
+.admin-blog-wrapper {
+    background-color: #f7f7f9;
+    height: 100vh;
+}
+
+.admin-blog-wrapper .content {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}

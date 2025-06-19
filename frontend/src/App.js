@@ -27,6 +27,7 @@ import RecipeDetail from "./pages/UserPages/RecipeDetail/RecipeDetail";
 import RecipeSearchResult from "./pages/UserPages/RecipeSearchResult/RecipeSearchResult";
 import EmailVerificationStatus from "./pages/UserPages/EmailVerificationStatus/EmailVerificationStatus";
 import BlogDetail from "./pages/UserPages/Blog/BlogDetail";
+import AdminBlog from "./pages/AdminPages/AdminBlog/AdminBlog";
 
 function App() {
     const [showLogin, setShowLogin] = useState(false);
@@ -116,6 +117,7 @@ function App() {
                         <Route path="/adminCategories" element={<AdminCategories />} />
                         <Route path="/adminCollections" element={<AdminCollections />} />
                         <Route path="/adminUsers" element={<AdminUsers />} />
+                        <Route path="/adminBlog" element={<AdminBlog />} />
                     </Route>
                 </Routes>
             </div>
