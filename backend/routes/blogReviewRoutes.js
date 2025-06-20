@@ -7,5 +7,7 @@ const auth = require("../middleware/auth"); // middleware xác thực
 router.get("/", blogReviewController.getReviewsByBlog);
 // Thêm review mới (yêu cầu đăng nhập)
 router.post("/", auth, blogReviewController.createReview);
+// Xóa review (chỉ admin hoặc chủ review)
+router.delete("/:id", auth, blogReviewController.deleteReview);
 
 module.exports = router;

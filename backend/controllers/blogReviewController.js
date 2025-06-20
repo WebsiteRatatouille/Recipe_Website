@@ -41,3 +41,25 @@ exports.createReview = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+// Xóa review (chỉ admin hoặc chủ review)
+exports.deleteReview = async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        const userId = req.user?.id;
+        const isAdmin = req.user?.role === "admin";
+
+        const review = await BlogReview.findById(reviewId);
+        if (!review) return res.status(404).json({ message: "Không tìm thấy review" });
+
+        // Chỉ admin hoặc chủ review mới được xóa
+        if (!isAdmin && review.userId?.toString() !== userId) {
+            return res.status(403).json({ message: "Không có quyền xóa review này" });
+        }
+
+        await BlogReview.findByIdAndDelete(reviewId);
+        res.json({ message: "Đã xóa review thành công" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
