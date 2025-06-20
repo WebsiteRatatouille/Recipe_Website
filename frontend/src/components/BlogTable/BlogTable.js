@@ -47,8 +47,12 @@ export default function BlogTable() {
                 summary: item.summary,
                 author: item.author,
                 content: item.content,
-                createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : "",
-                updatedAt: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString("vi-VN") : "",
+                createdAt: item.createdAt
+                    ? new Date(item.createdAt).toLocaleDateString("vi-VN")
+                    : "",
+                updatedAt: item.updatedAt
+                    ? new Date(item.updatedAt).toLocaleDateString("vi-VN")
+                    : "",
                 rawCreatedAt: item.createdAt,
                 _raw: item,
             }));
@@ -94,7 +98,7 @@ export default function BlogTable() {
         }
     };
     const handleGoToBlog = (id) => {
-        window.open(`/blogs/${id}`, "_blank");
+        navigate(`/blogs/${id}`);
     };
 
     const columns = [
@@ -103,7 +107,11 @@ export default function BlogTable() {
             headerName: "Ảnh",
             width: 90,
             renderCell: (params) => (
-                <img src={params.row.image} alt="" style={{ width: 60, height: 40, objectFit: "cover" }} />
+                <img
+                    src={params.row.image}
+                    alt=""
+                    style={{ width: 60, height: 40, objectFit: "cover" }}
+                />
             ),
         },
         { field: "title", headerName: "Tiêu đề", width: 200 },
@@ -113,7 +121,11 @@ export default function BlogTable() {
             headerName: "Nội dung",
             width: 300,
             renderCell: (params) => (
-                <span>{params.row.content.length > 60 ? params.row.content.slice(0, 60) + "..." : params.row.content}</span>
+                <span>
+                    {params.row.content.length > 60
+                        ? params.row.content.slice(0, 60) + "..."
+                        : params.row.content}
+                </span>
             ),
         },
         {
@@ -123,7 +135,7 @@ export default function BlogTable() {
         },
         {
             field: "updatedAt",
-            headerName: "Up date on",
+            headerName: "Ngày cập nhập",
             width: 120,
         },
         { field: "summary", headerName: "Tóm tắt", width: 220 },
@@ -134,16 +146,32 @@ export default function BlogTable() {
             renderCell: (params) => (
                 <div style={{ display: "flex", gap: 12 }}>
                     <Tooltip title="Đi đến" placement="top">
-                        <i className="bx bx-link-external" style={{ cursor: "pointer", fontSize: 24 }} onClick={() => handleGoToBlog(params.row.id)}></i>
+                        <i
+                            className="bx bx-link-external"
+                            style={{ cursor: "pointer", fontSize: 24 }}
+                            onClick={() => handleGoToBlog(params.row.id)}
+                        ></i>
                     </Tooltip>
                     <Tooltip title="Xem" placement="top">
-                        <i className="bx bx-show" style={{ cursor: "pointer", fontSize: 24 }} onClick={() => handleViewBlog(params.row.id)}></i>
+                        <i
+                            className="bx bx-show"
+                            style={{ cursor: "pointer", fontSize: 24 }}
+                            onClick={() => handleViewBlog(params.row.id)}
+                        ></i>
                     </Tooltip>
                     <Tooltip title="Sửa" placement="top">
-                        <i className="bx bx-edit" style={{ cursor: "pointer", fontSize: 24 }} onClick={() => handleEditBlog(params.row.id)}></i>
+                        <i
+                            className="bx bx-edit"
+                            style={{ cursor: "pointer", fontSize: 24 }}
+                            onClick={() => handleEditBlog(params.row.id)}
+                        ></i>
                     </Tooltip>
                     <Tooltip title="Xóa" placement="top">
-                        <i className="bx bx-trash" style={{ cursor: "pointer", fontSize: 24 }} onClick={() => handleDeleteBlog(params.row.id)}></i>
+                        <i
+                            className="bx bx-trash"
+                            style={{ cursor: "pointer", fontSize: 24 }}
+                            onClick={() => handleDeleteBlog(params.row.id)}
+                        ></i>
                     </Tooltip>
                 </div>
             ),
@@ -201,9 +229,17 @@ export default function BlogTable() {
                     }}
                 />
                 {/* Xem chi tiết blog */}
-                <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+                <Dialog
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    maxWidth="md"
+                    fullWidth
+                >
                     <DialogTitle>
-                        <IconButton onClick={() => setOpenDialog(false)} style={{ position: "absolute", right: 8, top: 8 }}>
+                        <IconButton
+                            onClick={() => setOpenDialog(false)}
+                            style={{ position: "absolute", right: 8, top: 8 }}
+                        >
                             <CloseIcon />
                         </IconButton>
                     </DialogTitle>
@@ -214,18 +250,28 @@ export default function BlogTable() {
                 {/* Sửa blog */}
                 <Dialog open={openEdit} onClose={() => setOpenEdit(false)} maxWidth="md" fullWidth>
                     <DialogTitle>
-                        <IconButton onClick={() => setOpenEdit(false)} style={{ position: "absolute", right: 8, top: 8 }}>
+                        <IconButton
+                            onClick={() => setOpenEdit(false)}
+                            style={{ position: "absolute", right: 8, top: 8 }}
+                        >
                             <CloseIcon />
                         </IconButton>
                     </DialogTitle>
                     <DialogContent>
-                        <BlogEditAdmin blog={selectedBlog} onClose={() => setOpenEdit(false)} onUpdated={fetchBlogs} />
+                        <BlogEditAdmin
+                            blog={selectedBlog}
+                            onClose={() => setOpenEdit(false)}
+                            onUpdated={fetchBlogs}
+                        />
                     </DialogContent>
                 </Dialog>
                 {/* Thêm blog */}
                 <Dialog open={openAdd} onClose={() => setOpenAdd(false)} maxWidth="md" fullWidth>
                     <DialogTitle>
-                        <IconButton onClick={() => setOpenAdd(false)} style={{ position: "absolute", right: 8, top: 8 }}>
+                        <IconButton
+                            onClick={() => setOpenAdd(false)}
+                            style={{ position: "absolute", right: 8, top: 8 }}
+                        >
                             <CloseIcon />
                         </IconButton>
                     </DialogTitle>
@@ -238,18 +284,55 @@ export default function BlogTable() {
                     <DialogTitle>Xác nhận xoá</DialogTitle>
                     <DialogContent>Bạn có chắc chắn muốn xoá blog này không?</DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setDeleteConfirmOpen(false)} color="inherit">Huỷ</Button>
-                        <Button onClick={confirmDeleteBlog} color="error" variant="contained" sx={{ backgroundColor: "#222", color: "#fff", "&:hover": { backgroundColor: "#4a4a48" } }}>Xoá</Button>
+                        <Button onClick={() => setDeleteConfirmOpen(false)} color="inherit">
+                            Huỷ
+                        </Button>
+                        <Button
+                            onClick={confirmDeleteBlog}
+                            color="error"
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#222",
+                                color: "#fff",
+                                "&:hover": { backgroundColor: "#4a4a48" },
+                            }}
+                        >
+                            Xoá
+                        </Button>
                     </DialogActions>
                 </Dialog>
                 {/* Thông báo */}
-                <Snackbar open={!!successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage("")} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-                    <Alert onClose={() => setSuccessMessage("")} severity="success" variant="filled" sx={{ width: "100%", fontWeight: "bold" }}>{successMessage}</Alert>
+                <Snackbar
+                    open={!!successMessage}
+                    autoHideDuration={3000}
+                    onClose={() => setSuccessMessage("")}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert
+                        onClose={() => setSuccessMessage("")}
+                        severity="success"
+                        variant="filled"
+                        sx={{ width: "100%", fontWeight: "bold" }}
+                    >
+                        {successMessage}
+                    </Alert>
                 </Snackbar>
-                <Snackbar open={!!errorMessage} autoHideDuration={4000} onClose={() => setErrorMessage("")} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-                    <Alert onClose={() => setErrorMessage("")} severity="error" variant="filled" sx={{ width: "100%", fontWeight: "bold" }}>{errorMessage}</Alert>
+                <Snackbar
+                    open={!!errorMessage}
+                    autoHideDuration={4000}
+                    onClose={() => setErrorMessage("")}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert
+                        onClose={() => setErrorMessage("")}
+                        severity="error"
+                        variant="filled"
+                        sx={{ width: "100%", fontWeight: "bold" }}
+                    >
+                        {errorMessage}
+                    </Alert>
                 </Snackbar>
             </Paper>
         </div>
     );
-} 
+}
