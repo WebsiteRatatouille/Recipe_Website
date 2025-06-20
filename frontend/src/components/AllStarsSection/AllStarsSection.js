@@ -20,7 +20,7 @@ const AllStarsSection = () => {
                     <p>
                         Những người có ảnh hưởng trên mạng xã hội, các chuyên gia dinh dưỡng được
                         cấp phép, và các bậc thầy nướng thịt dày dạn kinh nghiệm—Ratatouille là một
-                        đội ngũ đa dạng, yêu ẩm thực, trải dài trên khắp nước Mỹ và đại diện cho
+                        đội ngũ đa dạng, yêu ẩm thực, trải dài trên khắp nước  và đại diện cho
                         nhiều nền văn hóa, sắc tộc cũng như kiểu mẫu gia đình khác nhau. Từ việc lập
                         kế hoạch bữa ăn, mua sắm thực phẩm thông minh, theo kịp các xu hướng nấu ăn
                         theo mùa cho đến những mẹo tổ chức tiệc tài tình, nhóm người dùng đầy tâm

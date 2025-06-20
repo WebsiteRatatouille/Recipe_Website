@@ -151,6 +151,26 @@ const BlogReviewSection = ({ blogId }) => {
                                     </span>
                                 ))}
                             </span>
+                            {(user && (user.role === "admin" || user.id === r.userId)) && (
+                                <button
+                                    className="review-delete-btn"
+                                    title="Xoá bình luận"
+                                    onClick={async () => {
+                                        if (window.confirm("Bạn chắc chắn muốn xoá bình luận này?")) {
+                                            try {
+                                                await axios.delete(`/api/blogreviews/${r._id}`, {
+                                                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                                                });
+                                                setReviews(reviews.filter((item) => item._id !== r._id));
+                                            } catch (err) {
+                                                alert(err.response?.data?.message || "Xoá thất bại!");
+                                            }
+                                        }
+                                    }}
+                                >
+                                    Xoá
+                                </button>
+                            )}
                         </div>
                         <div className="review-text">{r.text}</div>
                     </div>

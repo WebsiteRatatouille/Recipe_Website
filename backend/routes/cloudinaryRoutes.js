@@ -11,6 +11,9 @@ const {
     createUploaderWithCategoryId,
     deleteImagesInCategoryFolder,
 } = require("../controllers/cloudinaryController");
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
 // Xóa ảnh trong folder
 router.delete("/recipes/:id/images", deleteImagesInRecipeFolder);
@@ -41,5 +44,28 @@ router.delete("/categories/:id/images", deleteImagesInCategoryFolder);
 
 //  upload ảnh danh mục theo ID
 router.post("/categories/upload-image", createUploaderWithCategoryId(), uploadCategoryImage);
+
+// Tạo storage cho blogs
+const blogStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'blogs',
+    format: async () => 'jpg',
+    public_id: (req, file) =>
+      Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(),
+  },
+});
+const uploadBlog = multer({ storage: blogStorage });
+
+// Route upload ảnh blog
+router.post('/blogs/upload-image', uploadBlog.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ msg: 'Không có file được upload.' });
+  }
+  res.status(200).json({
+    url: req.file.path,
+    public_id: req.file.filename,
+  });
+});
 
 module.exports = router;
