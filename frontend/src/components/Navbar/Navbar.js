@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import UserMenuPortal from "./UserMenuPortal"; // portal để hiển thị menu người dùng tránh bị che khuất
 import "./Navbar.css";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Logo from "../../assets/img/ratatouille-original.png";
 import Profile from "../../assets/img/ratatouille-icon.png";
 
 function Navbar({ setShowLogin }) {
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const menuRef = useRef();
   const navigate = useNavigate();
 
@@ -17,6 +19,40 @@ function Navbar({ setShowLogin }) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
+  // Fetch cart count
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        setCartCount(0);
+        return;
+      }
+
+      try {
+        const user = JSON.parse(storedUser);
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
+        const res = await axios.get(`${apiUrl}/cart/${user.id || user._id}`);
+        const totalItems = res.data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        setCartCount(totalItems);
+      } catch (err) {
+        console.error("Lỗi khi lấy giỏ hàng:", err);
+        setCartCount(0);
+      }
+    };
+
+    fetchCartCount();
+
+    // Listen for cart updates
+    const handleCartUpdate = () => {
+      fetchCartCount();
+    };
+    window.addEventListener('cartUpdated', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, [user]);
 
   // Đóng menu khi click ra ngoài
   useEffect(() => {
@@ -72,6 +108,9 @@ function Navbar({ setShowLogin }) {
               <NavLink className="nav-link" to="/recipes">
                 Công thức
               </NavLink>
+              <NavLink className="nav-link" to="/ebooks">
+                Sách
+              </NavLink>
               <NavLink className="nav-link" to="/blog">
                 Blog
               </NavLink>
@@ -83,7 +122,38 @@ function Navbar({ setShowLogin }) {
               </NavLink>
             </ul>
           </div>
-          <div className="profile" style={{ position: "relative" }}>
+          <div className="profile" style={{ position: "relative", display: "flex", alignItems: "center", gap: "15px" }}>
+            {user && (
+              <NavLink 
+                to="/cart" 
+                className="cart-icon-wrapper"
+                style={{ position: "relative", textDecoration: "none", color: "inherit" }}
+              >
+                <i className="bx bx-cart" style={{ fontSize: "28px", cursor: "pointer" }}></i>
+                {cartCount > 0 && (
+                  <span 
+                    className="cart-badge"
+                    style={{
+                      position: "absolute",
+                      top: "-8px",
+                      right: "-8px",
+                      background: "#ff6b35",
+                      color: "white",
+                      borderRadius: "50%",
+                      width: "20px",
+                      height: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      fontWeight: "bold"
+                    }}
+                  >
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </NavLink>
+            )}
             {user ? (
               <>
                 <img
@@ -153,6 +223,15 @@ function Navbar({ setShowLogin }) {
                         >
                           <i className="fas fa-heart"></i>
                           Công thức yêu thích
+                        </Link>
+
+                        <Link
+                          to="/cart"
+                          className="menu-item"
+                          onClick={() => setShowMenu(false)}
+                        >
+                          <i className="bx bx-cart"></i>
+                          Giỏ hàng {cartCount > 0 && `(${cartCount})`}
                         </Link>
 
                         <Link

@@ -1,0 +1,114 @@
+.ebook-info-wrapper {
+    width: 100%;
+}
+
+.ebook-info-wrapper .ebook-title {
+    text-transform: uppercase;
+    font-size: 50px;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.ebook-info-wrapper .ebook-detail {
+    width: 100%;
+}
+
+.ebook-info-wrapper .ebook-detail .author {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.ebook-info-wrapper .ebook-detail .ebook-price-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.ebook-info-wrapper .ebook-detail p {
+    margin-top: 10px;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.ebook-info-wrapper .ebook-image-container {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.ebook-info-wrapper .ebook-cover-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ebook-info-wrapper .ebook-actions {
+    margin: 30px 0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.ebook-info-wrapper .btn-buy-now {
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    background: var(--primary-color, #ff6b35);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.ebook-info-wrapper .btn-buy-now:hover {
+    background: #e55a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.ebook-info-wrapper .btn-preview {
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    background: #fff;
+    color: var(--primary-color, #ff6b35);
+    border: 2px solid var(--primary-color, #ff6b35);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.ebook-info-wrapper .btn-preview:hover {
+    background: var(--primary-color, #ff6b35);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+@media (max-width: 768px) {
+    .ebook-info-wrapper .ebook-title {
+        font-size: 32px;
+    }
+
+    .ebook-info-wrapper .ebook-actions {
+        flex-direction: column;
+    }
+
+    .ebook-info-wrapper .btn-buy-now,
+    .ebook-info-wrapper .btn-preview {
+        width: 100%;
+    }
+}
+

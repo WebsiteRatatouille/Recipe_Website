@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import Home from "./pages/UserPages/Home/Home";
 import Recipes from "./pages/UserPages/Recipes/Recipes";
+import Ebooks from "./pages/UserPages/Ebooks/Ebooks";
 import Contact from "./pages/UserPages/Contact/Contact";
 import AboutUs from "./pages/UserPages/AboutUs/AboutUs";
 import Blog from "./pages/UserPages/Blog/Blog";
@@ -14,6 +15,7 @@ import UserProfile from "./pages/UserMenu/UserProfile/UserProfile";
 import MyRecipes from "./pages/UserMenu/MyRecipes/MyRecipes";
 import AddRecipe from "./pages/UserMenu/AddRecipe/AddRecipe";
 import FavoriteRecipes from "./pages/UserMenu/FavoriteRecipes/FavoriteRecipes";
+import Cart from "./pages/UserMenu/Cart/Cart";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard/AdminDashboard";
@@ -24,6 +26,7 @@ import AdminUsers from "./pages/AdminPages/AdminUsers/AdminUsers";
 
 import LoginPopup from "./components/LoginPopup/LoginPopup";
 import RecipeDetail from "./pages/UserPages/RecipeDetail/RecipeDetail";
+import EbookDetail from "./pages/UserPages/EbookDetail/EbookDetail";
 import RecipeSearchResult from "./pages/UserPages/RecipeSearchResult/RecipeSearchResult";
 import EmailVerificationStatus from "./pages/UserPages/EmailVerificationStatus/EmailVerificationStatus";
 import BlogDetail from "./pages/UserPages/Blog/BlogDetail";
@@ -90,6 +93,8 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/recipes" element={<Recipes />} />
                         <Route path="/recipes/:id" element={<RecipeDetail />} />
+                        <Route path="/ebooks" element={<Ebooks />} />
+                        <Route path="/ebooks/:id" element={<EbookDetail />} />
                         <Route path="/search" element={<RecipeSearchResult />} />
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/blogs/:id" element={<BlogDetail />} />
@@ -110,6 +115,7 @@ function App() {
                         <Route path="/add-recipe" element={<AddRecipe />} />
                         <Route path="/edit-recipe/:id" element={<AddRecipe />} />
                         <Route path="/favorite-recipes" element={<FavoriteRecipes />} />
+                        <Route path="/cart" element={<Cart />} />
                     </Route>
 
                     <Route

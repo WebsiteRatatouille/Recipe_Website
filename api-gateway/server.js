@@ -16,11 +16,12 @@ app.get("/", (req, res) => {
 
 // DEBUG LOG
 app.use((req, res, next) => {
-  console.log("📌 Incoming:", req.method, req.originalUrl);
+  console.log("Incoming:", req.method, req.originalUrl);
   next();
 });
 
-// EBOOK SERVICE PROXY  ✅ FIXED
+
+
 app.use(
   "/ebooks",
   createProxyMiddleware({

@@ -1,0 +1,51 @@
+@import url("../../../variables.css");
+
+.ebooks {
+    padding: 0;
+}
+
+.ebooks-background {
+    overflow: hidden;
+    width: 100%;
+    height: 240px;
+    position: relative;
+}
+
+.ebooks-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.ebooks-body-wrapper {
+    max-width: var(--max-width-website);
+    align-self: center;
+    justify-self: center;
+    padding: 0;
+    margin: 35px;
+}
+
+.ebooks-body-wrapper .title {
+    padding: 0px 50px;
+}
+
+.ebooks-body-wrapper .title h1 {
+    justify-self: center;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.ebooks-body-wrapper .title p {
+    font-size: 17px;
+    justify-self: center;
+    text-align: center;
+}
+
+.ebook-loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+    color: #666;
+}
+

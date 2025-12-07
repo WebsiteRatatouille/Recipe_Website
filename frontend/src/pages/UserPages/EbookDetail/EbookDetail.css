@@ -1,0 +1,319 @@
+.ebook-detail-shopee {
+    background: #f5f5f5;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.ebook-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Main Product Section - Shopee Style */
+.ebook-product-section {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 30px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Gallery */
+.ebook-image-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ebook-main-image {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ebook-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ebook-thumbnails {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ebook-thumbnails .thumbnail {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.ebook-thumbnails .thumbnail:hover {
+    border-color: var(--primary-color, #ff6b35);
+}
+
+.ebook-thumbnails .thumbnail.active {
+    border-color: var(--primary-color, #ff6b35);
+}
+
+.ebook-thumbnails .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Product Info */
+.ebook-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ebook-product-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.ebook-product-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: #666;
+}
+
+.ebook-product-author .label {
+    font-weight: 500;
+}
+
+.ebook-product-author .value {
+    color: #333;
+    font-weight: 500;
+}
+
+.ebook-product-price-section {
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.ebook-product-price-section .price-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.ebook-product-price-section .price-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-color, #ff6b35);
+}
+
+.ebook-product-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-add-to-cart,
+.btn-buy-now {
+    flex: 1;
+    min-width: 200px;
+    padding: 14px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-to-cart {
+    background: #fff;
+    color: var(--primary-color, #ff6b35);
+    border: 1px solid var(--primary-color, #ff6b35);
+}
+
+.btn-add-to-cart:hover {
+    background: #fff5f2;
+}
+
+.btn-buy-now {
+    background: var(--primary-color, #ff6b35);
+    color: white;
+}
+
+.btn-buy-now:hover {
+    background: #e55a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.ebook-preview-section {
+    margin-top: 10px;
+}
+
+.btn-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #1890ff;
+    border: 1px solid #1890ff;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-preview:hover {
+    background: #1890ff;
+    color: white;
+}
+
+.ebook-short-description {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.ebook-short-description h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.ebook-short-description p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #666;
+}
+
+/* Product Details Section */
+.ebook-details-section {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.ebook-details-header {
+    padding: 20px 30px;
+    background: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ebook-details-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.ebook-details-content {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.detail-item {
+    display: flex;
+    gap: 10px;
+}
+
+.detail-item.full-width {
+    grid-column: 1 / -1;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #666;
+    min-width: 120px;
+}
+
+.detail-value {
+    color: #333;
+    flex: 1;
+}
+
+/* Related Products */
+.ebook-related-section {
+    width: 100%;
+    padding: 0;
+}
+
+.ebook-loading {
+    text-align: center;
+    color: #666;
+    margin: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ebook-product-section {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .ebook-product-title {
+        font-size: 22px;
+    }
+
+    .ebook-product-price-section .price-value {
+        font-size: 24px;
+    }
+
+    .ebook-product-actions {
+        flex-direction: column;
+    }
+
+    .btn-add-to-cart,
+    .btn-buy-now {
+        width: 100%;
+    }
+
+    .ebook-details-content {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .detail-label {
+        min-width: auto;
+    }
+}
+
