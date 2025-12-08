@@ -29,8 +29,8 @@ function Ebooks() {
       startProgress();
       setEbookLoading(true);
       try {
-        const microUrl = process.env.REACT_APP_MICRO_URL || "http://localhost:5500";
-        const res = await axios.get(`${microUrl}/ebooks`);
+        const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+        const res = await axios.get(`${ebookServiceUrl}`);
         console.log("Dữ liệu ebooks lấy về:", res.data);
         // Đảm bảo ebookList luôn là một mảng
         const ebooks = Array.isArray(res.data)

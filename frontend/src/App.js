@@ -20,6 +20,7 @@ import Cart from "./pages/UserMenu/Cart/Cart";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard/AdminDashboard";
 import AdminRecipes from "./pages/AdminPages/AdminRecipes/AdminRecipes";
+import AdminEbooks from "./pages/AdminPages/AdminEbooks/AdminEbooks";
 import AdminCategories from "./pages/AdminPages/AdminCategories/AdminCategories";
 import AdminCollections from "./pages/AdminPages/AdminCollections/AdminCollections";
 import AdminUsers from "./pages/AdminPages/AdminUsers/AdminUsers";
@@ -125,6 +126,7 @@ function App() {
                     >
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/adminRecipes" element={<AdminRecipes />} />
+                        <Route path="/adminEbooks" element={<AdminEbooks />} />
                         <Route path="/adminCategories" element={<AdminCategories />} />
                         <Route path="/adminCollections" element={<AdminCollections />} />
                         <Route path="/adminUsers" element={<AdminUsers />} />

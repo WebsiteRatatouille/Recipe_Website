@@ -30,8 +30,8 @@ function EbookDetail() {
             startProgress();
             setLoading(true);
             try {
-                const microUrl = process.env.REACT_APP_MICRO_URL || "http://localhost:5500";
-                const res = await axios.get(`${microUrl}/ebooks/${id}`);
+                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+                const res = await axios.get(`${ebookServiceUrl}/${id}`);
                 setEbook(res.data);
                 setSelectedImage(res.data.imageUrl);
             } catch (err) {
@@ -52,8 +52,8 @@ function EbookDetail() {
             setLoadingTopEbooks(true);
             startProgress();
             try {
-                const microUrl = process.env.REACT_APP_MICRO_URL || "http://localhost:5500";
-                const res = await axios.get(`${microUrl}/ebooks`);
+                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+                const res = await axios.get(`${ebookServiceUrl}`);
                 // Lọc bỏ ebook hiện tại và lấy 8 ebook đầu tiên
                 const filtered = res.data.filter((e) => e._id !== id).slice(0, 8);
                 setTopEbookList(filtered);
@@ -78,8 +78,10 @@ function EbookDetail() {
 
         setAddingToCart(true);
         try {
-            const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
-            await axios.post(`${apiUrl}/cart`, {
+            // Gọi trực tiếp cart-service
+            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+
+            await axios.post(`${cartServiceUrl}/cart`, {
                 userId: user.id || user._id,
                 productId: id,
                 quantity: 1
@@ -88,8 +90,9 @@ function EbookDetail() {
             // Trigger event để cập nhật số lượng giỏ hàng
             window.dispatchEvent(new Event('cartUpdated'));
         } catch (err) {
-            console.error("Lỗi khi thêm vào giỏ hàng:", err);
-            toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+            console.error("Lỗi khi thêm vào giỏ hàng:", err?.response || err);
+            const message = err?.response?.data?.error || err?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!";
+            toast.error(message);
         } finally {
             setAddingToCart(false);
         }

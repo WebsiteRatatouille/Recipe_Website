@@ -3,10 +3,13 @@ import { createEbook, getEbooks, getEbookById } from "../controllers/ebookContro
 
 const router = express.Router();
 
+// Get all ebooks
 router.get("/", getEbooks);
-router.get("/ebooks", getEbooks); // Thêm route /ebooks
-router.get("/ebooks/:id", getEbookById); // Route /ebooks/:id
+
+// Get ebook by id
 router.get("/:id", getEbookById);
+
+// Create ebook
 router.post("/", createEbook);
 
 export default router;

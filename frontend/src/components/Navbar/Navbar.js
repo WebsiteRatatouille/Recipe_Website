@@ -31,8 +31,8 @@ function Navbar({ setShowLogin }) {
 
       try {
         const user = JSON.parse(storedUser);
-        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
-        const res = await axios.get(`${apiUrl}/cart/${user.id || user._id}`);
+        const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+        const res = await axios.get(`${cartServiceUrl}/cart/${user.id || user._id}`);
         const totalItems = res.data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
         setCartCount(totalItems);
       } catch (err) {
@@ -122,7 +122,7 @@ function Navbar({ setShowLogin }) {
               </NavLink>
             </ul>
           </div>
-          <div className="profile" style={{ position: "relative", display: "flex", alignItems: "center", gap: "15px" }}>
+          <div className="profile" style={{ position: "relative", display: "flex", alignItems: "center", gap: "30px" }}>
             {user && (
               <NavLink 
                 to="/cart" 
@@ -137,8 +137,8 @@ function Navbar({ setShowLogin }) {
                       position: "absolute",
                       top: "-8px",
                       right: "-8px",
-                      background: "#ff6b35",
-                      color: "white",
+                      background: "var(--gray-color)",
+                      color: "#fff",
                       borderRadius: "50%",
                       width: "20px",
                       height: "20px",
@@ -227,10 +227,9 @@ function Navbar({ setShowLogin }) {
 
                         <Link
                           to="/cart"
-                          className="menu-item"
+                          className="menu-item cart-menu-item"
                           onClick={() => setShowMenu(false)}
                         >
-                          <i className="bx bx-cart"></i>
                           Giỏ hàng {cartCount > 0 && `(${cartCount})`}
                         </Link>
 

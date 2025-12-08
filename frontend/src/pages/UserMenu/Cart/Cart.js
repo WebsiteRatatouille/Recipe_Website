@@ -28,15 +28,15 @@ function Cart() {
         startProgress();
         setLoading(true);
         try {
-            const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
-            const res = await axios.get(`${apiUrl}/cart/${user.id || user._id}`);
+            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            const res = await axios.get(`${cartServiceUrl}/cart/${user.id || user._id}`);
             setCart(res.data);
 
             // Fetch ebook details for each item
             if (res.data.items && res.data.items.length > 0) {
-                const microUrl = process.env.REACT_APP_MICRO_URL || "http://localhost:5500";
+                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
                 const ebookPromises = res.data.items.map(item =>
-                    axios.get(`${microUrl}/ebooks/${item.productId}`)
+                    axios.get(`${ebookServiceUrl}/${item.productId}`)
                         .then(res => ({ ...res.data, quantity: item.quantity }))
                         .catch(err => {
                             console.error(`Lỗi khi fetch ebook ${item.productId}:`, err);
@@ -64,8 +64,8 @@ function Cart() {
         setUpdating({ ...updating, [productId]: true });
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
-            await axios.put(`${apiUrl}/cart/${user.id || user._id}`, {
+            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            await axios.put(`${cartServiceUrl}/cart/${user.id || user._id}`, {
                 productId,
                 quantity: newQuantity
             });
@@ -86,8 +86,8 @@ function Cart() {
     const removeItem = async (productId) => {
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
-            await axios.delete(`${apiUrl}/cart/${user.id || user._id}/${productId}`);
+            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            await axios.delete(`${cartServiceUrl}/cart/${user.id || user._id}/${productId}`);
             
             setEbooks(prev => prev.filter(ebook => ebook._id !== productId));
             window.dispatchEvent(new Event('cartUpdated'));

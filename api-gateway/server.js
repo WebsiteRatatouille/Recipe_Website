@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+// Không parse body tại gateway để tránh làm mất raw body khi proxy tới service
 
 // ROOT
 app.get("/", (req, res) => {
@@ -27,7 +27,7 @@ app.use(
   createProxyMiddleware({
     target: process.env.EBOOK_URL,
     changeOrigin: true,
-    pathRewrite: { "^/ebooks": "" }
+    
   })
 );
 
@@ -55,7 +55,7 @@ app.use(
   createProxyMiddleware({
     target: process.env.PAYMENT_URL,
     changeOrigin: true,
-    pathRewrite: { "^/payments": "/payments" }
+    
   })
 );
 

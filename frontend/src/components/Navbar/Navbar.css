@@ -170,6 +170,10 @@ header {
   background-color: #fff0f0;
 }
 
+.cart-menu-item {
+  padding-left: 50px;
+}
+
 .admin-dashboard-separator {
   border: none;
   border-top: 1px solid #eee;

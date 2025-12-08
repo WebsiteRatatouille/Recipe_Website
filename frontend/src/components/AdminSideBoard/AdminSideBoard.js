@@ -40,6 +40,15 @@ function AdminSideBoard() {
               </div>
             </NavLink>
 
+            <NavLink className="side-bar-link" to="/adminEbooks">
+              <div className="content">
+                <span className="icon">
+                  <i className="bx bx-book"></i>
+                </span>
+                <span className="title">Sách</span>
+              </div>
+            </NavLink>
+
             <NavLink className="side-bar-link" to="adminCategories">
               <div className="content">
                 <span className="icon">
