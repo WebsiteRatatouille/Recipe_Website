@@ -5,13 +5,17 @@ const orderSchema = new mongoose.Schema(
     userId: { type: String, required: true },
     items: [
       {
-        productId: String,
-        quantity: Number
+        productId: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        // Snapshot thông tin tại thời điểm đặt
+        title: { type: String },
+        priceSnapshot: { type: Number }
       }
     ],
-    totalPrice: Number,
+    totalPrice: { type: Number, required: true },
     status: {
       type: String,
+      enum: ["pending", "paid", "cancelled"],
       default: "pending"
     }
   },

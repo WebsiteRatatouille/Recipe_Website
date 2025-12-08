@@ -226,6 +226,15 @@ function Navbar({ setShowLogin }) {
                         </Link>
 
                         <Link
+                          to="/orders"
+                          className="menu-item"
+                          onClick={() => setShowMenu(false)}
+                        >
+                          <i className="fas fa-receipt"></i>
+                          Đơn hàng
+                        </Link>
+
+                        <Link
                           to="/cart"
                           className="menu-item cart-menu-item"
                           onClick={() => setShowMenu(false)}

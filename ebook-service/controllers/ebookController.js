@@ -27,3 +27,26 @@ export const getEbookById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const updateEbook = async (req, res) => {
+  try {
+    const updated = await Ebook.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updated) return res.status(404).json({ message: "Ebook not found" });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const deleteEbook = async (req, res) => {
+  try {
+    const deleted = await Ebook.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Ebook not found" });
+    res.json({ message: "Ebook deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

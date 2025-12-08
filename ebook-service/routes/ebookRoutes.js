@@ -1,5 +1,11 @@
 import express from "express";
-import { createEbook, getEbooks, getEbookById } from "../controllers/ebookController.js";
+import {
+  createEbook,
+  getEbooks,
+  getEbookById,
+  updateEbook,
+  deleteEbook,
+} from "../controllers/ebookController.js";
 
 const router = express.Router();
 
@@ -11,5 +17,11 @@ router.get("/:id", getEbookById);
 
 // Create ebook
 router.post("/", createEbook);
+
+// Update ebook
+router.put("/:id", updateEbook);
+
+// Delete ebook
+router.delete("/:id", deleteEbook);
 
 export default router;

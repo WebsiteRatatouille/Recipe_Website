@@ -12,6 +12,7 @@ function Cart() {
     const [ebooks, setEbooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState({});
+    const [checkingOut, setCheckingOut] = useState(false);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -104,9 +105,55 @@ function Cart() {
         }, 0);
     };
 
-    const handleCheckout = () => {
-        // TODO: Implement checkout
-        toast.info("Tính năng thanh toán đang được phát triển!");
+    const handleCheckout = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            toast.info("Vui lòng đăng nhập trước khi thanh toán!");
+            navigate("/login");
+            return;
+        }
+
+        if (!ebooks || ebooks.length === 0) {
+            toast.info("Giỏ hàng đang trống!");
+            return;
+        }
+
+        const items = ebooks.map((ebook) => ({
+            productId: ebook._id,
+            quantity: ebook.quantity
+        }));
+
+        const orderServiceUrl = process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+
+        try {
+            setCheckingOut(true);
+            startProgress();
+
+            const res = await axios.post(`${orderServiceUrl}/orders`, {
+                userId: user.id || user._id,
+                items
+            });
+
+            toast.success("Đã tạo đơn hàng. Vui lòng thanh toán");
+            console.log("Order created:", res.data);
+
+            // Clear cart after order creation
+            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            try {
+                await axios.delete(`${cartServiceUrl}/cart/${user.id || user._id}`);
+                setEbooks([]);
+                window.dispatchEvent(new Event('cartUpdated'));
+            } catch (clearErr) {
+                console.error("Không thể xóa giỏ sau khi đặt hàng:", clearErr);
+            }
+        } catch (err) {
+            console.error("Lỗi khi tạo đơn hàng:", err);
+            const message = err?.response?.data?.error || "Không thể tạo đơn hàng!";
+            toast.error(message);
+        } finally {
+            setCheckingOut(false);
+            stopProgress();
+        }
     };
 
     if (loading) {
@@ -197,8 +244,12 @@ function Cart() {
                             <span>Tổng cộng:</span>
                             <span>{calculateTotal().toLocaleString('vi-VN')} ₫</span>
                         </div>
-                        <button className="btn-checkout" onClick={handleCheckout}>
-                            Thanh toán
+                        <button
+                            className="btn-checkout"
+                            onClick={handleCheckout}
+                            disabled={checkingOut}
+                        >
+                            {checkingOut ? "Đang tạo đơn..." : "Tạo đơn hàng"}
                         </button>
                     </div>
                 </div>

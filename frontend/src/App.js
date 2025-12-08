@@ -16,6 +16,8 @@ import MyRecipes from "./pages/UserMenu/MyRecipes/MyRecipes";
 import AddRecipe from "./pages/UserMenu/AddRecipe/AddRecipe";
 import FavoriteRecipes from "./pages/UserMenu/FavoriteRecipes/FavoriteRecipes";
 import Cart from "./pages/UserMenu/Cart/Cart";
+import Orders from "./pages/UserMenu/Orders/Orders";
+import AdminOrders from "./pages/AdminPages/AdminOrders/AdminOrders";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard/AdminDashboard";
@@ -117,6 +119,7 @@ function App() {
                         <Route path="/edit-recipe/:id" element={<AddRecipe />} />
                         <Route path="/favorite-recipes" element={<FavoriteRecipes />} />
                         <Route path="/cart" element={<Cart />} />
+                        <Route path="/orders" element={<Orders />} />
                     </Route>
 
                     <Route
@@ -131,6 +134,7 @@ function App() {
                         <Route path="/adminCollections" element={<AdminCollections />} />
                         <Route path="/adminUsers" element={<AdminUsers />} />
                         <Route path="/adminBlogs" element={<AdminBlogs />} />
+                        <Route path="/adminOrders" element={<AdminOrders />} />
                     </Route>
                 </Routes>
             </div>
