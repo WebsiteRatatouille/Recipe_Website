@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Orders.css";
 import { startProgress, stopProgress } from "../../../utils/NProgress/NProgress";
@@ -13,6 +13,7 @@ const statusLabel = {
 
 function Orders() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // all | pending | paid
@@ -49,9 +50,54 @@ function Orders() {
     }
   };
 
+  // Khi quay lại từ MoMo redirect (local), tự động confirm thanh toán và refresh đơn
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const momoOrderId = params.get("orderId"); // orderId mà gửi sang MoMo (momoOrderId)
+    const resultCode = params.get("resultCode");
+
+    if (!momoOrderId || resultCode !== "0") return; // Chỉ xử lý khi thanh toán thành công
+
+    const originalOrderId = momoOrderId.split("-")[0];
+
+    const confirmLocal = async () => {
+      try {
+        const paymentServiceUrl =
+          process.env.REACT_APP_PAYMENT_URL || "http://localhost:5004";
+
+        await axios.post(
+          `${paymentServiceUrl}/payments/local-confirm/${originalOrderId}`
+        );
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+          await fetchOrders(user);
+        }
+      } catch (err) {
+        console.error("Lỗi local-confirm MoMo:", err);
+      } finally {
+        // Xóa query params để tránh gọi lại lần nữa khi re-render
+        navigate("/orders", { replace: true });
+      }
+    };
+
+    confirmLocal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
+
   const filteredOrders = useMemo(() => {
-    if (filter === "all") return orders;
-    return orders.filter((o) => o.status === filter);
+    const weight = { pending: 0, paid: 1, cancelled: 2 };
+
+    const base =
+      filter === "all" ? orders : orders.filter((o) => o.status === filter);
+
+    return [...base].sort((a, b) => {
+      const wa = weight[a.status] ?? 99;
+      const wb = weight[b.status] ?? 99;
+      if (wa !== wb) return wa - wb;
+      // Nếu cùng nhóm trạng thái, mới so sánh theo thời gian tạo (mới nhất lên trên)
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
   }, [orders, filter]);
 
   const handleDelete = async (orderId) => {
@@ -96,18 +142,23 @@ function Orders() {
       setActing((prev) => ({ ...prev, [order._id]: true }));
       const paymentServiceUrl =
         process.env.REACT_APP_PAYMENT_URL || "http://localhost:5004";
-      const { data } = await axios.post(`${paymentServiceUrl}/payments`, {
-        orderId: order._id
-      });
 
-      setQrData({
-        url: data.payUrl,
-        displayAmount: (order.totalPrice || 0).toLocaleString("vi-VN"),
-        note: order._id,
-        qr: data.qrUrl
-      });
+      // Gọi endpoint MoMo sandbox mới trên payment-service
+      const { data } = await axios.post(
+        `${paymentServiceUrl}/payments/momo/create`,
+        {
+          orderId: order._id
+        }
+      );
+
+      if (data?.payUrl) {
+        // Redirect sang trang thanh toán MoMo sandbox
+        window.location.href = data.payUrl;
+      } else {
+        toast.error("Không nhận được link thanh toán từ MoMo");
+      }
     } catch (err) {
-      console.error("Lỗi tạo payment:", err);
+      console.error("Lỗi tạo payment MoMo:", err);
       const msg = err?.response?.data?.error || "Không thể tạo thanh toán";
       toast.error(msg);
     } finally {

@@ -10,6 +10,8 @@ const paymentSchema = new mongoose.Schema({
     default: "pending",
   },
   payUrl: { type: String },
+  // orderId mà gửi sang MoMo (orderIdMomo), dùng để map khi xử lý IPN
+  momoOrderId: { type: String },
 }, { timestamps: true });
 
 export default mongoose.model("Payment", paymentSchema);

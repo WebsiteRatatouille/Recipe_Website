@@ -17,6 +17,7 @@ import AddRecipe from "./pages/UserMenu/AddRecipe/AddRecipe";
 import FavoriteRecipes from "./pages/UserMenu/FavoriteRecipes/FavoriteRecipes";
 import Cart from "./pages/UserMenu/Cart/Cart";
 import Orders from "./pages/UserMenu/Orders/Orders";
+import Library from "./pages/UserMenu/Library/Library";
 import AdminOrders from "./pages/AdminPages/AdminOrders/AdminOrders";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
@@ -32,6 +33,7 @@ import RecipeDetail from "./pages/UserPages/RecipeDetail/RecipeDetail";
 import EbookDetail from "./pages/UserPages/EbookDetail/EbookDetail";
 import RecipeSearchResult from "./pages/UserPages/RecipeSearchResult/RecipeSearchResult";
 import EmailVerificationStatus from "./pages/UserPages/EmailVerificationStatus/EmailVerificationStatus";
+import PaymentResult from "./pages/UserPages/PaymentResult/PaymentResult";
 import BlogDetail from "./pages/UserPages/Blog/BlogDetail";
 import LoginPage from "./pages/LoginPage";
 import AdminBlogs from "./pages/AdminPages/AdminBlogs/AdminBlogs";
@@ -104,6 +106,7 @@ function App() {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/aboutUs" element={<AboutUs />} />
                         <Route path="/verify-email-status" element={<EmailVerificationStatus />} />
+                        <Route path="/payment-result" element={<PaymentResult />} />
                         <Route path="/login" element={<LoginPage />} />
                     </Route>
 
@@ -120,6 +123,7 @@ function App() {
                         <Route path="/favorite-recipes" element={<FavoriteRecipes />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/orders" element={<Orders />} />
+                        <Route path="/library" element={<Library />} />
                     </Route>
 
                     <Route

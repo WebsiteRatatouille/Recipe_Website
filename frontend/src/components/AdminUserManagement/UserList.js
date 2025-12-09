@@ -287,13 +287,31 @@ const UserList = () => {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)}>Hủy</Button>
+                    <Button
+                        onClick={() => setOpenDialog(false)}
+                        sx={{
+                            color: "#4a4a48",
+                            fontWeight: "bold",
+                            textTransform: "none",
+                        }}
+                    >
+                        HỦY
+                    </Button>
                     <Button
                         onClick={handleUpdate}
                         variant="contained"
-                        className="create-button" // Sử dụng class name tương tự cho nút Update
+                        sx={{
+                            backgroundColor: "#4a4a48",
+                            color: "#fff",
+                            fontWeight: "bold",
+                            textTransform: "none",
+                            px: 3,
+                            "&:hover": {
+                                backgroundColor: "#000",
+                            },
+                        }}
                     >
-                        Cập nhật
+                        LƯU
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -344,9 +362,31 @@ const UserList = () => {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenCreateDialog(false)}>Hủy</Button>
-                    <Button onClick={handleCreate} variant="contained" className="create-button">
-                        Tạo tài khoản
+                    <Button
+                        onClick={() => setOpenCreateDialog(false)}
+                        sx={{
+                            color: "#4a4a48",
+                            fontWeight: "bold",
+                            textTransform: "none",
+                        }}
+                    >
+                        HỦY
+                    </Button>
+                    <Button
+                        onClick={handleCreate}
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#4a4a48",
+                            color: "#fff",
+                            fontWeight: "bold",
+                            textTransform: "none",
+                            px: 3,
+                            "&:hover": {
+                                backgroundColor: "#000",
+                            },
+                        }}
+                    >
+                        LƯU
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import ebookRoutes from "./routes/ebookRoutes.js";
+import "./models/User.js";
 
 dotenv.config();
 

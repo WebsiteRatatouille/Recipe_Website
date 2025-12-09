@@ -7,7 +7,16 @@ const ebookSchema = new mongoose.Schema(
     author: String,
     price: { type: Number, required: true },
     imageUrl: String,
-    pdfUrl: String
+    pdfUrl: String,
+
+    comments: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        userName: { type: String },
+        content: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now },
+      }
+    ]
   },
   { timestamps: true }
 );

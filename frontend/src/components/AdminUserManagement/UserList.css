@@ -17,27 +17,17 @@
   gap: 16px; /* Thêm khoảng cách 16px giữa các item */
 }
 
-.search-field {
-  /* margin-right: 8px; */ /* Bỏ margin-right */
-}
-
-.search-button {
-  background-color: #4a4a48; /* Màu xám */
-  color: white;
-}
-
-.search-button:hover {
-  background-color: #3a3a38; /* Màu xám đậm hơn khi hover */
-}
-
+.search-button,
 .create-button {
-  background-color: #24708e; /* Màu chữ chính */
-  color: white;
-  /* margin-left: 250px; */ /* Bỏ margin-left */
+  background-color: #4a4a48 !important; /* màu chủ đạo */
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: none;
 }
 
+.search-button:hover,
 .create-button:hover {
-  background-color: #004765; /* Màu đậm hơn khi hover */
+  background-color: #000000 !important; /* hover đen */
 }
 
 .styled-table-head {

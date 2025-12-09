@@ -5,6 +5,10 @@ import {
   getEbookById,
   updateEbook,
   deleteEbook,
+  getEbookComments,
+  addEbookComment,
+  updateEbookComment,
+  deleteEbookComment,
 } from "../controllers/ebookController.js";
 
 const router = express.Router();
@@ -14,6 +18,12 @@ router.get("/", getEbooks);
 
 // Get ebook by id
 router.get("/:id", getEbookById);
+
+// Comments
+router.get("/:id/comments", getEbookComments);
+router.post("/:id/comments", addEbookComment);
+router.put("/:ebookId/comments/:commentId", updateEbookComment);
+router.delete("/:ebookId/comments/:commentId", deleteEbookComment);
 
 // Create ebook
 router.post("/", createEbook);

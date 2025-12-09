@@ -16,14 +16,21 @@
 }
 
 .orders-filter button {
-  padding: 8px 14px;
+  padding: 6px 10px;
   border: 1px solid #ddd;
-  background: #f7f7f7;
+  background: #fafafa;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .orders-filter button.active {
+  background: var(--gray-color, #4a4a48);
+  color: #fff;
+  border-color: var(--gray-color, #4a4a48);
+}
+
+.orders-filter button:hover {
   background: var(--gray-color, #4a4a48);
   color: #fff;
   border-color: var(--gray-color, #4a4a48);

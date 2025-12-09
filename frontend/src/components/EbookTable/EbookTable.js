@@ -48,7 +48,7 @@ function EbookTable() {
       width: 120,
       renderCell: (params) => `${params.value?.toLocaleString("vi-VN")} ₫`,
     },
-    { field: "createdAt", headerName: "Ngày tạo", width: 140 },
+    { field: "updatedAt", headerName: "Ngày cập nhật", width: 140 },
     {
       field: "actions",
       headerName: "Hành động",
@@ -72,7 +72,7 @@ function EbookTable() {
           <Tooltip title="Xóa" placement="top">
             <i
               className="bx bx-trash"
-              style={{ cursor: "pointer", marginLeft: 10, color: "#d00" }}
+              style={{ cursor: "pointer", marginLeft: 10, color: "#000" }}
               onClick={() => handleDelete(params.row)}
             ></i>
           </Tooltip>
@@ -92,7 +92,7 @@ function EbookTable() {
         title: item.title,
         author: item.author || "Chưa có",
         price: item.price || 0,
-        createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : "",
+        updatedAt: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString("vi-VN") : "",
       }));
       setRows(formatted);
     } catch (err) {
@@ -173,8 +173,24 @@ function EbookTable() {
     <Paper className="table-wrapper" sx={{ maxHeight: "80vh", width: "90%" }}>
       <Box className="table-toolbar">
         <Typography className="table-title">Danh sách sách</Typography>
-        <Button variant="contained" onClick={openCreate}>
-          Thêm sách
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            borderRadius: "12px",
+            fontWeight: "bold",
+            px: 3,
+            py: 1,
+            textTransform: "none",
+            boxShadow: 2,
+            backgroundColor: "#4a4a48",
+            "&:hover": {
+              backgroundColor: "black",
+            },
+          }}
+          onClick={openCreate}
+        >
+          + THÊM
         </Button>
       </Box>
       <DataGrid
@@ -243,9 +259,31 @@ function EbookTable() {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenForm(false)}>Hủy</Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            Lưu
+          <Button
+            onClick={() => setOpenForm(false)}
+            sx={{
+              color: "#4a4a48",
+              fontWeight: "bold",
+              textTransform: "none",
+            }}
+          >
+            HỦY
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{
+              backgroundColor: "#4a4a48",
+              color: "#fff",
+              fontWeight: "bold",
+              textTransform: "none",
+              px: 3,
+              "&:hover": {
+                backgroundColor: "#000",
+              },
+            }}
+          >
+            LƯU
           </Button>
         </DialogActions>
       </Dialog>

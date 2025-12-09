@@ -10,6 +10,7 @@ function Navbar({ setShowLogin }) {
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [ordersCount, setOrdersCount] = useState(0);
   const menuRef = useRef();
   const navigate = useNavigate();
 
@@ -20,12 +21,13 @@ function Navbar({ setShowLogin }) {
     }
   }, []);
 
-  // Fetch cart count
+  // Fetch cart count & orders count
   useEffect(() => {
-    const fetchCartCount = async () => {
+    const fetchCounts = async () => {
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
         setCartCount(0);
+        setOrdersCount(0);
         return;
       }
 
@@ -35,17 +37,26 @@ function Navbar({ setShowLogin }) {
         const res = await axios.get(`${cartServiceUrl}/cart/${user.id || user._id}`);
         const totalItems = res.data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
         setCartCount(totalItems);
+
+        const orderServiceUrl = process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+        const ordersRes = await axios.get(
+          `${orderServiceUrl}/orders/user/${user.id || user._id}`
+        );
+        const allOrders = Array.isArray(ordersRes.data) ? ordersRes.data : [];
+        const pendingCount = allOrders.filter((o) => o.status === "pending").length;
+        setOrdersCount(pendingCount);
       } catch (err) {
-        console.error("Lỗi khi lấy giỏ hàng:", err);
+        console.error("Lỗi khi lấy giỏ hàng / đơn hàng:", err);
         setCartCount(0);
+        setOrdersCount(0);
       }
     };
 
-    fetchCartCount();
+    fetchCounts();
 
     // Listen for cart updates
     const handleCartUpdate = () => {
-      fetchCartCount();
+      fetchCounts();
     };
     window.addEventListener('cartUpdated', handleCartUpdate);
 
@@ -231,7 +242,16 @@ function Navbar({ setShowLogin }) {
                           onClick={() => setShowMenu(false)}
                         >
                           <i className="fas fa-receipt"></i>
-                          Đơn hàng
+                          Đơn hàng{ordersCount > 0 ? ` (${ordersCount})` : ""}
+                        </Link>
+
+                        <Link
+                          to="/library"
+                          className="menu-item"
+                          onClick={() => setShowMenu(false)}
+                        >
+                          <i className="fas fa-book"></i>
+                          Thư viện
                         </Link>
 
                         <Link
@@ -239,7 +259,7 @@ function Navbar({ setShowLogin }) {
                           className="menu-item cart-menu-item"
                           onClick={() => setShowMenu(false)}
                         >
-                          Giỏ hàng {cartCount > 0 && `(${cartCount})`}
+                          Giỏ hàng{cartCount > 0 ? ` (${cartCount})` : ""}
                         </Link>
 
                         <Link
@@ -252,17 +272,14 @@ function Navbar({ setShowLogin }) {
                         </Link>
 
                         {user && user.isAdmin && (
-                          <>
-                            <hr className="admin-dashboard-separator" />
-                            <Link
-                              to="/admin"
-                              className="menu-item admin-dashboard-btn"
-                              onClick={() => setShowMenu(false)}
-                            >
-                              <i className="fas fa-tachometer-alt"></i> Trang
-                              quản trị
-                            </Link>
-                          </>
+                          <Link
+                            to="/admin"
+                            className="menu-item"
+                            onClick={() => setShowMenu(false)}
+                          >
+                            <i className="fas fa-tachometer-alt"></i>
+                            Trang quản trị
+                          </Link>
                         )}
 
                         <button

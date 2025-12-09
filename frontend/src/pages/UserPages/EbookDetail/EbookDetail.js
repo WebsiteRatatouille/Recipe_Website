@@ -9,6 +9,7 @@ import { startProgress, stopProgress } from "../../../utils/NProgress/NProgress"
 import RecipeSkeletonGrid from "../../../components/RecipeSkeletonGrid/RecipeSkeletonGrid";
 import LineSeparator from "../../../components/LineSeparator/LineSeparator";
 import EbookFavorite from "../../../components/EbookFavorite/EbookFavorite";
+import ReviewEbookSection from "../../../components/ReviewEbookSection/ReviewEbookSection";
 
 function EbookDetail() {
     const { id } = useParams();
@@ -175,20 +176,6 @@ function EbookDetail() {
                             </button>
                         </div>
 
-                        {ebook.pdfUrl && (
-                            <div className="ebook-preview-section">
-                                <a 
-                                    href={ebook.pdfUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="btn-preview"
-                                >
-                                    <i className="bx bx-show"></i>
-                                    Xem trước PDF
-                                </a>
-                            </div>
-                        )}
-
                         {ebook.description && (
                             <div className="ebook-short-description">
                                 <h3>Mô tả sản phẩm</h3>
@@ -198,36 +185,55 @@ function EbookDetail() {
                     </div>
                 </div>
 
-                {/* Product Details Section */}
-                {ebook.description && (
-                    <div className="ebook-details-section">
-                        <div className="ebook-details-header">
-                            <h2>Chi tiết sản phẩm</h2>
-                        </div>
-                        <div className="ebook-details-content">
-                            <div className="detail-item">
-                                <span className="detail-label">Tên sách:</span>
-                                <span className="detail-value">{ebook.title}</span>
+                {/* Details + Review side by side */}
+                <div className="ebook-details-review-row">
+                    {ebook.description && (
+                        <div className="ebook-details-section">
+                            <div className="ebook-details-header">
+                                <h2>Chi tiết sản phẩm</h2>
                             </div>
-                            {ebook.author && (
+                            <div className="ebook-details-content">
                                 <div className="detail-item">
-                                    <span className="detail-label">Tác giả:</span>
-                                    <span className="detail-value">{ebook.author}</span>
+                                    <span className="detail-label">Tên sách:</span>
+                                    <span className="detail-value">{ebook.title}</span>
                                 </div>
-                            )}
-                            <div className="detail-item">
-                                <span className="detail-label">Giá:</span>
-                                <span className="detail-value">{ebook.price?.toLocaleString('vi-VN')} ₫</span>
+                                {ebook.author && (
+                                    <div className="detail-item">
+                                        <span className="detail-label">Tác giả:</span>
+                                        <span className="detail-value">{ebook.author}</span>
+                                    </div>
+                                )}
+                                <div className="detail-item">
+                                    <span className="detail-label">Giá:</span>
+                                    <span className="detail-value">{ebook.price?.toLocaleString('vi-VN')} ₫</span>
+                                </div>
+                                {ebook.description && (
+                                    <div className="detail-item full-width">
+                                        <span className="detail-label">Mô tả:</span>
+                                        <span className="detail-value">{ebook.description}</span>
+                                    </div>
+                                )}
+
+                                {ebook.imageUrl && (
+                                    <div className="detail-item full-width ebook-detail-image-row">
+                                        <span className="detail-value">
+                                            <img
+                                                src={ebook.imageUrl}
+                                                alt={ebook.title}
+                                                className="ebook-detail-cover"
+                                            />
+                                        </span>
+                                    </div>
+                                )}
                             </div>
-                            {ebook.description && (
-                                <div className="detail-item full-width">
-                                    <span className="detail-label">Mô tả:</span>
-                                    <span className="detail-value">{ebook.description}</span>
-                                </div>
-                            )}
                         </div>
+                    )}
+
+                    {/* Review Section */}
+                    <div className="ebook-review-column">
+                        <ReviewEbookSection ebookId={id} />
                     </div>
-                )}
+                </div>
 
                 {/* Related Products Section */}
                 <div className="ebook-related-section">
