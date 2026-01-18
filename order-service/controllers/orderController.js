@@ -1,14 +1,9 @@
 import Order from "../models/Order.js";
 import axios from "axios";
 
-const EBOOK_URL = (process.env.EBOOK_URL || "http://localhost:5001").replace(
-  /\/$/,
-  ""
-);
-const CART_URL = (process.env.CART_URL || "http://localhost:5002").replace(
-  /\/$/,
-  ""
-);
+// Base URLs for other services, lấy hoàn toàn từ biến môi trường
+const EBOOK_URL = (process.env.EBOOK_URL)
+const CART_URL = (process.env.CART_URL)
 
 const ALLOWED_STATUS = ["pending", "paid", "cancelled"];
 
@@ -102,6 +97,13 @@ export const createOrder = async (req, res) => {
     return res.status(201).json({ message: "Order created", order: newOrder });
   } catch (err) {
     console.log("ORDER ERROR:", err.message);
+    console.log("EBOOK_URL =", EBOOK_URL);
+    console.log("CART_URL  =", CART_URL);
+    if (err?.config) {
+      console.log("Axios request URL:", err.config.url);
+      console.log("Axios method:", err.config.method);
+    }
+    console.log("STACK:\n", err.stack);
     res.status(500).json({ error: err.message });
   }
 };

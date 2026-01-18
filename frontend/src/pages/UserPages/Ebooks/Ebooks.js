@@ -22,6 +22,7 @@ function Ebooks() {
   const [ebookFilterLoading, setEbookFilterLoading] = useState(false);
   const [currPage, setCurrPage] = useState(1);
   const [limit, setLimit] = useState(16);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Get ALL Ebooks from ebook-service
   useEffect(() => {
@@ -29,7 +30,7 @@ function Ebooks() {
       startProgress();
       setEbookLoading(true);
       try {
-        const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+        const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
         const res = await axios.get(`${ebookServiceUrl}`);
         console.log("Dữ liệu ebooks lấy về:", res.data);
         // Đảm bảo ebookList luôn là một mảng
@@ -52,16 +53,23 @@ function Ebooks() {
     fetchEbooks();
   }, []);
 
-  // navigation for searchBar
-  const navigate = useNavigate();
+  // Search within ebooks list by title/author
   const handleSearch = (query) => {
-    if (query.trim() !== "") {
-      navigate(`/search?query=${encodeURIComponent(query)}&type=combined`);
-    }
+    const trimmed = query.trim();
+    setSearchQuery(trimmed);
+    setCurrPage(1);
   };
 
-  // Filter ebooks (có thể thêm filter theo tác giả, giá, etc. sau)
+  // Filter ebooks theo searchQuery (có thể thêm filter theo tác giả, giá, etc. sau)
   let filteredEbooks = ebookList;
+  if (searchQuery) {
+    const lower = searchQuery.toLowerCase();
+    filteredEbooks = ebookList.filter((ebook) => {
+      const title = (ebook.title || "").toLowerCase();
+      const author = (ebook.author || "").toLowerCase();
+      return title.includes(lower) || author.includes(lower);
+    });
+  }
 
   let totalPage = Math.ceil(filteredEbooks.length / limit);
 

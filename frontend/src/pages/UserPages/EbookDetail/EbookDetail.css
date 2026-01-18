@@ -163,6 +163,21 @@
     background: #fff5f2;
 }
 
+/* Owned state: yellow button, no hover effect */
+.btn-add-to-cart.owned {
+    background: #fef9c3; /* nền vàng rất nhạt */
+    border-color: #eab308; /* viền vàng */
+    color: #eab308; /* chữ vàng */
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-add-to-cart.owned:hover {
+    background: #fef9c3;
+    border-color: #eab308;
+}
+
 .btn-buy-now {
     background: var(--primary-color, #ff6b35);
     color: white;

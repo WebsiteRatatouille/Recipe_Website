@@ -33,12 +33,12 @@ function Navbar({ setShowLogin }) {
 
       try {
         const user = JSON.parse(storedUser);
-        const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+        const cartServiceUrl = process.env.REACT_APP_CART_URL;
         const res = await axios.get(`${cartServiceUrl}/cart/${user.id || user._id}`);
         const totalItems = res.data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
         setCartCount(totalItems);
 
-        const orderServiceUrl = process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+        const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
         const ordersRes = await axios.get(
           `${orderServiceUrl}/orders/user/${user.id || user._id}`
         );

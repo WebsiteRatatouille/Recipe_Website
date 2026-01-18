@@ -35,8 +35,7 @@ function Orders() {
     try {
       setLoading(true);
       startProgress();
-      const orderServiceUrl =
-        process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+      const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
       const { data } = await axios.get(
         `${orderServiceUrl}/orders/user/${user.id || user._id}`
       );
@@ -62,8 +61,7 @@ function Orders() {
 
     const confirmLocal = async () => {
       try {
-        const paymentServiceUrl =
-          process.env.REACT_APP_PAYMENT_URL || "http://localhost:5004";
+        const paymentServiceUrl = process.env.REACT_APP_PAYMENT_URL;
 
         await axios.post(
           `${paymentServiceUrl}/payments/local-confirm/${originalOrderId}`
@@ -103,8 +101,7 @@ function Orders() {
   const handleDelete = async (orderId) => {
     setActing((prev) => ({ ...prev, [orderId]: true }));
     try {
-      const orderServiceUrl =
-        process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+      const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
       await axios.delete(`${orderServiceUrl}/orders/${orderId}`);
       setOrders((prev) => prev.filter((o) => o._id !== orderId));
       toast.success("Đã xóa đơn hàng");
@@ -120,8 +117,7 @@ function Orders() {
   const handleMarkPaid = async (orderId) => {
     setActing((prev) => ({ ...prev, [orderId]: true }));
     try {
-      const orderServiceUrl =
-        process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+      const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
       const { data } = await axios.patch(
         `${orderServiceUrl}/orders/${orderId}/status`,
         { status: "paid" }
@@ -140,8 +136,7 @@ function Orders() {
   const handleMomoPay = async (order) => {
     try {
       setActing((prev) => ({ ...prev, [order._id]: true }));
-      const paymentServiceUrl =
-        process.env.REACT_APP_PAYMENT_URL || "http://localhost:5004";
+      const paymentServiceUrl = process.env.REACT_APP_PAYMENT_URL;
 
       // Gọi endpoint MoMo sandbox mới trên payment-service
       const { data } = await axios.post(

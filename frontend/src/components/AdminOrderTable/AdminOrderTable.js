@@ -41,8 +41,7 @@ function AdminOrderTable() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const orderServiceUrl =
-        process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+      const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
       const { data } = await axios.get(`${orderServiceUrl}/orders`);
       const formatted = (data || []).map((o) => ({
         id: o._id,

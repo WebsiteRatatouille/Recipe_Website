@@ -23,10 +23,8 @@ function Library() {
       try {
         setLoading(true);
 
-        const orderServiceUrl =
-          process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
-        const ebookServiceUrl =
-          process.env.REACT_APP_EBOOK_URL || "http://localhost:5002";
+        const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
+        const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
 
         // 1. Lấy tất cả orders của user
         const { data: orders } = await axios.get(

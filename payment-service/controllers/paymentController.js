@@ -2,7 +2,7 @@ import Payment from "../models/Payment.js";
 import axios from "axios";
 import crypto from "crypto";
 
-const ORDER_URL = (process.env.ORDER_URL || "http://localhost:5003").replace(/\/$/, "");
+const ORDER_URL = (process.env.ORDER_URL || "").replace(/\/$/, "");
 
 // Endpoint MoMo Sandbox (ưu tiên từ .env, fallback URL mặc định)
 const MOMO_ENDPOINT =

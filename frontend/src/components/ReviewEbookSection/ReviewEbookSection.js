@@ -13,8 +13,7 @@ const ReviewEbookSection = ({ ebookId }) => {
   const [editContent, setEditContent] = useState("");
   const [menuOpenId, setMenuOpenId] = useState(null);
   const menuRef = useRef();
-  const ebookServiceUrl =
-    process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+  const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
 
   useEffect(() => {
     if (!ebookId) return;

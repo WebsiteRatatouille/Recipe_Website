@@ -18,6 +18,7 @@ function EbookDetail() {
     const [topEbookList, setTopEbookList] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [addingToCart, setAddingToCart] = useState(false);
+    const [isOwned, setIsOwned] = useState(false);
 
     const [loadingTopEbooks, setLoadingTopEbooks] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ function EbookDetail() {
             startProgress();
             setLoading(true);
             try {
-                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
                 const res = await axios.get(`${ebookServiceUrl}/${id}`);
                 setEbook(res.data);
                 setSelectedImage(res.data.imageUrl);
@@ -53,7 +54,7 @@ function EbookDetail() {
             setLoadingTopEbooks(true);
             startProgress();
             try {
-                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
                 const res = await axios.get(`${ebookServiceUrl}`);
                 // Lọc bỏ ebook hiện tại và lấy 8 ebook đầu tiên
                 const filtered = res.data.filter((e) => e._id !== id).slice(0, 8);
@@ -70,17 +71,53 @@ function EbookDetail() {
         fetchTopEbooks();
     }, [id]);
 
+    // Check if current ebook is already owned by the logged-in user
+    useEffect(() => {
+        const checkOwnership = async () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user) {
+                setIsOwned(false);
+                return;
+            }
+
+            try {
+                const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
+                const { data: orders } = await axios.get(
+                    `${orderServiceUrl}/orders/user/${user.id || user._id}`
+                );
+
+                const paidOrders = (orders || []).filter((o) => o.status === "paid");
+                const owned = paidOrders.some((order) =>
+                    (order.items || []).some((item) => item.productId === id)
+                );
+
+                setIsOwned(owned);
+            } catch (err) {
+                console.error("Lỗi khi kiểm tra quyền sở hữu ebook:", err);
+                setIsOwned(false);
+            }
+        };
+
+        checkOwnership();
+    }, [id]);
+
     const handleAddToCart = async () => {
         const user = JSON.parse(localStorage.getItem("user"));
+        if (isOwned) {
+            toast.info("Bạn đã sở hữu ebook này trong thư viện.");
+            return;
+        }
         if (!user) {
-            toast.info("Vui lòng đăng nhập để thêm vào giỏ hàng!");
+            toast.info("Vui lòng đăng nhập để thêm vào giỏ hàng!", {
+                toastId: "login-required-ebook",
+            });
             return;
         }
 
         setAddingToCart(true);
         try {
             // Gọi trực tiếp cart-service
-            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            const cartServiceUrl = process.env.REACT_APP_CART_URL;
 
             await axios.post(`${cartServiceUrl}/cart`, {
                 userId: user.id || user._id,
@@ -100,9 +137,16 @@ function EbookDetail() {
     };
 
     const handleBuyNow = async () => {
+        if (isOwned) {
+            navigate("/library");
+            return;
+        }
+
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
-            toast.info("Vui lòng đăng nhập để mua sách!");
+            toast.info("Vui lòng đăng nhập để mua sách!", {
+                toastId: "login-required-ebook",
+            });
             return;
         }
 
@@ -160,19 +204,23 @@ function EbookDetail() {
 
                         <div className="ebook-product-actions">
                             <button 
-                                className="btn-add-to-cart" 
+                                className={`btn-add-to-cart ${isOwned ? "owned" : ""}`} 
                                 onClick={handleAddToCart}
-                                disabled={addingToCart}
+                                disabled={addingToCart || isOwned}
                             >
-                                <i className="bx bx-cart"></i>
-                                {addingToCart ? "Đang thêm..." : "Thêm vào giỏ hàng"}
+                                {!isOwned && <i className="bx bx-cart"></i>}
+                                {isOwned
+                                    ? "Đã mua"
+                                    : addingToCart
+                                        ? "Đang thêm..."
+                                        : "Thêm vào giỏ hàng"}
                             </button>
                             <button 
                                 className="btn-buy-now" 
                                 onClick={handleBuyNow}
                                 disabled={addingToCart}
                             >
-                                Mua ngay
+                                {isOwned ? "Vào thư viện" : "Mua ngay"}
                             </button>
                         </div>
 

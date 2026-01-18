@@ -84,7 +84,7 @@ function EbookTable() {
   const fetchEbooks = async () => {
     setLoading(true);
     try {
-      const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+      const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
       const res = await axios.get(`${ebookServiceUrl}`);
       const formatted = (res.data || []).map((item) => ({
         id: item._id,
@@ -92,7 +92,11 @@ function EbookTable() {
         title: item.title,
         author: item.author || "Chưa có",
         price: item.price || 0,
-        updatedAt: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString("vi-VN") : "",
+        description: item.description || "",
+        pdfUrl: item.pdfUrl || "",
+        updatedAt: item.updatedAt
+          ? new Date(item.updatedAt).toLocaleDateString("vi-VN")
+          : "",
       }));
       setRows(formatted);
     } catch (err) {
@@ -141,7 +145,7 @@ function EbookTable() {
   const handleDelete = async (row) => {
     if (!window.confirm("Xóa sách này?")) return;
     try {
-      const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+      const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
       await axios.delete(`${ebookServiceUrl}/${row.id}`);
       fetchEbooks();
     } catch (err) {
@@ -151,7 +155,7 @@ function EbookTable() {
 
   const handleSubmit = async () => {
     try {
-      const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+      const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
       const payload = {
         ...form,
         price: Number(form.price) || 0,

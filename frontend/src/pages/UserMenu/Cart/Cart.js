@@ -29,13 +29,13 @@ function Cart() {
         startProgress();
         setLoading(true);
         try {
-            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            const cartServiceUrl = process.env.REACT_APP_CART_URL;
             const res = await axios.get(`${cartServiceUrl}/cart/${user.id || user._id}`);
             setCart(res.data);
 
             // Fetch ebook details for each item
             if (res.data.items && res.data.items.length > 0) {
-                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL || "http://localhost:5001";
+                const ebookServiceUrl = process.env.REACT_APP_EBOOK_URL;
                 const ebookPromises = res.data.items.map(item =>
                     axios.get(`${ebookServiceUrl}/${item.productId}`)
                         .then(res => ({ ...res.data, quantity: item.quantity }))
@@ -65,7 +65,7 @@ function Cart() {
         setUpdating({ ...updating, [productId]: true });
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            const cartServiceUrl = process.env.REACT_APP_CART_URL;
             await axios.put(`${cartServiceUrl}/cart/${user.id || user._id}`, {
                 productId,
                 quantity: newQuantity
@@ -87,7 +87,7 @@ function Cart() {
     const removeItem = async (productId) => {
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            const cartServiceUrl = process.env.REACT_APP_CART_URL;
             await axios.delete(`${cartServiceUrl}/cart/${user.id || user._id}/${productId}`);
             
             setEbooks(prev => prev.filter(ebook => ebook._id !== productId));
@@ -123,7 +123,7 @@ function Cart() {
             quantity: ebook.quantity
         }));
 
-        const orderServiceUrl = process.env.REACT_APP_ORDER_URL || "http://localhost:5003";
+        const orderServiceUrl = process.env.REACT_APP_ORDER_URL;
 
         try {
             setCheckingOut(true);
@@ -138,7 +138,7 @@ function Cart() {
             console.log("Order created:", res.data);
 
             // Clear cart after order creation
-            const cartServiceUrl = process.env.REACT_APP_CART_URL || "http://localhost:5002";
+            const cartServiceUrl = process.env.REACT_APP_CART_URL;
             try {
                 await axios.delete(`${cartServiceUrl}/cart/${user.id || user._id}`);
                 setEbooks([]);
